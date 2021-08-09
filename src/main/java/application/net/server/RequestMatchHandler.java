@@ -15,7 +15,16 @@ public class RequestMatchHandler {
 	private PriorityQueue<Socket> players ;
 	private Field field = new Field(Settings.BORDERHORIZONTAL,Settings.BORDERVERTICAL , Settings.WIDTHFRAME, Settings.HEIGHTFRAME,  15.0);
 	
-	public RequestMatchHandler() {}
+	
+	public static RequestMatchHandler instance = null ;
+	
+	private RequestMatchHandler() {}
+	
+	public static RequestMatchHandler getInstace() {
+		if(instance == null)
+				instance = new RequestMatchHandler();
+		return instance ;
+	}
 	
 	public void addPlayer(Socket player) {
 		players.add(player);
@@ -44,7 +53,7 @@ public class RequestMatchHandler {
 		players.poll();
 		
 		
-		Match match = new Match(player1, player2,field);
+		MatchServer match = new MatchServer(player1, player2,field);
 		executorService.submit(match);
 
 	}

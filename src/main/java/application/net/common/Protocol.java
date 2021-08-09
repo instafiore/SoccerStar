@@ -7,6 +7,8 @@ import application.model.game.physics.VectorFioreNoSync;
 
 public class Protocol {
 
+	
+	// Match
 	public static final String NEWGAMEREQUEST = "A new game request" ;
 	public static final String MOVEBALL = "The player moved the ball" ; 
 	public static final String SCORED = "The player scored" ;
@@ -14,7 +16,7 @@ public class Protocol {
 	public static final String GAMEOVER = "The game is over" ;
 	public static final String GAMESTARTED = "The game has started" ;
 	public static final String MYUSERNAMEIS = "Username is:";
-	public static final String POSITIONSOFBALLS = "Positions of balls" ;
+	public static final String USERNAMEGUEST = "The username guest is" ;
 	public static final String ITSTHETURNOF = "It's the turn of" ;
 	public static final String ITSNOTYOURTURN = "It's not your turn";
 	public static final String TYPEOFLINEUP = "Type of lineup" ;

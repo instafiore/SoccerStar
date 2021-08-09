@@ -1,11 +1,14 @@
 package application.model.game.handler;
 
+import java.awt.image.RescaleOp;
 import java.util.ArrayList;
 
 import application.model.game.entity.Ball;
 import application.model.game.entity.Field;
+import application.model.game.entity.Result;
 import application.model.game.physics.VectorFioreNoSync;
 import application.model.game.physics.VelocityNoSync;
+import application.net.client.Match;
 
 public class MatchHandler {
 
@@ -13,12 +16,16 @@ public class MatchHandler {
 	private ArrayList<Ball> balls;
 	private double width;
 	private double height;
-	
+	private boolean turn ;
+	private Result result;
+	private Match match;
 	
 	boolean f = true;
 	
 	public MatchHandler() {
+		this.match = match;
 		balls = new ArrayList<Ball>();
+		result = new Result() ;
 	}
 	
 	public void moveBalls(Field field) {
@@ -35,6 +42,14 @@ public class MatchHandler {
 				if(b1 != b2 && intersect(b1, b2))
 					collision(b1, b2 , field);
 		}
+	}
+	
+	public boolean getTurn() {
+		return turn;
+	}
+	
+	public void setTurn(boolean turn) {
+		this.turn = turn;
 	}
 	
 	private void checkMove(Field field, Ball b) {
@@ -90,7 +105,7 @@ public class MatchHandler {
 		
 		if(field.goalLeft(b)) {
 			
-//			b.getVelocity().mult(0.30);
+			
 			
 		}
 		
@@ -235,5 +250,7 @@ public class MatchHandler {
 	public ArrayList<Ball> getBalls() {
 		return balls;
 	}
+	
+	
 	
 }

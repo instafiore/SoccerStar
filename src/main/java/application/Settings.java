@@ -10,4 +10,6 @@ public class Settings {
 	public static final int PORT = 8000 ;
 	public static final double BORDERHORIZONTAL =  10.0 ;
 	public static final double BORDERVERTICAL =  45.0 ; 
+	public static final String ADDRESS_SERVER = "localhost" ;
+	public static final int MAX_GOAL = 3 ;
 }

@@ -16,22 +16,21 @@ public class MainApplication extends Application{
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		MatchView root = new MatchView();
-		MatchHandler ballManager = new MatchHandler();
+		MatchView matchView = new MatchView();
+
+		MatchController.getInstance().addMatchView(matchView);
 		
-		MatchController ballController = new MatchController(ballManager, root);
+		matchView.addController(MatchController.getInstance());
 		
-		root.addController(ballController);
-		
-		Scene scene = new Scene(root,Settings.WIDTHFRAME,Settings.HEIGHTFRAME);
+		Scene scene = new Scene(matchView,Settings.WIDTHFRAME,Settings.HEIGHTFRAME);
 	
 		primaryStage.setResizable(false);
 		primaryStage.setScene(scene);
-		primaryStage.setTitle("Balls javaFX");
+		primaryStage.setTitle("Soccer star");
 //		primaryStage.setFullScreen(true);
 		primaryStage.show();
 		
-		Updater updater = new Updater(ballController);
+		Updater updater = new Updater(MatchController.getInstance());
 		
 	}
 

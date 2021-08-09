@@ -20,7 +20,7 @@ import javafx.util.Pair;
 
 
 
-public class Match implements Runnable {
+public class MatchServer implements Runnable {
 
 	
 	private String username1 ;
@@ -31,20 +31,15 @@ public class Match implements Runnable {
 	private BufferedReader in2 ;
 	private PrintWriter out1 ;
 	private PrintWriter out2 ;
-	private boolean turn ;
 	private int ballAcquired = 0 ;
 	private MatchHandler matchHandler;
 	private Field field ;
-	private Lineup lineup ;
-	
-	// Tell if before sending lineup client1 sent type of lineup
-	private Boolean firstTypeOfLineUp1 = false ;
-	// Tell if before sending lineup client2 sent type of lineup
-	private Boolean firstTypeOfLineUp2 = false ;
+	private Lineup lineup1 ;
+	private Lineup lineup2 ;
 	
 	private Integer[] typeOfLineup = new Integer[2] ;
 	
-	public Match(Socket player1, Socket player2 , Field field) {
+	public MatchServer(Socket player1, Socket player2 , Field field) {
 		super();
 		this.field = field ;
 		this.player1 = player1;
@@ -70,11 +65,11 @@ public class Match implements Runnable {
 		
 		try {
 		
-			turn = new Random().nextBoolean();
+			matchHandler.setTurn( new Random().nextBoolean() );
 			
 			sendMessageAll(Protocol.ITSTHETURNOF);
 			
-			if(turn)
+			if(matchHandler.getTurn())
 				sendMessageAll("1");
 			else
 				sendMessageAll("2");
@@ -89,7 +84,7 @@ public class Match implements Runnable {
 			
 			username1 = in1.readLine();
 		
-			sendMessage(Protocol.MYUSERNAMEIS, 1);
+			sendMessage(Protocol.USERNAMEGUEST, 1);
 			sendMessage(username1, 1);
 			
 			mess = in2.readLine();
@@ -100,9 +95,44 @@ public class Match implements Runnable {
 			}
 			
 			username2 = in2.readLine();
-			sendMessage(Protocol.MYUSERNAMEIS, 2);
+			sendMessage(Protocol.USERNAMEGUEST, 2);
 			sendMessage(username2, 2);
 			
+			
+			mess = in1.readLine();
+			typeOfLineup[0] = Integer.parseInt(mess);
+			sendMessage(Protocol.TYPEOFLINEUP, 1);
+			sendMessage(""+typeOfLineup[0], 1);
+			
+			
+			mess = in2.readLine();
+			typeOfLineup[1] = Integer.parseInt(mess);
+			sendMessage(Protocol.TYPEOFLINEUP, 2);
+			sendMessage(""+typeOfLineup[1], 2);
+			
+			ArrayList<Ball> balls1 = new ArrayList<Ball>();
+			for(int j = 0 ; j < 5 ; ++j)
+				balls1.add(new Ball(new VectorFioreNoSync(0.0), new VelocityNoSync(0.0), Settings.DIMENSIONSTANDARDBALL, 1));
+			
+			
+			lineup1 = new Lineup(balls1, typeOfLineup[0]);
+			
+
+			
+			ArrayList<Ball> balls2 = new ArrayList<Ball>();
+			for(int j = 0 ; j < 5 ; ++j)
+				balls2.add(new Ball(new VectorFioreNoSync(0.0), new VelocityNoSync(0.0), Settings.DIMENSIONSTANDARDBALL, 2));
+			
+			
+			lineup2 = new Lineup(balls2, typeOfLineup[1]);
+
+			lineup2.mirrorLineup();
+			
+			for(Ball b : balls1)
+				matchHandler.add(b);
+			
+			for(Ball b : balls2)
+				matchHandler.add(b);
 			
 			while(!Thread.interrupted()) {
 					
@@ -118,12 +148,6 @@ public class Match implements Runnable {
 					// The game is over
 					
 				}else if(p.getKey().equals(Protocol.MOVEBALL)) {
-					
-					if(!firstTypeOfLineUp1 || !firstTypeOfLineUp2)
-					{
-						// Error
-						return;
-					}
 					
 					
 					i = p.getValue();
@@ -142,6 +166,7 @@ public class Match implements Runnable {
 					double xVel = Protocol.parseCoordinates(stringa[1])[0];
 					double yVel = Protocol.parseCoordinates(stringa[1])[1];
 					
+					
 					Ball b = matchHandler.tookBall(xPos, yPos);
 					
 					if(b == null) {
@@ -149,10 +174,12 @@ public class Match implements Runnable {
 						return;
 					}
 					
-					if(b.getPlayer() == i && ( i == 1 && turn || i == 2 && !turn) )
+					if(b.getPlayer() == i && ( i == 1 && matchHandler.getTurn() || i == 2 && !matchHandler.getTurn() ) )
 					{
-						turn = !turn ;
+						matchHandler.setTurn(!matchHandler.getTurn());
 						
+						if(i == 2)
+							xVel *= -1 ;
 						b.setVelocity(new VelocityNoSync(xVel, yVel));
 						while(!matchHandler.allStopped())
 							matchHandler.moveBalls(field);
@@ -169,49 +196,9 @@ public class Match implements Runnable {
 				
 				}else if(p.getKey().equals(Protocol.TYPEOFLINEUP)) {
 					
+					// Error
+					return;
 					
-					i = p.getValue();
-					
-					if(i == 1) 
-					{
-						
-						if(firstTypeOfLineUp1)
-						{
-							// Error
-							return;
-						}
-						
-						firstTypeOfLineUp1 = true;
-						mess = in1.readLine();
-						typeOfLineup[0] = Integer.parseInt(mess);
-						sendMessage(Protocol.TYPEOFLINEUP, i);
-						sendMessage(""+typeOfLineup[0], i);
-						
-					}
-					else {
-						
-						if(firstTypeOfLineUp2)
-						{
-							// Error
-							return;
-						}
-						
-						firstTypeOfLineUp2 = true;
-						mess = in2.readLine();
-						typeOfLineup[1] = Integer.parseInt(mess);
-						sendMessage(Protocol.TYPEOFLINEUP, i);
-						sendMessage(""+typeOfLineup[1], i);
-					}
-					
-					ArrayList<Ball> balls = new ArrayList<Ball>();
-					for(int j = 0 ; j < 5 ; ++j)
-						balls.add(new Ball(new VectorFioreNoSync(0.0), new VelocityNoSync(0.0), Settings.DIMENSIONSTANDARDBALL, i));
-					
-					
-					lineup = new Lineup(balls, typeOfLineup[i - 1 ]);
-					
-					if(i == 2)
-						lineup.mirrorLineup();
 				}
 			}
 		

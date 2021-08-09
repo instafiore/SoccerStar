@@ -10,11 +10,9 @@ import application.Settings;
 public class Server implements Runnable{
 
 	private ServerSocket server ;
-	private RequestMatchHandler requestMatchHandler;
 	
 	public void startServer() throws IOException {
-		
-		requestMatchHandler = new RequestMatchHandler();
+	
 		server = new ServerSocket(Settings.PORT);
 		
 		System.out.println("Server has started...");
@@ -36,7 +34,9 @@ public class Server implements Runnable{
 				
 				Socket socket = server.accept();
 				System.out.println("Client connected");
-				requestMatchHandler.addPlayer(socket);
+				ClientHandler clientHandler = new ClientHandler(socket);
+				Thread t = new Thread(clientHandler);
+				t.start();
 			
 			} catch (IOException e) {
 				

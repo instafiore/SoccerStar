@@ -96,5 +96,9 @@ public class Lineup {
 		
 		setPositions();
 	}
+	
+	public int getCurrentLineup() {
+		return currentLineup;
+	}
 
 }
