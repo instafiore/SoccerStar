@@ -14,6 +14,7 @@ public class ClientHandler implements Runnable{
 	private Socket client = null ;
 	private BufferedReader in = null ;
 	private PrintWriter out = null ;
+	private boolean onGame = false;
 	
 	public ClientHandler(Socket client) {
 		super();
@@ -29,26 +30,44 @@ public class ClientHandler implements Runnable{
 		
 	}
 	
+	public Socket getClient() {
+		return client;
+	}
+	
 	public void run() {
 		
-		String message = null ;
-		
+
 		while(!Thread.interrupted()) {
 			
+			String message = null ;
+			
 			try {
-				message = in.readLine();
+				if(!isOnGame())
+					message = in.readLine();
+
 			} catch (IOException e) {
 				
 				e.printStackTrace();
 			}
 			
+			if(message == null)
+				continue;
+			
 			if(message.equals(Protocol.NEWGAMEREQUEST)) {
 				
-				RequestMatchHandler.getInstace().addPlayer(client);
-				
+				RequestMatchHandler.getInstace().addPlayer(this);
+				onGame = true; 
 			}
 			
 		}
 		
+	}
+	
+	public void setOnGame(boolean onGame) {
+		this.onGame = onGame;
+	}
+	
+	public boolean isOnGame() {
+		return onGame;
 	}
 }

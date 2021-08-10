@@ -29,6 +29,8 @@ public class Lineup {
 	public Lineup(int currentLineup) {
 		super();
 		this.currentLineup = currentLineup ; 
+		setCoordinates();
+		setPositions();
 	}
 	
 	public void addBalls(ArrayList<Ball> balls) {
@@ -77,6 +79,7 @@ public class Lineup {
 		
 		ArrayList<VectorFioreNoSync> positions = new ArrayList<VectorFioreNoSync>(5);
 		
+		
 		positions.add(new VectorFioreNoSync(Settings.WIDTHFRAME * coordinates[0].getX() - balls.get(0).getRadius(), Settings.HEIGHTFRAME * coordinates[0].getY() - balls.get(0).getRadius())) ;
 		positions.add(new VectorFioreNoSync(Settings.WIDTHFRAME * coordinates[1].getX() - balls.get(1).getRadius(), Settings.HEIGHTFRAME * coordinates[1].getY() - balls.get(1).getRadius())) ;
 		positions.add(new VectorFioreNoSync(Settings.WIDTHFRAME * coordinates[2].getX() - balls.get(2).getRadius(), Settings.HEIGHTFRAME * coordinates[2].getY() - balls.get(2).getRadius())) ;
@@ -91,7 +94,6 @@ public class Lineup {
 		for(VectorFioreNoSync c : coordinates)
 		{
 			c.setX(1.0 - c.getX());
-			System.out.println(c);
 		}
 		
 		setPositions();

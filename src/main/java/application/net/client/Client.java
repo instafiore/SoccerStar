@@ -18,21 +18,9 @@ public class Client implements Runnable{
 	private Socket socket = null;
 	
 	private static Client instance = null;
-	private String username ;
+	private String username = "Salvatore";
 	
 	private Client() {
-
-		try {
-			socket = new Socket(Settings.ADDRESS_SERVER,Settings.PORT);
-			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-			out = new PrintWriter(new BufferedOutputStream(socket.getOutputStream()),true);
-		} catch (UnknownHostException e) {
-
-			e.printStackTrace();
-		} catch (IOException e) {
-
-			e.printStackTrace();
-		}
 		
 	}
 	
@@ -70,15 +58,25 @@ public class Client implements Runnable{
 		if(in.ready())
 		{
 			message = in.readLine();
-			
-			
-//			if(message.equals(Protocol))
-			
 		}
 		
-		
 	}
+	
+	public void connectToServer() {
 		
+		try {
+			socket = new Socket(Settings.ADDRESS_SERVER,Settings.PORT);
+			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+			out = new PrintWriter(new BufferedOutputStream(socket.getOutputStream()),true);
+		} catch (UnknownHostException e) {
+
+			e.printStackTrace();
+		} catch (IOException e) {
+
+			e.printStackTrace();
+		}
+	}
+	
 	public void startMatch() {
 		
 		sendMessage(Protocol.NEWGAMEREQUEST);

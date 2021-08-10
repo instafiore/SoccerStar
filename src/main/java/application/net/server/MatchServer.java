@@ -25,8 +25,8 @@ public class MatchServer implements Runnable {
 	
 	private String username1 ;
 	private String username2 ;
-	private Socket player1 ;
-	private Socket player2 ;
+	private ClientHandler player1 ;
+	private ClientHandler player2 ;
 	private BufferedReader in1 ;
 	private BufferedReader in2 ;
 	private PrintWriter out1 ;
@@ -39,21 +39,20 @@ public class MatchServer implements Runnable {
 	
 	private Integer[] typeOfLineup = new Integer[2] ;
 	
-	public MatchServer(Socket player1, Socket player2 , Field field) {
+	public MatchServer(ClientHandler player1, ClientHandler player2 , Field field) {
 		super();
 		this.field = field ;
 		this.player1 = player1;
 		this.player2 = player2;
 		
+		matchHandler = new MatchHandler();
 		
 		try {
-			in1 = new BufferedReader(new InputStreamReader(player1.getInputStream()));
-			in2 = new BufferedReader(new InputStreamReader(player2.getInputStream()));
-			out1 = new PrintWriter(new BufferedOutputStream(player1.getOutputStream()),true);
-			out2 = new PrintWriter(new BufferedOutputStream(player2.getOutputStream()),true);
+			in1 = new BufferedReader(new InputStreamReader(player1.getClient().getInputStream()));
+			in2 = new BufferedReader(new InputStreamReader(player2.getClient().getInputStream()));
+			out1 = new PrintWriter(new BufferedOutputStream(player1.getClient().getOutputStream()),true);
+			out2 = new PrintWriter(new BufferedOutputStream(player2.getClient().getOutputStream()),true);
 			
-			Thread t = new Thread(this);
-			t.start();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -64,51 +63,90 @@ public class MatchServer implements Runnable {
 		
 		
 		try {
-		
+			
+			
+			
 			matchHandler.setTurn( new Random().nextBoolean() );
 			
 			sendMessageAll(Protocol.ITSTHETURNOF);
 			
 			if(matchHandler.getTurn())
-				sendMessageAll("1");
-			else
-				sendMessageAll("2");
-			
-			
-			String mess = in1.readLine();
-			if(!mess.equals(Protocol.MYUSERNAMEIS))
 			{
-				// Errore
+				sendMessage(Protocol.ITSYOURTURN, 2);
+				sendMessage(Protocol.ITSNOTYOURTURN, 1);
+			}
+			else
+			{
+				sendMessage(Protocol.ITSYOURTURN, 1);
+				sendMessage(Protocol.ITSNOTYOURTURN, 2);
+			}
+	
+			String message = in1.readLine();
+			
+			if(!message.equals(Protocol.MYUSERNAMEIS))
+			{
+				System.out.println("ERRORE");
+				player1.setOnGame(false);
+				player2.setOnGame(false);
 				return;
 			}
 			
+			
+			
 			username1 = in1.readLine();
+		
 		
 			sendMessage(Protocol.USERNAMEGUEST, 1);
 			sendMessage(username1, 1);
 			
-			mess = in2.readLine();
-			if(!mess.equals(Protocol.MYUSERNAMEIS))
+			message = in2.readLine();
+			if(!message.equals(Protocol.MYUSERNAMEIS))
 			{
-				// Errore
+				System.out.println("ERRORE");
+				player1.setOnGame(false);
+				player2.setOnGame(false);
 				return;
 			}
 			
 			username2 = in2.readLine();
+			
+			
+			System.out.println(username2);
+			
 			sendMessage(Protocol.USERNAMEGUEST, 2);
 			sendMessage(username2, 2);
 			
 			
-			mess = in1.readLine();
-			typeOfLineup[0] = Integer.parseInt(mess);
+			message = in1.readLine();
+			
+			if(!message.equals(Protocol.TYPEOFLINEUP)) {
+				System.out.println("ERRORE");
+				player1.setOnGame(false);
+				player2.setOnGame(false);
+				return;
+			}
+		
+			message = in1.readLine();
+			
+			typeOfLineup[0] = Integer.parseInt(message);
 			sendMessage(Protocol.TYPEOFLINEUP, 1);
 			sendMessage(""+typeOfLineup[0], 1);
 			
+			message = in2.readLine();
 			
-			mess = in2.readLine();
-			typeOfLineup[1] = Integer.parseInt(mess);
+			if(!message.equals(Protocol.TYPEOFLINEUP)) {
+				System.out.println("ERRORE");
+				player1.setOnGame(false);
+				player2.setOnGame(false);
+				return;
+			}
+	
+			message = in2.readLine();
+			typeOfLineup[1] = Integer.parseInt(message);
 			sendMessage(Protocol.TYPEOFLINEUP, 2);
 			sendMessage(""+typeOfLineup[1], 2);
+			
+			
 			
 			ArrayList<Ball> balls1 = new ArrayList<Ball>();
 			for(int j = 0 ; j < 5 ; ++j)
@@ -134,6 +172,9 @@ public class MatchServer implements Runnable {
 			for(Ball b : balls2)
 				matchHandler.add(b);
 			
+			
+			sendMessageAll(Protocol.GAMESTARTED);
+			
 			while(!Thread.interrupted()) {
 					
 				int i ; 
@@ -146,19 +187,24 @@ public class MatchServer implements Runnable {
 				if(p.getKey().equals(Protocol.LEFTGAME)) {
 					
 					// The game is over
+					player1.setOnGame(false);
+					player2.setOnGame(false);
 					
 				}else if(p.getKey().equals(Protocol.MOVEBALL)) {
+					
 					
 					
 					i = p.getValue();
 					
 					if(i == 1) {
-						mess = in1.readLine();
+						message = in1.readLine();
 					}else {
-						mess = in2.readLine();
+						message = in2.readLine();
 					}
 					
-					String[] stringa = mess.split(";");
+					System.out.println(message);
+					
+					String[] stringa = message.split(";");
 					
 					double xPos = Protocol.parseCoordinates(stringa[0])[0];
 					double yPos = Protocol.parseCoordinates(stringa[0])[1];
@@ -185,18 +231,21 @@ public class MatchServer implements Runnable {
 							matchHandler.moveBalls(field);
 						
 						sendMessage(Protocol.MOVEBALL, i);
-						sendMessage(mess, i);
+						sendMessage(message, i);
+						
 					}
 				
 					
 				}else if(p.getKey().equals(Protocol.MYUSERNAMEIS)) {
 					
-					// Error
+					player1.setOnGame(false);
+					player2.setOnGame(false);
 					return;
 				
 				}else if(p.getKey().equals(Protocol.TYPEOFLINEUP)) {
 					
-					// Error
+					player1.setOnGame(false);
+					player2.setOnGame(false);
 					return;
 					
 				}

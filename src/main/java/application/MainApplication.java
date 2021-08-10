@@ -6,6 +6,7 @@ import java.nio.IntBuffer;
 
 import application.control.MatchController;
 import application.model.game.handler.MatchHandler;
+import application.net.client.Client;
 import application.view.MatchView;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -16,22 +17,23 @@ public class MainApplication extends Application{
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
+		
 		MatchView matchView = new MatchView();
-
-		MatchController.getInstance().addMatchView(matchView);
+		matchView.setPrefWidth(Settings.WIDTHFRAME);
+		matchView.setPrefHeight(Settings.HEIGHTFRAME);
+			
+		SceneHandler.getInstance().initStage(primaryStage);
 		
+		SceneHandler.getInstance().addPane("MatchView", matchView);
+		
+		MatchController.getInstance().addMatchView(matchView);		
 		matchView.addController(MatchController.getInstance());
-		
-		Scene scene = new Scene(matchView,Settings.WIDTHFRAME,Settings.HEIGHTFRAME);
+
+		Updater.getInstance().addMatchController(MatchController.getInstance());
 	
-		primaryStage.setResizable(false);
-		primaryStage.setScene(scene);
-		primaryStage.setTitle("Soccer star");
-//		primaryStage.setFullScreen(true);
-		primaryStage.show();
 		
-		Updater updater = new Updater(MatchController.getInstance());
-		
+		Client.getInstance().connectToServer();
+		Client.getInstance().startMatch();
 	}
 
 	public static void main(String[] args) {

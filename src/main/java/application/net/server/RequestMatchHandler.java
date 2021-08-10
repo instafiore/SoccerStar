@@ -1,6 +1,7 @@
 package application.net.server;
 
 import java.net.Socket;
+import java.util.LinkedList;
 import java.util.PriorityQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -12,13 +13,17 @@ import application.model.game.entity.Field;
 public class RequestMatchHandler {
 
 	private ExecutorService executorService = Executors.newCachedThreadPool();
-	private PriorityQueue<Socket> players ;
+	private LinkedList<ClientHandler> players ;
 	private Field field = new Field(Settings.BORDERHORIZONTAL,Settings.BORDERVERTICAL , Settings.WIDTHFRAME, Settings.HEIGHTFRAME,  15.0);
 	
 	
 	public static RequestMatchHandler instance = null ;
 	
-	private RequestMatchHandler() {}
+	private RequestMatchHandler() {
+		
+		players = new LinkedList<ClientHandler>();
+		
+	}
 	
 	public static RequestMatchHandler getInstace() {
 		if(instance == null)
@@ -26,7 +31,7 @@ public class RequestMatchHandler {
 		return instance ;
 	}
 	
-	public void addPlayer(Socket player) {
+	public void addPlayer(ClientHandler player) {
 		players.add(player);
 		flushQueue();
 	}
@@ -37,13 +42,13 @@ public class RequestMatchHandler {
 	
 	private void flushQueue() {
 		
-		Socket player1 = players.peek();
+		ClientHandler player1 = players.peek();
 		if(player1 == null)
 				return;
 		
 		players.poll();
 		
-		Socket player2 = players.peek();
+		ClientHandler player2 = players.peek();
 		if(player2 == null)
 		{
 			players.add(player1);
@@ -52,7 +57,7 @@ public class RequestMatchHandler {
 		
 		players.poll();
 		
-		
+		System.out.println("SENT GAME BY SERVER");
 		MatchServer match = new MatchServer(player1, player2,field);
 		executorService.submit(match);
 

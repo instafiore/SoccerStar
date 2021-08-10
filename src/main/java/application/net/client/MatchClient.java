@@ -6,7 +6,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
+import application.SceneHandler;
 import application.Settings;
+import application.Updater;
 import application.control.MatchController;
 import application.model.game.entity.Ball;
 import application.model.game.entity.Lineup;
@@ -29,28 +31,37 @@ public class MatchClient implements Runnable{
 		this.client = client;
 		this.matchHandler = new MatchHandler();
 		
+		
 		in = client.getIn();
 		
 		MatchController.getInstance().addMatchHandler(matchHandler);
+	
+		Thread t = new Thread(this);
+		t.start();
 	}
 
 	
-	public void read() throws IOException {
+	public void initalSettings() throws IOException {
 		
 		String message = null ;
 		
+		System.out.println("MIAO");
+		
 		message = in.readLine();
+		
+		
 		
 		if(!message.equals(Protocol.ITSTHETURNOF)) {
 			//Errore
 			return ;
 		}
+	
+		
 		
 		message = in.readLine();
+		System.out.println(message);
 		
-		int turn = Integer.parseInt(message);
-		
-		if(turn == 1)
+		if(message.equals(Protocol.ITSYOURTURN))
 			matchHandler.setTurn(true);
 		else 
 			matchHandler.setTurn(false);
@@ -73,7 +84,12 @@ public class MatchClient implements Runnable{
 		
 		usernameGuest = in.readLine();
 		
+		
+		
 		message = in.readLine();
+		
+		System.out.println(message);
+		
 		
 		if(!message.equals(Protocol.TYPEOFLINEUP))
 		{
@@ -107,9 +123,27 @@ public class MatchClient implements Runnable{
 			matchHandler.add(b);
 		
 		
+		message = in.readLine();
+		
+		
+		
+		if(!message.equals(Protocol.GAMESTARTED)) {
+			// Error
+			return;
+		}
+		
+		showView();
+	}
+	
+	public void read() throws IOException {
+		
+		String message = null ;
+		
 		if(in.ready()) {
 			
 			message = in.readLine();
+			
+			System.out.println(message);
 			
 			if(message.equals(Protocol.MOVEBALL)) {
 				
@@ -138,7 +172,29 @@ public class MatchClient implements Runnable{
 		
 	}
 
+	public void showView() {
+		Updater.getInstance().startUpdater();
+	}
+	
+	
+	
 	public void run() {
+		
+		try {
+			initalSettings();
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		
+		while(!Thread.interrupted()) {
+			
+			try {
+				read();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+		}
 		
 	}
 	

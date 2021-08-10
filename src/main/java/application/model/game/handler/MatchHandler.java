@@ -8,7 +8,7 @@ import application.model.game.entity.Field;
 import application.model.game.entity.Result;
 import application.model.game.physics.VectorFioreNoSync;
 import application.model.game.physics.VelocityNoSync;
-import application.net.client.Match;
+
 
 public class MatchHandler {
 
@@ -18,12 +18,11 @@ public class MatchHandler {
 	private double height;
 	private boolean turn ;
 	private Result result;
-	private Match match;
+
 	
 	boolean f = true;
 	
 	public MatchHandler() {
-		this.match = match;
 		balls = new ArrayList<Ball>();
 		result = new Result() ;
 	}
@@ -105,12 +104,13 @@ public class MatchHandler {
 		
 		if(field.goalLeft(b)) {
 			
-			
-			
+			result.goalGuest();
+//			b.getVelocity().mult(0.30);		
 		}
 		
 		if(field.goalRight(b)) {
 			
+			result.goalHome();
 //			b.getVelocity().mult(0.30);
 			
 		}

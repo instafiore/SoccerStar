@@ -27,6 +27,7 @@ public class MatchController implements EventHandler<MouseEvent>{
 
 	private Ball ballTook = null;
 	
+	
 	private MatchController() {
 		super();
 	}
@@ -51,6 +52,10 @@ public class MatchController implements EventHandler<MouseEvent>{
 
 	public void update() {
 		
+		if(matchHandler.getTurn()) {
+			for(Ball b : matchHandler.getBalls())
+				b.setColor(Ball.RED);
+		}
 		matchHandler.moveBalls(matchView.getField());
 		matchView.draw();
 		
@@ -63,7 +68,7 @@ public class MatchController implements EventHandler<MouseEvent>{
 			initialY = event.getY();
 			
 			ballTook = matchHandler.tookBall(initialX, initialY); 
-			if( ballTook != null && ballTook.getPlayer() == 1)
+			if( ballTook != null && ballTook.getPlayer() == 1 && ballTook.getColor() != Ball.WHITE && matchHandler.allStopped() && matchHandler.getTurn())
 			{
 				ballTook.setColor(Ball.RED);
 			}
@@ -93,7 +98,7 @@ public class MatchController implements EventHandler<MouseEvent>{
 			return;
 		}else if(event.getEventType() == MouseEvent.MOUSE_RELEASED) {
 			
-			if(ballTook!= null) {
+			if(ballTook!= null && initialX != null) {
 				
 				double finalX = event.getX();
 				double finalY = event.getY();
@@ -109,16 +114,20 @@ public class MatchController implements EventHandler<MouseEvent>{
 				
 				ballTook.setVelocity(v);
 				ballTook.setColor(Ball.BLUE);
-				initialX = null;
-				initialY = null;
-				ballTook = null;
-				matchView.setLine(null);
 				
-				String message = ballTook.getPosition().getX() + "-" + ballTook.getPosition().getY() + ";" + ballTook.getVelocity().getX() + "-"+ ballTook.getVelocity().getY();
+				
+				String message = ballTook.getPosition().getX() + "&" + ballTook.getPosition().getY() + ";" + ballTook.getVelocity().getX() + "&"+ ballTook.getVelocity().getY();
 				
 				Client.getInstance().sendMessage(Protocol.MOVEBALL);
 				Client.getInstance().sendMessage(message);
 				
+				matchHandler.setTurn(false);
+				
+				initialX = null;
+				initialY = null;
+				ballTook = null;
+				matchView.setLine(null);
+			
 				return;
 			}
 		}

@@ -18,8 +18,10 @@ public class Protocol {
 	public static final String MYUSERNAMEIS = "Username is:";
 	public static final String USERNAMEGUEST = "The username guest is" ;
 	public static final String ITSTHETURNOF = "It's the turn of" ;
+	public static final String ITSYOURTURN = "It's your turn" ;
 	public static final String ITSNOTYOURTURN = "It's not your turn";
 	public static final String TYPEOFLINEUP = "Type of lineup" ;
+	
 	
 	public static ArrayList<VectorFioreNoSync> parsePositions(String positions){
 		
@@ -33,7 +35,7 @@ public class Protocol {
 			double x ;
 			double y ;
 			
-			String[] v = token.split("-");
+			String[] v = token.split("&");
 			
 			x = Integer.parseInt(v[0]);
 			y = Integer.parseInt(v[1]);

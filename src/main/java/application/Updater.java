@@ -6,21 +6,44 @@ import javafx.animation.AnimationTimer;
 public class Updater extends AnimationTimer{
 
 	private long previousTime = 0 ;
-	private MatchController ballController;
+	private MatchController matchController;
+	private static Updater instance = null;
 	
-	public Updater(MatchController ballController) {
-		super();
-		this.ballController = ballController;
+	private boolean firstTime = true;
+	
+	private Updater(){
+		super();	
+	}
+	
+	public static Updater getInstance() {
+		
+		if(instance == null )
+			instance = new Updater();
+		return instance;
+	}
+	
+	public void addMatchController(MatchController matchController ) {
+		this.matchController = matchController;
+	}
+	
+	public void startUpdater() {
+		
 		this.start();
 	}
 	
 	@Override
 	public void handle(long now) {
+		
+		if(firstTime)
+		{
+			SceneHandler.getInstance().loadScene("MatchView", false );
+			firstTime = false ;
+		}
 		long time = now - previousTime;
 		if(time >= Settings.FREQUENCY * 1000000) {
 			previousTime = now;
 			try {
-				ballController.update();
+				matchController.update();
 			} catch (Exception e) {
 				System.out.println("Updater interrupted");
 			}	
