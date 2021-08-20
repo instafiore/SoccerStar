@@ -68,7 +68,20 @@ public class Lineup {
 			coordinates[3] = new VectorFioreNoSync(0.45, 0.45);
 			coordinates[4] = new VectorFioreNoSync(0.45, 0.55);
 			break;
-
+		case LINEUP2:
+			coordinates[0] = new VectorFioreNoSync(0.25, 0.50);
+			coordinates[1] = new VectorFioreNoSync(0.30, 0.20);
+			coordinates[2] = new VectorFioreNoSync(0.30, 0.80);
+			coordinates[3] = new VectorFioreNoSync(0.35, 0.50);
+			coordinates[4] = new VectorFioreNoSync(0.45, 0.50);
+			break;	
+		case LINEUP3:
+			coordinates[0] = new VectorFioreNoSync(0.25, 0.50);
+			coordinates[1] = new VectorFioreNoSync(0.28, 0.25);
+			coordinates[2] = new VectorFioreNoSync(0.28, 0.75);
+			coordinates[3] = new VectorFioreNoSync(0.35, 0.05);
+			coordinates[4] = new VectorFioreNoSync(0.35, 0.95);
+			break;
 		default:
 			break;
 		}

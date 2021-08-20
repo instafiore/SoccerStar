@@ -25,15 +25,20 @@ public class MainApplication extends Application{
 		SceneHandler.getInstance().initStage(primaryStage);
 		
 		SceneHandler.getInstance().addPane("MatchView", matchView);
+		SceneHandler.getInstance().loadPane("LoginPage");
+		SceneHandler.getInstance().loadPane("RegistrationPage");
+		SceneHandler.getInstance().loadScene("LoginPage", false);
+
 		
 		MatchController.getInstance().addMatchView(matchView);		
 		matchView.addController(MatchController.getInstance());
 
+				
 		Updater.getInstance().addMatchController(MatchController.getInstance());
-	
 		
 		Client.getInstance().connectToServer();
-		Client.getInstance().startMatch();
+		Client.getInstance().setCurrentState(Client.STEP_LOGIN);
+		
 	}
 
 	public static void main(String[] args) {

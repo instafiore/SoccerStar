@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.sql.SQLException;
 
 import application.Settings;
 
@@ -16,6 +17,14 @@ public class Server implements Runnable{
 		server = new ServerSocket(Settings.PORT);
 		
 		System.out.println("Server has started...");
+		
+		try {
+			Database.getInstance().connectToDatabase();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			System.err.println("Database not connected");
+			e.printStackTrace();
+		}
 		
 		Thread t = new Thread(this);
 		

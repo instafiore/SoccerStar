@@ -60,7 +60,7 @@ public class SceneHandler {
 		
 		if(pane == null)
 		{
-			System.out.println("Pane null");
+			System.err.println("Pane null");
 			return;
 		}
 		

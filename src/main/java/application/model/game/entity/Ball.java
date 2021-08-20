@@ -16,9 +16,11 @@ public class Ball {
 	
 	public static final int PLAYER1 = 1 ;
 	public static final int PLAYER2 = 2 ;
+	public static final int NOPLAYER = 3 ;
 	public static final int RED = 0;
 	public static final int BLUE = 1 ;
 	public static final int WHITE = 2 ;
+	public static final int TOOK = 3 ;
 	
 
 	

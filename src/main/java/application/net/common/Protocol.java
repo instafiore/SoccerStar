@@ -8,6 +8,22 @@ import application.model.game.physics.VectorFioreNoSync;
 public class Protocol {
 
 	
+	// ERRORS
+	public static final String GENERALERROR = "General error , app will reloading...";
+	
+	// Email
+	public static final String EMAILASSISTANCE = "fiorentinosalvatore65@gmail.com";
+	
+	
+	// Login
+	public static final String LOGINREQUEST = "New login request";
+	
+	// Registration
+	public static final String REGISTRATIONREQUEST = "New registration request" ;
+	public static final String DELIMITERREGISTRATION = "-" ;
+	public static final String REGISTRATIONCOMPLETED = "Registration completed!";
+	public static final String REGISTRATIONFAILED = "We had a problem with your registration , please try again or contact email: " + EMAILASSISTANCE;
+	
 	// Match
 	public static final String NEWGAMEREQUEST = "A new game request" ;
 	public static final String MOVEBALL = "The player moved the ball" ; 
@@ -51,7 +67,7 @@ public class Protocol {
 		
 		Double[] coordinatesI = new Double[2];
 		
-		String[] a = coordinates.split("-");
+		String[] a = coordinates.split("&");
 		
 		coordinatesI[0] = Double.parseDouble(a[0]);
 		coordinatesI[1] = Double.parseDouble(a[1]);

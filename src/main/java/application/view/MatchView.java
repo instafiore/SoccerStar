@@ -73,11 +73,13 @@ public class MatchView extends StackPane{
 				canvas.getGraphicsContext2D().setFill(Color.web("#ff0000", 1.0));
 				break;
 			case Ball.BLUE:
-				canvas.getGraphicsContext2D().setFill(Color.web("#50514F", 1.0));
+				canvas.getGraphicsContext2D().setFill(Color.web("#205a8c", 1.0));
 				break;
 			case Ball.WHITE:
 				canvas.getGraphicsContext2D().setFill(Color.web("#fbf6f6", 1.0));
 				break;
+			case Ball.TOOK:
+				canvas.getGraphicsContext2D().setFill(Color.web("#f28444",1.0));
 			default:
 				canvas.getGraphicsContext2D().setFill(Color.web("#ff7f27", 1.0));
 				break;

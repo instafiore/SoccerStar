@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
+import application.model.game.entity.RegistrationClient;
 import application.net.common.Protocol;
 
 public class ClientHandler implements Runnable{
@@ -14,7 +15,13 @@ public class ClientHandler implements Runnable{
 	private Socket client = null ;
 	private BufferedReader in = null ;
 	private PrintWriter out = null ;
-	private boolean onGame = false;
+	private String username = null ;
+	
+	
+	
+	public String getUsername() {
+		return username;
+	}
 	
 	public ClientHandler(Socket client) {
 		super();
@@ -36,17 +43,55 @@ public class ClientHandler implements Runnable{
 	
 	public void run() {
 		
+		String message = null ;
+		
+		if(message.equals(Protocol.REGISTRATIONREQUEST)) {
+			
+			try {
+				
+				message = in.readLine();
+				System.out.println(message);
+				
+				RegistrationClient client = new RegistrationClient();
+				client.parseRegistrationClient(message);
+				
+				username = client.getUsername();
+				
+				if(Database.getInstance().insertUser(client))
+				{
+					sendMessage(Protocol.REGISTRATIONCOMPLETED);
+					sendMessage(username);
+				}
+				else
+					sendMessage(Protocol.REGISTRATIONFAILED);
+				
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}else if(message.equals(Protocol.LOGINREQUEST)) {
+			
+			
+			
+		}else {
+			
+			// ERROR
+			sendMessage(Protocol.GENERALERROR);
+			return;
+		}
 
 		while(!Thread.interrupted()) {
 			
-			String message = null ;
+			System.out.println("CLIENT HANDLER");
+		
 			
 			try {
-				if(!isOnGame())
-					message = in.readLine();
-
-			} catch (IOException e) {
 				
+				message = in.readLine();
+				System.out.println(message);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			
@@ -56,18 +101,46 @@ public class ClientHandler implements Runnable{
 			if(message.equals(Protocol.NEWGAMEREQUEST)) {
 				
 				RequestMatchHandler.getInstace().addPlayer(this);
-				onGame = true; 
+				try {
+					
+					synchronized (this) {
+						this.wait();
+					}
+					
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+			}else if(message.equals(Protocol.REGISTRATIONREQUEST)) {
+				
+				sendMessage(Protocol.GENERALERROR);
+				return;
+			
+			}else if(message.equals(Protocol.LOGINREQUEST)) {
+				
+				sendMessage(Protocol.GENERALERROR);
+				return;
+			
 			}
 			
 		}
 		
 	}
 	
-	public void setOnGame(boolean onGame) {
-		this.onGame = onGame;
+	public void notifyClient() {
+		synchronized (this) {
+			this.notify();
+		}
 	}
 	
-	public boolean isOnGame() {
-		return onGame;
+
+	public void sendMessage(String message) {
+		
+		if(out == null || message == null)
+			return ;
+		
+		out.println(message);
 	}
+	
 }

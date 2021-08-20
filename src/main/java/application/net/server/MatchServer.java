@@ -45,6 +45,10 @@ public class MatchServer implements Runnable {
 		this.player1 = player1;
 		this.player2 = player2;
 		
+		
+		username1 = player1.getUsername();
+		username2 = player2.getUsername();
+		
 		matchHandler = new MatchHandler();
 		
 		try {
@@ -65,7 +69,7 @@ public class MatchServer implements Runnable {
 		try {
 			
 			
-			
+			String message = null ;
 			matchHandler.setTurn( new Random().nextBoolean() );
 			
 			sendMessageAll(Protocol.ITSTHETURNOF);
@@ -80,37 +84,12 @@ public class MatchServer implements Runnable {
 				sendMessage(Protocol.ITSYOURTURN, 1);
 				sendMessage(Protocol.ITSNOTYOURTURN, 2);
 			}
-	
-			String message = in1.readLine();
-			
-			if(!message.equals(Protocol.MYUSERNAMEIS))
-			{
-				System.out.println("ERRORE");
-				player1.setOnGame(false);
-				player2.setOnGame(false);
-				return;
-			}
-			
-			
-			
-			username1 = in1.readLine();
-		
-		
+
 			sendMessage(Protocol.USERNAMEGUEST, 1);
 			sendMessage(username1, 1);
 			
-			message = in2.readLine();
-			if(!message.equals(Protocol.MYUSERNAMEIS))
-			{
-				System.out.println("ERRORE");
-				player1.setOnGame(false);
-				player2.setOnGame(false);
-				return;
-			}
 			
-			username2 = in2.readLine();
-			
-			
+			System.out.println(username1);
 			System.out.println(username2);
 			
 			sendMessage(Protocol.USERNAMEGUEST, 2);
@@ -121,8 +100,8 @@ public class MatchServer implements Runnable {
 			
 			if(!message.equals(Protocol.TYPEOFLINEUP)) {
 				System.out.println("ERRORE");
-				player1.setOnGame(false);
-				player2.setOnGame(false);
+				player1.notifyClient();
+				player2.notifyClient();
 				return;
 			}
 		
@@ -136,8 +115,8 @@ public class MatchServer implements Runnable {
 			
 			if(!message.equals(Protocol.TYPEOFLINEUP)) {
 				System.out.println("ERRORE");
-				player1.setOnGame(false);
-				player2.setOnGame(false);
+				player1.notifyClient();
+				player2.notifyClient();
 				return;
 			}
 	
@@ -172,6 +151,13 @@ public class MatchServer implements Runnable {
 			for(Ball b : balls2)
 				matchHandler.add(b);
 			
+			double x11 = Settings.WIDTHFRAME * 0.50 - Settings.DIMENSIONOFBALLTOPLAY ;
+			double y11 = Settings.HEIGHTFRAME * 0.50 - Settings.DIMENSIONOFBALLTOPLAY ;
+			VectorFioreNoSync position11 = new VectorFioreNoSync(x11,y11);
+			
+			Ball ball = new Ball(position11,new VelocityNoSync(0.0),Settings.DIMENSIONOFBALLTOPLAY , Ball.NOPLAYER);
+			ball.setColor(Ball.WHITE);
+			matchHandler.add(ball);
 			
 			sendMessageAll(Protocol.GAMESTARTED);
 			
@@ -187,8 +173,8 @@ public class MatchServer implements Runnable {
 				if(p.getKey().equals(Protocol.LEFTGAME)) {
 					
 					// The game is over
-					player1.setOnGame(false);
-					player2.setOnGame(false);
+					player1.notifyClient();
+					player2.notifyClient();
 					
 				}else if(p.getKey().equals(Protocol.MOVEBALL)) {
 					
@@ -204,6 +190,8 @@ public class MatchServer implements Runnable {
 					
 					System.out.println(message);
 					
+					System.out.println("1");
+					
 					String[] stringa = message.split(";");
 					
 					double xPos = Protocol.parseCoordinates(stringa[0])[0];
@@ -213,11 +201,40 @@ public class MatchServer implements Runnable {
 					double yVel = Protocol.parseCoordinates(stringa[1])[1];
 					
 					
+					xPos+= Settings.DIMENSIONSTANDARDBALL;
+					yPos+= Settings.DIMENSIONSTANDARDBALL;
+			
+					if(i == 2)
+						xPos = Settings.WIDTHFRAME - xPos ;
+					
 					Ball b = matchHandler.tookBall(xPos, yPos);
+					
+					
+					System.out.println(b);
 					
 					if(b == null) {
 						// Error
 						return;
+					}
+				
+					System.out.println(b.getPlayer()+ " "+ i);
+					
+					if(b.getPlayer() == i)
+						System.out.println("OK1");
+					else {
+						System.out.println("NO1");
+					}
+					
+					if(i == 1 && matchHandler.getTurn())
+						System.out.println("OK2");
+					else {
+						System.out.println("NO2");
+					}
+					
+					if(i == 2 && !matchHandler.getTurn())
+						System.out.println("OK3");
+					else {
+						System.out.println("NO3");
 					}
 					
 					if(b.getPlayer() == i && ( i == 1 && matchHandler.getTurn() || i == 2 && !matchHandler.getTurn() ) )
@@ -232,20 +249,20 @@ public class MatchServer implements Runnable {
 						
 						sendMessage(Protocol.MOVEBALL, i);
 						sendMessage(message, i);
-						
+						System.out.println("HERE");
 					}
 				
 					
 				}else if(p.getKey().equals(Protocol.MYUSERNAMEIS)) {
 					
-					player1.setOnGame(false);
-					player2.setOnGame(false);
+					player1.notifyClient();
+					player2.notifyClient();
 					return;
 				
 				}else if(p.getKey().equals(Protocol.TYPEOFLINEUP)) {
 					
-					player1.setOnGame(false);
-					player2.setOnGame(false);
+					player1.notifyClient();
+					player2.notifyClient();
 					return;
 					
 				}

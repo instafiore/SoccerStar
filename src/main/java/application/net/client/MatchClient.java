@@ -23,7 +23,7 @@ public class MatchClient implements Runnable{
 	private Client client = null ;
 	private MatchHandler matchHandler = null ;
 	private BufferedReader in = null ;
-	private Lineup lineup1 = new Lineup(Lineup.LINEUP1);
+	private Lineup lineup1 = new Lineup(Lineup.LINEUP3);
 	private String usernameGuest = null ;
 	
 	public MatchClient(Client client) {
@@ -37,6 +37,7 @@ public class MatchClient implements Runnable{
 		MatchController.getInstance().addMatchHandler(matchHandler);
 	
 		Thread t = new Thread(this);
+		t.setDaemon(false);
 		t.start();
 	}
 
@@ -52,7 +53,7 @@ public class MatchClient implements Runnable{
 		
 		
 		if(!message.equals(Protocol.ITSTHETURNOF)) {
-			//Errore
+			client.notify();
 			return ;
 		}
 	
@@ -65,9 +66,7 @@ public class MatchClient implements Runnable{
 			matchHandler.setTurn(true);
 		else 
 			matchHandler.setTurn(false);
-			
-		client.sendMessage(Protocol.MYUSERNAMEIS);
-		client.sendMessage(client.getUsername());
+
 		
 		client.sendMessage(Protocol.TYPEOFLINEUP);
 		client.sendMessage(""+lineup1.getCurrentLineup());
@@ -78,7 +77,7 @@ public class MatchClient implements Runnable{
 		
 		if(!message.equals(Protocol.USERNAMEGUEST))
 		{
-			// error
+			client.notify();
 			return;
 		}
 		
@@ -93,7 +92,7 @@ public class MatchClient implements Runnable{
 		
 		if(!message.equals(Protocol.TYPEOFLINEUP))
 		{
-			// error
+			client.notify();
 			return;
 		}
 		
@@ -117,18 +116,32 @@ public class MatchClient implements Runnable{
 		lineup2.mirrorLineup();
 		
 		for(Ball b : balls1)
+		{
+			b.setColor(Ball.BLUE);
 			matchHandler.add(b);
+		}
 		
 		for(Ball b : balls2)
+		{
+			b.setColor(Ball.RED);
 			matchHandler.add(b);
+		}
+			
 		
+		double x11 = Settings.WIDTHFRAME * 0.50 - Settings.DIMENSIONOFBALLTOPLAY ;
+		double y11 = Settings.HEIGHTFRAME * 0.50 - Settings.DIMENSIONOFBALLTOPLAY ;
+		VectorFioreNoSync position11 = new VectorFioreNoSync(x11,y11);
+		
+		Ball ball = new Ball(position11,new VelocityNoSync(0.0),Settings.DIMENSIONOFBALLTOPLAY , Ball.NOPLAYER);
+		ball.setColor(Ball.WHITE);
+		matchHandler.add(ball);
 		
 		message = in.readLine();
 		
 		
 		
 		if(!message.equals(Protocol.GAMESTARTED)) {
-			// Error
+			client.notify();
 			return;
 		}
 		
@@ -157,10 +170,15 @@ public class MatchClient implements Runnable{
 				double xVel = Protocol.parseCoordinates(stringa[1])[0] * -1  ;
 				double yVel = Protocol.parseCoordinates(stringa[1])[1] ;
 				
+				xPos+= Settings.DIMENSIONSTANDARDBALL;
+				yPos+= Settings.DIMENSIONSTANDARDBALL;
+				
+				xPos = Settings.WIDTHFRAME - xPos ;
+				
 				Ball b = matchHandler.tookBall(xPos, yPos);
 				
-				if(b.getPlayer() == 1 || matchHandler.getTurn()) {
-					// Error
+				if(b == null || b.getPlayer() == 1 || matchHandler.getTurn()) {
+					client.notify();
 					return;
 				}
 				

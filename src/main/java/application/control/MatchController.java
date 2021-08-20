@@ -52,10 +52,6 @@ public class MatchController implements EventHandler<MouseEvent>{
 
 	public void update() {
 		
-		if(matchHandler.getTurn()) {
-			for(Ball b : matchHandler.getBalls())
-				b.setColor(Ball.RED);
-		}
 		matchHandler.moveBalls(matchView.getField());
 		matchView.draw();
 		
@@ -68,9 +64,16 @@ public class MatchController implements EventHandler<MouseEvent>{
 			initialY = event.getY();
 			
 			ballTook = matchHandler.tookBall(initialX, initialY); 
+			
+			if(matchHandler.getTurn())
+				System.out.println("YOUR TURN");
+			else 
+				System.out.println("NOT YOUR TURN");
+			
+			
 			if( ballTook != null && ballTook.getPlayer() == 1 && ballTook.getColor() != Ball.WHITE && matchHandler.allStopped() && matchHandler.getTurn())
 			{
-				ballTook.setColor(Ball.RED);
+				ballTook.setColor(Ball.TOOK);
 			}
 			else {
 				initialX = null;
