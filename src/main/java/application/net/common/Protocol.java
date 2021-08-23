@@ -43,29 +43,6 @@ public class Protocol {
 	public static final String TYPEOFLINEUP = "Type of lineup" ;
 	
 	
-	public static ArrayList<VectorFioreNoSync> parsePositions(String positions){
-		
-		ArrayList<VectorFioreNoSync> array = new ArrayList<VectorFioreNoSync>();
-		StringTokenizer stringTokenizer = new StringTokenizer(positions, ";");
-		
-		while(stringTokenizer.hasMoreTokens()) {
-			
-			String token = stringTokenizer.nextToken();
-			
-			double x ;
-			double y ;
-			
-			String[] v = token.split("&");
-			
-			x = Integer.parseInt(v[0]);
-			y = Integer.parseInt(v[1]);
-			
-			array.add(new VectorFioreNoSync(x, y));
-		}
-		
-		return array;
-	}
-	
 	
 	public static Double[] parseCoordinates(String coordinates) {
 		

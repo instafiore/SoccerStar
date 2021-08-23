@@ -79,6 +79,7 @@ public class Database {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return false;
 		}
 		
 		try {
@@ -86,6 +87,7 @@ public class Database {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return false;
 		}
 		
 		return true;
@@ -114,23 +116,28 @@ public class Database {
 		return false;
 	}
 	
-	
-	
 	public boolean checkLogin(LoginClient user) {
 		
 		try {
-			check_login_query.setString(1, user.getUsername());
-			check_login_query.setString(2, user.getPassword());
+			search_client_query.setString(1, user.getUsername());
+			ResultSet resultSet = search_client_query.executeQuery();
 			
-			ResultSet resultSet = check_login_query.executeQuery();
+			if(!resultSet.next())
+				return false;
 			
-			if(resultSet.next())
-				return true ;
+			String password_crypted = resultSet.getString("password");
+			
+			System.out.println(user.getPassword());
+			System.out.println(password_crypted);
+			System.out.println(cryptoPassword(user.getPassword()));
+			
+			return BCrypt.checkpw(user.getPassword(), password_crypted) ;
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return false;
 		}
-		return false;
+		
 		
 	}
 	

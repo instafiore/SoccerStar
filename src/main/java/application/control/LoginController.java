@@ -37,8 +37,7 @@ public class LoginController {
     @FXML
     void onClick_sign_in_button_login(ActionEvent event) {
     	
-    	String passwordCrypto = Database.getInstance().cryptoPassword(password_field_login.getText());
-    	String stringa = username_field_login.getText() + Protocol.DELIMITERLOGIN + passwordCrypto ;
+    	String stringa = username_field_login.getText() + Protocol.DELIMITERLOGIN + password_field_login.getText() ;
     	
     	Client.getInstance().sendMessage(Protocol.LOGINREQUEST);
     	Client.getInstance().sendMessage(stringa);
