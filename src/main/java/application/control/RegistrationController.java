@@ -5,6 +5,7 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 import application.SceneHandler;
 import application.net.client.Client;
 import application.net.common.Protocol;
+import application.net.server.Database;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -45,7 +46,8 @@ public class RegistrationController {
     		//TODO
     		return ;
     	}
-    	String passwordCrypto = BCrypt.hashpw(password_field_registration.getText(), BCrypt.gensalt(12));
+    	
+    	String passwordCrypto = Database.getInstance().cryptoPassword(password_field_registration.getText());
     	
     	String stringa = username_field_registration.getText() + Protocol.DELIMITERREGISTRATION + passwordCrypto + Protocol.DELIMITERREGISTRATION + email_field_registration.getText() ;
     	

@@ -11,8 +11,9 @@ import java.net.UnknownHostException;
 import application.SceneHandler;
 import application.Settings;
 import application.net.common.Protocol;
+import javafx.animation.AnimationTimer;
 
-public class Client implements Runnable{
+public class Client extends AnimationTimer{
 
 	private BufferedReader in = null;
 	private PrintWriter out = null;
@@ -26,7 +27,7 @@ public class Client implements Runnable{
 	public static final int IN_GAME = 2 ;
 	public static final int IN_APP = 3 ;
 	
-	
+	private long currentTime = 0 ;
 	//TODO DO USERNAME THING 
 	
 	private int currentState = 1;
@@ -59,12 +60,33 @@ public class Client implements Runnable{
 		return instance ;
 	}
 	
+	@Override
+	public void handle(long now) {
+		
+		if(now - currentTime < Settings.REFRESHCLIENT * 1000000)
+			return;
+	
+		currentTime = now ;
+		
+		try {
+			read();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	public void read() throws IOException {
 		
-		if(in == null)
+		if(in == null || !in.ready())
 			return;
 		
+		this.stop();
+		
+		
 		String message = in.readLine();
+		
+		System.out.println(message);
 		
 		if(message.equals(Protocol.GENERALERROR))
 		{
@@ -80,16 +102,15 @@ public class Client implements Runnable{
 			break;
 			
 		case STEP_LOGIN:
-			
+			readLogin(message);
 			break;
-		
-		case IN_GAME: 
 		
 		default:
 			//ERROR
 			break;
 		}
 		
+		this.start();
 	}
 	
 	public void readRegistation(String message) throws IOException {
@@ -98,7 +119,7 @@ public class Client implements Runnable{
 		if(message.equals(Protocol.REGISTRATIONCOMPLETED))
 		{
 			SceneHandler.getInstance().loadScene("LoginPage", false);
-			
+			setCurrentState(STEP_LOGIN);
 			username = in.readLine();
 		}else {
 			//TODO
@@ -108,6 +129,16 @@ public class Client implements Runnable{
 	}
 	
 	public void readLogin(String message) throws IOException {
+		
+		if(message.equals(Protocol.LOGINCOMPLETED)) {
+			
+			username = in.readLine();
+			setCurrentState(IN_GAME);
+			startMatch();
+			
+		}else {
+			//TODO
+		}
 		
 	}
 	
@@ -125,23 +156,15 @@ public class Client implements Runnable{
 
 			e.printStackTrace();
 		}
-		Thread t = new Thread(this);
-		t.setDaemon(false);
-		t.start();
+		this.start();
 	}
 	
 	public void startMatch() {
 		
+		this.stop();
 		sendMessage(Protocol.NEWGAMEREQUEST);
 		MatchClient match = new MatchClient(this);
-		synchronized (this) {
-			try {
-				wait();
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
+		
 	}
 
 	public void sendMessage(String message) {
@@ -151,25 +174,11 @@ public class Client implements Runnable{
 		
 		out.println(message);
 	}
-	
-	public void run() {
-		
-		while(!Thread.interrupted()) {
-			
-			try {
-				read();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-		}
-	}
-	
+
 
 	public void notifyClient() {
-		synchronized (this) {
-			this.notify();
-		}
+		this.start();
 	}
+
+	
 }

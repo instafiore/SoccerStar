@@ -16,7 +16,11 @@ public class Protocol {
 	
 	
 	// Login
-	public static final String LOGINREQUEST = "New login request";
+	public static final String LOGINREQUEST = "New login request" ;
+	public static final String DELIMITERLOGIN = "-" ;
+	public static final String LOGINCOMPLETED = "Login completed!" ;
+	public static final String LOGINFAILED = "We had a problem with your login , please try again or contact email: " + EMAILASSISTANCE;
+	
 	
 	// Registration
 	public static final String REGISTRATIONREQUEST = "New registration request" ;

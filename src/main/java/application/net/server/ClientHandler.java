@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
+import application.model.game.entity.LoginClient;
 import application.model.game.entity.RegistrationClient;
 import application.net.common.Protocol;
 
@@ -45,12 +46,12 @@ public class ClientHandler implements Runnable{
 		
 		String message = null ;
 		
+		message = read();
+		
 		if(message.equals(Protocol.REGISTRATIONREQUEST)) {
 			
-			try {
-				
-				message = in.readLine();
-				System.out.println(message);
+			
+				message  = read();
 				
 				RegistrationClient client = new RegistrationClient();
 				client.parseRegistrationClient(message);
@@ -65,14 +66,25 @@ public class ClientHandler implements Runnable{
 				else
 					sendMessage(Protocol.REGISTRATIONFAILED);
 				
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		
 			
 		}else if(message.equals(Protocol.LOGINREQUEST)) {
 			
+			message = read();
 			
+			LoginClient client = new LoginClient();
+			client.parseLoginClient(message);
+			
+			username = client.getPassword();
+			
+			if(Database.getInstance().checkLogin(client))
+			{
+				sendMessage(Protocol.LOGINCOMPLETED);
+				System.out.println(Protocol.LOGINCOMPLETED);
+				sendMessage(username);
+			}
+			else
+				sendMessage(Protocol.LOGINFAILED);
 			
 		}else {
 			
@@ -89,16 +101,20 @@ public class ClientHandler implements Runnable{
 			try {
 				
 				message = in.readLine();
-				System.out.println(message);
+				
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			
 			if(message == null)
-				continue;
+				return;
+			
+			System.out.println(message);
 			
 			if(message.equals(Protocol.NEWGAMEREQUEST)) {
+				
+				System.out.println(Protocol.NEWGAMEREQUEST);
 				
 				RequestMatchHandler.getInstace().addPlayer(this);
 				try {
@@ -124,6 +140,12 @@ public class ClientHandler implements Runnable{
 			
 			}
 			
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		
 	}
@@ -143,4 +165,21 @@ public class ClientHandler implements Runnable{
 		out.println(message);
 	}
 	
+	
+	public String read() {
+		
+		String message = null ;
+		try {
+			
+			message = in.readLine();
+			System.out.println(message);
+		
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			
+		}
+		
+		return message;
+	}
 }

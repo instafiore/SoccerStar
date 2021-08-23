@@ -13,4 +13,5 @@ public class Settings {
 	public static final double BORDERVERTICAL =  45.0 ; 
 	public static final String ADDRESS_SERVER = "localhost" ;
 	public static final int MAX_GOAL = 3 ;
+	public static final long REFRESHCLIENT = 1000 ;
 }

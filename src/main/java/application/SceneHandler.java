@@ -12,8 +12,8 @@ import javafx.stage.Stage;
 public class SceneHandler {
 
 	
-	private Scene scene ;
-	private Stage stage ;
+	private Scene scene = null ;
+	private Stage stage = null;
 
 	private HashMap<String, Pane> panes ;
 	
@@ -64,17 +64,21 @@ public class SceneHandler {
 			return;
 		}
 		
-		scene = new Scene(pane, pane.getPrefWidth() , pane.getPrefHeight());
-		
 		stage.hide();
+		stage.setMinWidth(pane.getPrefWidth());
+		stage.setMinHeight(pane.getPrefHeight()+30);
+		stage.setWidth(pane.getPrefWidth());
+		stage.setHeight(pane.getPrefHeight()+30);
+		
+		if(scene == null)
+			scene = new Scene(pane, pane.getPrefWidth() , pane.getPrefHeight());
+		else {
+			scene.setRoot(pane);
+		}
+		
+		
 		stage.setScene(scene);
 		stage.setResizable(resizable);
-		
-		stage.setMinWidth(scene.getWidth());
-		stage.setMinHeight(scene.getHeight()+30);
-		stage.setWidth(scene.getWidth());
-		stage.setHeight(scene.getHeight()+30);
-		
 		stage.show();
 		
 	}

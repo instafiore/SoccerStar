@@ -2,6 +2,8 @@ package application.control;
 
 import application.SceneHandler;
 import application.net.client.Client;
+import application.net.common.Protocol;
+import application.net.server.Database;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -29,12 +31,17 @@ public class LoginController {
 
     @FXML
     void onClick_password_forgot_button(MouseEvent event) {
-
+    	// TODO
     }
 
     @FXML
     void onClick_sign_in_button_login(ActionEvent event) {
-
+    	
+    	String passwordCrypto = Database.getInstance().cryptoPassword(password_field_login.getText());
+    	String stringa = username_field_login.getText() + Protocol.DELIMITERLOGIN + passwordCrypto ;
+    	
+    	Client.getInstance().sendMessage(Protocol.LOGINREQUEST);
+    	Client.getInstance().sendMessage(stringa);
     }
 
     @FXML

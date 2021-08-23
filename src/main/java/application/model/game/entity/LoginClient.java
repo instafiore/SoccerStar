@@ -1,5 +1,9 @@
 package application.model.game.entity;
 
+import java.util.StringTokenizer;
+
+import application.net.common.Protocol;
+
 public class LoginClient {
 
 	private String username ;
@@ -19,4 +23,16 @@ public class LoginClient {
 		return password;
 	}
 	
+	
+	public LoginClient() {
+		// TODO Auto-generated constructor stub
+	}
+	
+	public void parseLoginClient(String stringa) {
+		
+		StringTokenizer stringTokenizer = new StringTokenizer(stringa, Protocol.DELIMITERLOGIN);
+		
+		username = stringTokenizer.nextToken();
+		password = stringTokenizer.nextToken();
+	}
 }
