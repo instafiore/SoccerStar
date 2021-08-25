@@ -48,73 +48,73 @@ public class ClientHandler implements Runnable{
 		
 		message = read();
 		
-		if(message.equals(Protocol.REGISTRATIONREQUEST)) {
+		while(username == null) {
 			
-			
+			if(message.equals(Protocol.REGISTRATIONREQUEST)) {
+				
 				message  = read();
 				
 				RegistrationClient client = new RegistrationClient();
 				client.parseRegistrationClient(message);
 				
-				username = client.getUsername();
-				
 				if(Database.getInstance().insertUser(client))
 				{
 					sendMessage(Protocol.REGISTRATIONCOMPLETED);
+					username = client.getUsername();
 					sendMessage(username);
+
 				}
 				else
+				{
 					sendMessage(Protocol.REGISTRATIONFAILED);
+					username = null ;
+				}
 				
 		
 			
-		}else if(message.equals(Protocol.LOGINREQUEST)) {
-			
-			message = read();
-			
-			LoginClient client = new LoginClient();
-			client.parseLoginClient(message);
-			
-			username = client.getPassword();
-			
-			if(Database.getInstance().checkLogin(client))
-			{
-				sendMessage(Protocol.LOGINCOMPLETED);
-				System.out.println(Protocol.LOGINCOMPLETED);
-				sendMessage(username);
+			}else if(message.equals(Protocol.LOGINREQUEST)) {
+				
+				message = read();
+				
+				LoginClient client = new LoginClient();
+				client.parseLoginClient(message);
+				
+				
+				if(Database.getInstance().checkLogin(client))
+				{
+					sendMessage(Protocol.LOGINCOMPLETED);
+					username = client.getUsername();
+					sendMessage(username);
+					
+				}
+				else
+				{
+					sendMessage(Protocol.LOGINFAILED);
+					username = null ;
+				}
+				
+			}else {
+				
+				// ERROR
+				System.out.println("SENT FROM HERE 1");
+				sendMessage(Protocol.GENERALERROR);
+				username = null ;
+				return;
 			}
-			else
-				sendMessage(Protocol.LOGINFAILED);
-			
-		}else {
-			
-			// ERROR
-			sendMessage(Protocol.GENERALERROR);
-			return;
 		}
+		
+		
 
 		while(!Thread.interrupted()) {
 			
-			System.out.println("CLIENT HANDLER");
+			System.out.println("CLIENT HANDLER IS RUNNING FOR "+username);
 		
+			message = read();
 			
-			try {
-				
-				message = in.readLine();
-				
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			if(message == null)
+			if(message == Protocol.CONNECTION_LOST)
 				return;
 			
-			System.out.println(message);
-			
 			if(message.equals(Protocol.NEWGAMEREQUEST)) {
-				
-				System.out.println(Protocol.NEWGAMEREQUEST);
 				
 				RequestMatchHandler.getInstace().addPlayer(this);
 				try {
@@ -130,11 +130,13 @@ public class ClientHandler implements Runnable{
 				
 			}else if(message.equals(Protocol.REGISTRATIONREQUEST)) {
 				
+				System.out.println("SENT FROM HERE 2");
 				sendMessage(Protocol.GENERALERROR);
 				return;
 			
 			}else if(message.equals(Protocol.LOGINREQUEST)) {
 				
+				System.out.println("SENT FROM HERE 1");
 				sendMessage(Protocol.GENERALERROR);
 				return;
 			
@@ -162,6 +164,13 @@ public class ClientHandler implements Runnable{
 		if(out == null || message == null)
 			return ;
 		
+		System.out.print("SENT : "+message);
+		
+		if(username != null)
+			System.out.println(" to: "+username);
+		else 
+			System.out.println();
+		
 		out.println(message);
 	}
 	
@@ -172,7 +181,20 @@ public class ClientHandler implements Runnable{
 		try {
 			
 			message = in.readLine();
-			System.out.println(message);
+			if(username != null)
+				System.out.print("Message from : "+username + " ");
+			
+			if(message == null)
+			{
+				System.out.println(Protocol.CONNECTION_LOST);
+				if(username != null)
+					System.out.println( Protocol.CONNECTION_LOST + " with: "+ username );
+				else 
+					System.out.println( Protocol.CONNECTION_LOST) ;
+				return Protocol.CONNECTION_LOST;
+			}
+		
+			System.out.println("RECEIVED: " + message);
 		
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

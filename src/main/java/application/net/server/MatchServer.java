@@ -68,6 +68,7 @@ public class MatchServer implements Runnable {
 		
 		try {
 			
+			sendMessageAll(Protocol.PREPARINGMATCH);
 			
 			String message = null ;
 			matchHandler.setTurn( new Random().nextBoolean() );
@@ -89,8 +90,8 @@ public class MatchServer implements Runnable {
 			sendMessage(username1, 1);
 			
 			
-			System.out.println(username1);
-			System.out.println(username2);
+			System.out.println("Player 1: "+username1);
+			System.out.println("Player 2: "+username2);
 			
 			sendMessage(Protocol.USERNAMEGUEST, 2);
 			sendMessage(username2, 2);
@@ -188,9 +189,7 @@ public class MatchServer implements Runnable {
 						message = in2.readLine();
 					}
 					
-					System.out.println(message);
-					
-					System.out.println("1");
+					System.out.println(Protocol.MOVEBALL+ " " +message);
 					
 					String[] stringa = message.split(";");
 					
@@ -210,32 +209,12 @@ public class MatchServer implements Runnable {
 					Ball b = matchHandler.tookBall(xPos, yPos);
 					
 					
-					System.out.println(b);
-					
 					if(b == null) {
 						// Error
 						return;
 					}
 				
-					System.out.println(b.getPlayer()+ " "+ i);
 					
-					if(b.getPlayer() == i)
-						System.out.println("OK1");
-					else {
-						System.out.println("NO1");
-					}
-					
-					if(i == 1 && matchHandler.getTurn())
-						System.out.println("OK2");
-					else {
-						System.out.println("NO2");
-					}
-					
-					if(i == 2 && !matchHandler.getTurn())
-						System.out.println("OK3");
-					else {
-						System.out.println("NO3");
-					}
 					
 					if(b.getPlayer() == i && ( i == 1 && matchHandler.getTurn() || i == 2 && !matchHandler.getTurn() ) )
 					{
@@ -249,7 +228,7 @@ public class MatchServer implements Runnable {
 						
 						sendMessage(Protocol.MOVEBALL, i);
 						sendMessage(message, i);
-						System.out.println("HERE");
+						
 					}
 				
 					
@@ -269,6 +248,13 @@ public class MatchServer implements Runnable {
 			}
 		
 		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

@@ -10,9 +10,14 @@ public class Protocol {
 	
 	// ERRORS
 	public static final String GENERALERROR = "General error , app will reloading...";
+	public static final String INPUT_STREAM_NULL = "Input stream is null";
+	public static final String OUTPUT_STREAM_NULL = "Output stream is null";
+	public static final String RELOADING_APP = "App will be reloaded";
+	public static final String CONNECTION_LOST ="Connection lost";
 	
 	// Email
 	public static final String EMAILASSISTANCE = "fiorentinosalvatore65@gmail.com";
+	
 	
 	
 	// Login
@@ -29,6 +34,7 @@ public class Protocol {
 	public static final String REGISTRATIONFAILED = "We had a problem with your registration , please try again or contact email: " + EMAILASSISTANCE;
 	
 	// Match
+	public static final String PREPARINGMATCH = "Let's prepare the match" ;
 	public static final String NEWGAMEREQUEST = "A new game request" ;
 	public static final String MOVEBALL = "The player moved the ball" ; 
 	public static final String SCORED = "The player scored" ;

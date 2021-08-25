@@ -127,10 +127,6 @@ public class Database {
 			
 			String password_crypted = resultSet.getString("password");
 			
-			System.out.println(user.getPassword());
-			System.out.println(password_crypted);
-			System.out.println(cryptoPassword(user.getPassword()));
-			
 			return BCrypt.checkpw(user.getPassword(), password_crypted) ;
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

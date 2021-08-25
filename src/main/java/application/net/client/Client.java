@@ -8,12 +8,18 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+import org.springframework.core.task.SyncTaskExecutor;
+
 import application.SceneHandler;
 import application.Settings;
+import application.control.MatchSucceedController;
+import application.model.game.entity.Message;
 import application.net.common.Protocol;
 import javafx.animation.AnimationTimer;
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
 
-public class Client extends AnimationTimer{
+public class Client extends Service<Message>{
 
 	private BufferedReader in = null;
 	private PrintWriter out = null;
@@ -27,7 +33,6 @@ public class Client extends AnimationTimer{
 	public static final int IN_GAME = 2 ;
 	public static final int IN_APP = 3 ;
 	
-	private long currentTime = 0 ;
 	//TODO DO USERNAME THING 
 	
 	private int currentState = 1;
@@ -60,86 +65,93 @@ public class Client extends AnimationTimer{
 		return instance ;
 	}
 	
+	
 	@Override
-	public void handle(long now) {
-		
-		if(now - currentTime < Settings.REFRESHCLIENT * 1000000)
-			return;
-	
-		currentTime = now ;
-		
-		try {
-			read();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	protected Task<Message> createTask() {
+		return new Task<Message>() {
+			@Override
+			protected Message call() throws Exception {
+				return read();
+			}
+		};
 	}
+
 	
-	public void read() throws IOException {
+	public Message read() throws IOException {
 		
-		if(in == null || !in.ready())
-			return;
-		
-		this.stop();
-		
+		if(in == null)
+			return new Message(Protocol.INPUT_STREAM_NULL);
 		
 		String message = in.readLine();
 		
-		System.out.println(message);
+		System.out.println("FROM READ OF CLIENT: "+message);
 		
 		if(message.equals(Protocol.GENERALERROR))
 		{
 			// RELOADING APP
-			System.err.println(Protocol.GENERALERROR);
 			in = null ;
+			System.err.println(Protocol.RELOADING_APP);
+			return new Message(Protocol.RELOADING_APP);
+			
 		}
 		
 		switch (currentState) {
 	
 		case STEP_REGISTRATION:
-			readRegistation(message);
-			break;
+			return readRegistation(message);
 			
 		case STEP_LOGIN:
-			readLogin(message);
-			break;
-		
+			return readLogin(message);
+			
+		case IN_GAME:
+			return readIN_GAME(message);
+			
 		default:
-			//ERROR
-			break;
+			return new Message(Protocol.GENERALERROR);
 		}
 		
-		this.start();
 	}
 	
-	public void readRegistation(String message) throws IOException {
+	public Message readIN_GAME(String protocol) {
 		
+		if(protocol.equals(Protocol.PREPARINGMATCH)) 
+			return new Message(Protocol.PREPARINGMATCH);
 		
-		if(message.equals(Protocol.REGISTRATIONCOMPLETED))
+		return new Message(Protocol.GENERALERROR);
+	}
+	
+	public Message readRegistation(String protocol) throws IOException {
+		
+		Message message = null ;
+		
+		if(protocol.equals(Protocol.REGISTRATIONCOMPLETED))
 		{
-			SceneHandler.getInstance().loadScene("LoginPage", false);
 			setCurrentState(STEP_LOGIN);
 			username = in.readLine();
+			message = new Message(protocol, username);
 		}else {
-			//TODO
 			
+			message = new Message();
+			message.setProtocol(Protocol.GENERALERROR);
 		}
-		
+		return message;
 	}
 	
-	public void readLogin(String message) throws IOException {
+	public Message readLogin(String protocol) throws IOException {
 		
-		if(message.equals(Protocol.LOGINCOMPLETED)) {
+		Message message = null ;
+		
+		if(protocol.equals(Protocol.LOGINCOMPLETED)) {
 			
 			username = in.readLine();
-			setCurrentState(IN_GAME);
-			startMatch();
+			message = new Message(protocol, username);
 			
 		}else {
-			//TODO
+			message = new Message();
+			message.setProtocol(Protocol.GENERALERROR);
 		}
 		
+		return message;
 	}
 	
 	
@@ -161,9 +173,13 @@ public class Client extends AnimationTimer{
 	
 	public void startMatch() {
 		
-		this.stop();
+		if(currentState == IN_GAME)
+			return;
+		
+		setCurrentState(IN_GAME);
 		sendMessage(Protocol.NEWGAMEREQUEST);
 		MatchClient match = new MatchClient(this);
+		match.setOnSucceeded(new MatchSucceedController());
 		
 	}
 
@@ -175,10 +191,19 @@ public class Client extends AnimationTimer{
 		out.println(message);
 	}
 
-
-	public void notifyClient() {
-		this.start();
+	@Override
+	public void restart() {
+		if(currentState != IN_GAME)
+		{
+			System.out.println("DONE RESTART");
+			super.restart();
+		}else {
+			System.out.println("DIDN'T RESTART");
+		}
 	}
 
-	
+	public void matchEnded() {
+		currentState = IN_APP;
+		restart();
+	}
 }

@@ -16,8 +16,9 @@ import application.model.game.handler.MatchHandler;
 import application.model.game.physics.VectorFioreNoSync;
 import application.model.game.physics.VelocityNoSync;
 import application.net.common.Protocol;
+import javafx.concurrent.Task;
 
-public class MatchClient implements Runnable{
+public class MatchClient extends Task<Void>{
 
 	
 	private Client client = null ;
@@ -25,6 +26,7 @@ public class MatchClient implements Runnable{
 	private BufferedReader in = null ;
 	private Lineup lineup1 = new Lineup(Lineup.LINEUP3);
 	private String usernameGuest = null ;
+	private boolean match_activated = false ;
 	
 	public MatchClient(Client client) {
 		super();
@@ -37,7 +39,7 @@ public class MatchClient implements Runnable{
 		MatchController.getInstance().addMatchHandler(matchHandler);
 	
 		Thread t = new Thread(this);
-		t.setDaemon(false);
+		t.setDaemon(true);
 		t.start();
 	}
 
@@ -46,19 +48,12 @@ public class MatchClient implements Runnable{
 		
 		String message = null ;
 		
-		System.out.println("MIAO");
-		
 		message = in.readLine();
 		
-		
-		
 		if(!message.equals(Protocol.ITSTHETURNOF)) {
-			client.notify();
 			return ;
 		}
-	
-		
-		
+
 		message = in.readLine();
 		System.out.println(message);
 		
@@ -77,7 +72,6 @@ public class MatchClient implements Runnable{
 		
 		if(!message.equals(Protocol.USERNAMEGUEST))
 		{
-			client.notify();
 			return;
 		}
 		
@@ -92,7 +86,6 @@ public class MatchClient implements Runnable{
 		
 		if(!message.equals(Protocol.TYPEOFLINEUP))
 		{
-			client.notify();
 			return;
 		}
 		
@@ -141,11 +134,11 @@ public class MatchClient implements Runnable{
 		
 		
 		if(!message.equals(Protocol.GAMESTARTED)) {
-			client.notify();
 			return;
 		}
 		
 		showView();
+		match_activated  = true ;
 	}
 	
 	public void read() throws IOException {
@@ -178,7 +171,6 @@ public class MatchClient implements Runnable{
 				Ball b = matchHandler.tookBall(xPos, yPos);
 				
 				if(b == null || b.getPlayer() == 1 || matchHandler.getTurn()) {
-					client.notify();
 					return;
 				}
 				
@@ -193,10 +185,10 @@ public class MatchClient implements Runnable{
 	public void showView() {
 		Updater.getInstance().startUpdater();
 	}
-	
-	
-	
-	public void run() {
+
+
+	@Override
+	protected Void call() throws Exception {
 		
 		try {
 			initalSettings();
@@ -204,7 +196,7 @@ public class MatchClient implements Runnable{
 			e1.printStackTrace();
 		}
 		
-		while(!Thread.interrupted()) {
+		while(match_activated) {
 			
 			try {
 				read();
@@ -213,8 +205,7 @@ public class MatchClient implements Runnable{
 			}
 			
 		}
-		
+		return null;
 	}
-	
 	
 }

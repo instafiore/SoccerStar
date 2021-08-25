@@ -4,6 +4,7 @@ import java.io.File;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
+import application.control.ClientSucceedController;
 import application.control.MatchController;
 import application.model.game.handler.MatchHandler;
 import application.net.client.Client;
@@ -27,6 +28,7 @@ public class MainApplication extends Application{
 		SceneHandler.getInstance().addPane("MatchView", matchView);
 		SceneHandler.getInstance().loadPane("LoginPage");
 		SceneHandler.getInstance().loadPane("RegistrationPage");
+		SceneHandler.getInstance().loadPane("MainPage");
 		SceneHandler.getInstance().loadScene("LoginPage", false);
 
 		
@@ -38,7 +40,7 @@ public class MainApplication extends Application{
 		
 		Client.getInstance().connectToServer();
 		Client.getInstance().setCurrentState(Client.STEP_LOGIN);
-		
+		Client.getInstance().setOnSucceeded(new ClientSucceedController());
 	}
 
 	public static void main(String[] args) {
