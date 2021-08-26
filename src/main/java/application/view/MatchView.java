@@ -36,9 +36,8 @@ public class MatchView extends StackPane{
 		Double borderHorizontal = 10.0 ;
 	    Double borderVertical = 45.0 ;
 	    
-	    
-		fieldImg = new Image(getClass().getResourceAsStream("/application/view/field.png"),Settings.WIDTHFRAME - borderVertical * 2 , Settings.HEIGHTFRAME - borderHorizontal * 2 , false , true);
-		field = new Field(borderHorizontal, borderVertical, Settings.WIDTHFRAME, Settings.HEIGHTFRAME, fieldImg , 15.0);
+		fieldImg = new Image(getClass().getResourceAsStream("/application/view/field.png"),Settings.FIELDWIDTHFRAME - borderVertical * 2 , Settings.FIELDHEIGHTFRAME - borderHorizontal * 2 , false , true);
+		field = new Field(borderHorizontal, borderVertical, Settings.FIELDWIDTHFRAME, Settings.FIELDHEIGHTFRAME, fieldImg , 15.0);
 	
 	}
 	
@@ -104,30 +103,30 @@ public class MatchView extends StackPane{
 			canvas.getGraphicsContext2D().setFill(Color.web("#00b300", 0.7));
 			
 			// Upper border
-			canvas.getGraphicsContext2D().fillRect(0,0,getWidth(),field.getBorderHorizontal());
+			canvas.getGraphicsContext2D().fillRect(0,0,field.getWidth(),field.getBorderHorizontal());
 			
 			// Lower border
-			canvas.getGraphicsContext2D().fillRect(0,getHeight()-field.getBorderHorizontal(),getWidth(),field.getBorderHorizontal());
+			canvas.getGraphicsContext2D().fillRect(0,field.getHeight()-field.getBorderHorizontal(),field.getWidth(),field.getBorderHorizontal());
 			
 			// Left border up
-			canvas.getGraphicsContext2D().fillRect(0,0,field.getBorderVertical(),getHeight()/3);
+			canvas.getGraphicsContext2D().fillRect(0,0,field.getBorderVertical(),field.getHeight()/3);
 			
 			// Left border down
-			canvas.getGraphicsContext2D().fillRect(0,getHeight()*2/3,field.getBorderVertical(),getHeight()/3);
+			canvas.getGraphicsContext2D().fillRect(0,field.getHeight()*2/3,field.getBorderVertical(),field.getHeight()/3);
 			
 			// Right border up
-			canvas.getGraphicsContext2D().fillRect(getWidth()-field.getBorderVertical(),0,field.getBorderVertical(),getHeight()/3);
+			canvas.getGraphicsContext2D().fillRect(field.getWidth()-field.getBorderVertical(),0,field.getBorderVertical(),field.getHeight()/3);
 			
 			// Right border down
-			canvas.getGraphicsContext2D().fillRect(getWidth()-field.getBorderVertical(),getHeight()*2/3,field.getBorderVertical(),getHeight()/3);
+			canvas.getGraphicsContext2D().fillRect(field.getWidth()-field.getBorderVertical(),field.getHeight()*2/3,field.getBorderVertical(),field.getHeight()/3);
 			
 			canvas.getGraphicsContext2D().setFill(Color.web("#005900", 0.7));
 			
 			// Left door
-			canvas.getGraphicsContext2D().fillRect(0,getHeight()/3,field.getBorderVertical(),getHeight()/3);
+			canvas.getGraphicsContext2D().fillRect(0,field.getHeight()/3,field.getBorderVertical(),field.getHeight()/3);
 			
 			// Right door
-			canvas.getGraphicsContext2D().fillRect(getWidth()-field.getBorderVertical(),getHeight()/3,field.getBorderVertical(),getHeight()/3);
+			canvas.getGraphicsContext2D().fillRect(field.getWidth()-field.getBorderVertical(),field.getHeight()/3,field.getBorderVertical(),field.getHeight()/3);
 			
 	}
 	

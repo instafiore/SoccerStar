@@ -93,11 +93,11 @@ public class Lineup {
 		ArrayList<VectorFioreNoSync> positions = new ArrayList<VectorFioreNoSync>(5);
 		
 		
-		positions.add(new VectorFioreNoSync(Settings.WIDTHFRAME * coordinates[0].getX() - balls.get(0).getRadius(), Settings.HEIGHTFRAME * coordinates[0].getY() - balls.get(0).getRadius())) ;
-		positions.add(new VectorFioreNoSync(Settings.WIDTHFRAME * coordinates[1].getX() - balls.get(1).getRadius(), Settings.HEIGHTFRAME * coordinates[1].getY() - balls.get(1).getRadius())) ;
-		positions.add(new VectorFioreNoSync(Settings.WIDTHFRAME * coordinates[2].getX() - balls.get(2).getRadius(), Settings.HEIGHTFRAME * coordinates[2].getY() - balls.get(2).getRadius())) ;
-		positions.add(new VectorFioreNoSync(Settings.WIDTHFRAME * coordinates[3].getX() - balls.get(3).getRadius(), Settings.HEIGHTFRAME * coordinates[3].getY() - balls.get(3).getRadius())) ;
-		positions.add(new VectorFioreNoSync(Settings.WIDTHFRAME * coordinates[4].getX() - balls.get(4).getRadius(), Settings.HEIGHTFRAME * coordinates[4].getY() - balls.get(4).getRadius())) ;
+		positions.add(new VectorFioreNoSync(Settings.FIELDWIDTHFRAME * coordinates[0].getX() - balls.get(0).getRadius(), Settings.FIELDHEIGHTFRAME * coordinates[0].getY() - balls.get(0).getRadius())) ;
+		positions.add(new VectorFioreNoSync(Settings.FIELDWIDTHFRAME * coordinates[1].getX() - balls.get(1).getRadius(), Settings.FIELDHEIGHTFRAME * coordinates[1].getY() - balls.get(1).getRadius())) ;
+		positions.add(new VectorFioreNoSync(Settings.FIELDWIDTHFRAME * coordinates[2].getX() - balls.get(2).getRadius(), Settings.FIELDHEIGHTFRAME * coordinates[2].getY() - balls.get(2).getRadius())) ;
+		positions.add(new VectorFioreNoSync(Settings.FIELDWIDTHFRAME * coordinates[3].getX() - balls.get(3).getRadius(), Settings.FIELDHEIGHTFRAME * coordinates[3].getY() - balls.get(3).getRadius())) ;
+		positions.add(new VectorFioreNoSync(Settings.FIELDWIDTHFRAME * coordinates[4].getX() - balls.get(4).getRadius(), Settings.FIELDHEIGHTFRAME * coordinates[4].getY() - balls.get(4).getRadius())) ;
 		
 		return positions ;
 	}

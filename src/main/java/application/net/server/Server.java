@@ -16,13 +16,13 @@ public class Server implements Runnable{
 	
 		server = new ServerSocket(Settings.PORT);
 		
-		System.out.println("Server has started...");
+		System.out.println("[SERVER] Server has started...");
 		
 		try {
 			Database.getInstance().connectToDatabase();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			System.err.println("Database not connected");
+			System.err.println("[SERVER] Database not connected");
 			e.printStackTrace();
 		}
 		
@@ -38,11 +38,11 @@ public class Server implements Runnable{
 		
 		while(!Thread.interrupted()){
 			
-			System.out.println("Waiting for connections...");
+			System.out.println("[SERVER] Waiting for connections...");
 			try {
 				
 				Socket socket = server.accept();
-				System.out.println("Client connected");
+				System.out.println("[SERVER] New Connection");
 				ClientHandler clientHandler = new ClientHandler(socket);
 				Thread t = new Thread(clientHandler);
 				t.start();

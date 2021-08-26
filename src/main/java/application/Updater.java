@@ -27,8 +27,19 @@ public class Updater extends AnimationTimer{
 	}
 	
 	public void startUpdater() {
-		
 		this.start();
+	}
+	
+	public void stopUpdater() {
+		this.stop();
+	}
+	
+	public boolean isFirstTime() {
+		return firstTime;
+	}
+	
+	public void setFirstTime(boolean firstTime) {
+		this.firstTime = firstTime;
 	}
 	
 	@Override

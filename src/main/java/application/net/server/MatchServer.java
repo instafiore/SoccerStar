@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.security.MessageDigestSpi;
 import java.util.ArrayList;
 import java.util.Random;
 import application.Settings;
@@ -38,6 +39,7 @@ public class MatchServer implements Runnable {
 	private Lineup lineup2 ;
 	
 	private Integer[] typeOfLineup = new Integer[2] ;
+	private boolean matchActive = false ;
 	
 	public MatchServer(ClientHandler player1, ClientHandler player2 , Field field) {
 		super();
@@ -60,7 +62,7 @@ public class MatchServer implements Runnable {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+		matchActive = true ;
 	}
 
 	public void run() {
@@ -70,10 +72,20 @@ public class MatchServer implements Runnable {
 			
 			sendMessageAll(Protocol.PREPARINGMATCH);
 			
+			if(!matchActive)
+			{
+				return;
+			}
+			
 			String message = null ;
 			matchHandler.setTurn( new Random().nextBoolean() );
 			
 			sendMessageAll(Protocol.ITSTHETURNOF);
+			
+			if(!matchActive)
+			{
+				return;
+			}
 			
 			if(matchHandler.getTurn())
 			{
@@ -86,23 +98,34 @@ public class MatchServer implements Runnable {
 				sendMessage(Protocol.ITSNOTYOURTURN, 2);
 			}
 
+			if(!matchActive)
+			{
+				return;
+			}
+			
 			sendMessage(Protocol.USERNAMEGUEST, 1);
 			sendMessage(username1, 1);
 			
-			
-			System.out.println("Player 1: "+username1);
-			System.out.println("Player 2: "+username2);
+			if(!matchActive)
+			{
+				return;
+			}
 			
 			sendMessage(Protocol.USERNAMEGUEST, 2);
 			sendMessage(username2, 2);
 			
+			if(!matchActive)
+			{
+				return;
+			}
 			
 			message = in1.readLine();
 			
-			if(!message.equals(Protocol.TYPEOFLINEUP)) {
+			if(message == null || !message.equals(Protocol.TYPEOFLINEUP)) {
 				System.out.println("ERRORE");
 				player1.notifyClient();
 				player2.notifyClient();
+				sendMessageAll(Protocol.LEFTGAME);
 				return;
 			}
 		
@@ -118,6 +141,7 @@ public class MatchServer implements Runnable {
 				System.out.println("ERRORE");
 				player1.notifyClient();
 				player2.notifyClient();
+				sendMessageAll(Protocol.LEFTGAME);
 				return;
 			}
 	
@@ -152,8 +176,8 @@ public class MatchServer implements Runnable {
 			for(Ball b : balls2)
 				matchHandler.add(b);
 			
-			double x11 = Settings.WIDTHFRAME * 0.50 - Settings.DIMENSIONOFBALLTOPLAY ;
-			double y11 = Settings.HEIGHTFRAME * 0.50 - Settings.DIMENSIONOFBALLTOPLAY ;
+			double x11 = Settings.FIELDWIDTHFRAME * 0.50 - Settings.DIMENSIONOFBALLTOPLAY ;
+			double y11 = Settings.FIELDHEIGHTFRAME * 0.50 - Settings.DIMENSIONOFBALLTOPLAY ;
 			VectorFioreNoSync position11 = new VectorFioreNoSync(x11,y11);
 			
 			Ball ball = new Ball(position11,new VelocityNoSync(0.0),Settings.DIMENSIONOFBALLTOPLAY , Ball.NOPLAYER);
@@ -161,6 +185,9 @@ public class MatchServer implements Runnable {
 			matchHandler.add(ball);
 			
 			sendMessageAll(Protocol.GAMESTARTED);
+			
+			
+			System.out.println("[SERVER] "+Protocol.GAMESTARTED+" -> Player1: "+username1+" , Player2: "+username2);
 			
 			while(!Thread.interrupted()) {
 					
@@ -173,23 +200,39 @@ public class MatchServer implements Runnable {
 				
 				if(p.getKey().equals(Protocol.LEFTGAME)) {
 					
-					// The game is over
+					i = p.getValue();
+					
+					if(i == 1) 
+					{
+						System.out.println("[Player 1] -> "+ Protocol.LEFTGAME);
+						sendMessage(Protocol.LEFTGAME, i);
+					}
+					else 
+					{
+						System.out.println("[Player 2] -> "+ Protocol.LEFTGAME);
+						sendMessage(Protocol.LEFTGAME, i);
+						
+					}
+					
+					// The game is over	
 					player1.notifyClient();
 					player2.notifyClient();
+					return ;
 					
 				}else if(p.getKey().equals(Protocol.MOVEBALL)) {
-					
-					
 					
 					i = p.getValue();
 					
 					if(i == 1) {
 						message = in1.readLine();
+						System.out.print("[Player 1] -> ");
+						
 					}else {
 						message = in2.readLine();
+						System.out.print("[Player 2] -> ");
 					}
 					
-					System.out.println(Protocol.MOVEBALL+ " " +message);
+					System.out.println(Protocol.MOVEBALL+ " -> " +message);
 					
 					String[] stringa = message.split(";");
 					
@@ -204,17 +247,14 @@ public class MatchServer implements Runnable {
 					yPos+= Settings.DIMENSIONSTANDARDBALL;
 			
 					if(i == 2)
-						xPos = Settings.WIDTHFRAME - xPos ;
+						xPos = Settings.FIELDWIDTHFRAME - xPos ;
 					
 					Ball b = matchHandler.tookBall(xPos, yPos);
-					
 					
 					if(b == null) {
 						// Error
 						return;
 					}
-				
-					
 					
 					if(b.getPlayer() == i && ( i == 1 && matchHandler.getTurn() || i == 2 && !matchHandler.getTurn() ) )
 					{
@@ -230,7 +270,6 @@ public class MatchServer implements Runnable {
 						sendMessage(message, i);
 						
 					}
-				
 					
 				}else if(p.getKey().equals(Protocol.MYUSERNAMEIS)) {
 					
@@ -283,70 +322,37 @@ public class MatchServer implements Runnable {
 	private void sendMessage(String message, int sender)
 	{
 		if(sender == 1 && out2 != null) 
+		{
+			if(username1 != null && username2 != null)
+				System.out.println("[SERVER] Message from :"+username1+" to : "+username2+" , Message: "+message);
+			else
+				System.out.println("[SERVER] Message from : player1 to : player2 , Message: "+message);
 			out2.println(message);
+		}
 		else if(out1 != null)
+		{
+			if(username1 != null && username2 != null)
+				System.out.println("[SERVER] Message from :"+username2+" to : "+username1+" , Message: "+message);
+			else
+				System.out.println("[SERVER] Message from : player2 to : player1 , Message: "+message);
 			out1.println(message);
+		}
 
 	}
 	
 	private void sendMessageAll(String message) {
 		
-		if(out1 != null)
+		if(out1 == null && out2 == null )
+			matchActive = false ;
+		
+		if(out1 != null && out2 != null )
+			System.out.println("[SERVER] Message from server for "+username1+" and "+username2+" , message: "+message);
+		else
+			System.out.println("[SERVER] Message from server for player1 and player2 , message: "+message);
+	
 			out1.println(message);
-		if(out2 != null)
 			out2.println(message);
-	
+		
 	}
-	
-	
-//	else if(p.getKey().equals(Protocol.POSITIONSOFBALLS)) {
-//		
-//		if(ballAcquired == 2 )
-//		{
-//			// Error
-//			return;
-//		}
-//		
-//		++ballAcquired;
-//		
-//		i = p.getValue();
-//		
-//		
-//		if(i == 1) 
-//		{
-//			if(!firstTypeOfLineUp1)
-//			{
-//				// Error
-//				return;
-//			}
-//			mess = in1.readLine();
-//		}
-//		else {
-//			
-//			if(!firstTypeOfLineUp2)
-//			{
-//				// Error
-//				return;
-//			}
-//			mess = in2.readLine();
-//		}	
-//		
-//		
-//		for(VectorFioreNoSync pos : Protocol.parsePositions(mess)) 
-//			matchHandler.add(new Ball(pos, new VelocityNoSync(0.0), Settings.DIMENSIONSTANDARDBALL, i));
-//		
-//		
-//		sendMessage(Protocol.POSITIONSOFBALLS, i);
-//		sendMessage(mess, i);
-//		
-//	}
-	
-	
-	
-	
-	
-	
-	
-	
 
 }

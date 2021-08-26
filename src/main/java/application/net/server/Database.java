@@ -42,7 +42,7 @@ public class Database {
 		String url = "jdbc:sqlite:DB_SERVER_SOCCER_STAR.db";
 		connection = DriverManager.getConnection(url);
 		if(connection != null  && !connection.isClosed())
-			System.out.println("Database connected!");
+			System.out.println("[SERVER] Database connected!");
 		
 		initializeQuery();
 	}

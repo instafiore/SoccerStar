@@ -13,7 +13,7 @@ public class RequestMatchHandler {
 
 	private ExecutorService executorService = Executors.newCachedThreadPool();
 	private LinkedList<ClientHandler> players ;
-	private Field field = new Field(Settings.BORDERHORIZONTAL,Settings.BORDERVERTICAL , Settings.WIDTHFRAME, Settings.HEIGHTFRAME,  15.0);
+	private Field field = new Field(Settings.BORDERHORIZONTAL,Settings.BORDERVERTICAL , Settings.FIELDWIDTHFRAME, Settings.FIELDHEIGHTFRAME,  15.0);
 	
 	
 	public static RequestMatchHandler instance = null ;
@@ -56,7 +56,7 @@ public class RequestMatchHandler {
 		
 		players.poll();
 		
-		System.out.println("SENT GAME BY SERVER");
+		System.out.println("[SERVER] SENT GAME BY SERVER");
 		MatchServer match = new MatchServer(player1, player2,field);
 		executorService.submit(match);
 

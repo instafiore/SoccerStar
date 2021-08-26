@@ -65,12 +65,6 @@ public class MatchController implements EventHandler<MouseEvent>{
 			
 			ballTook = matchHandler.tookBall(initialX, initialY); 
 			
-			if(matchHandler.getTurn())
-				System.out.println("YOUR TURN");
-			else 
-				System.out.println("NOT YOUR TURN");
-			
-			
 			if( ballTook != null && ballTook.getPlayer() == 1 && ballTook.getColor() != Ball.WHITE && matchHandler.allStopped() && matchHandler.getTurn())
 			{
 				ballTook.setColor(Ball.TOOK);
@@ -78,6 +72,7 @@ public class MatchController implements EventHandler<MouseEvent>{
 			else {
 				initialX = null;
 				initialY = null;
+				System.out.println("[CLIENT] IS NOT YOUR TURN");
 			}
 		}
 		else if(event.getEventType() == MouseEvent.MOUSE_DRAGGED) {

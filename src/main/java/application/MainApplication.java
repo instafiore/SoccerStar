@@ -10,7 +10,10 @@ import application.model.game.handler.MatchHandler;
 import application.net.client.Client;
 import application.view.MatchView;
 import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 
@@ -19,13 +22,24 @@ public class MainApplication extends Application{
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		
-		MatchView matchView = new MatchView();
-		matchView.setPrefWidth(Settings.WIDTHFRAME);
-		matchView.setPrefHeight(Settings.HEIGHTFRAME);
-			
-		SceneHandler.getInstance().initStage(primaryStage);
+		BorderPane mainMatchView = new BorderPane();
 		
-		SceneHandler.getInstance().addPane("MatchView", matchView);
+		mainMatchView.setPrefWidth(Settings.MATCHWIDTHFRAME);
+		mainMatchView.setPrefHeight(Settings.MATCHHEIGHTFRAME);
+		
+		MatchView matchView = new MatchView();
+		matchView.setPrefWidth(Settings.FIELDWIDTHFRAME);
+		matchView.setPrefHeight(Settings.FIELDHEIGHTFRAME);
+			
+		FXMLLoader fxmlLoader = new FXMLLoader(this.getClass().getResource(File.separator+"application"+File.separator+"view"+File.separator+"MenuMatchPane.fxml"));
+		
+		Pane menuMatchPane = (Pane) fxmlLoader.load(); 
+		
+		mainMatchView.setTop(menuMatchPane);
+		mainMatchView.setCenter(matchView);
+		
+		SceneHandler.getInstance().initStage(primaryStage);
+		SceneHandler.getInstance().addPane("MatchView", mainMatchView);
 		SceneHandler.getInstance().loadPane("LoginPage");
 		SceneHandler.getInstance().loadPane("RegistrationPage");
 		SceneHandler.getInstance().loadPane("MainPage");

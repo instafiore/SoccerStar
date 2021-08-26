@@ -24,7 +24,7 @@ public class MatchClient extends Task<Void>{
 	private Client client = null ;
 	private MatchHandler matchHandler = null ;
 	private BufferedReader in = null ;
-	private Lineup lineup1 = new Lineup(Lineup.LINEUP3);
+	private Lineup lineup1 = new Lineup(Lineup.LINEUP1);
 	private String usernameGuest = null ;
 	private boolean match_activated = false ;
 	
@@ -55,7 +55,8 @@ public class MatchClient extends Task<Void>{
 		}
 
 		message = in.readLine();
-		System.out.println(message);
+		
+		System.out.println("[CLIENT] Setting message: "+Protocol.ITSTHETURNOF+" -> "+message);
 		
 		if(message.equals(Protocol.ITSYOURTURN))
 			matchHandler.setTurn(true);
@@ -67,7 +68,6 @@ public class MatchClient extends Task<Void>{
 		client.sendMessage(""+lineup1.getCurrentLineup());
 		
 		
-		
 		message = in.readLine();
 		
 		if(!message.equals(Protocol.USERNAMEGUEST))
@@ -76,20 +76,22 @@ public class MatchClient extends Task<Void>{
 		}
 		
 		usernameGuest = in.readLine();
-		
-		
+						
+		System.out.println("[CLIENT] Setting message: "+Protocol.USERNAMEGUEST+" -> "+usernameGuest);
 		
 		message = in.readLine();
-		
-		System.out.println(message);
-		
+
 		
 		if(!message.equals(Protocol.TYPEOFLINEUP))
 		{
 			return;
 		}
 		
-		int typeOfGuestLineUp = Integer.parseInt(in.readLine());
+		message = in.readLine();
+		
+		System.out.println("[CLIENT] Setting message: "+Protocol.TYPEOFLINEUP+" -> "+message);
+		
+		int typeOfGuestLineUp = Integer.parseInt(message);
 		
 		ArrayList<Ball> balls1 = new ArrayList<Ball>();
 		
@@ -121,8 +123,8 @@ public class MatchClient extends Task<Void>{
 		}
 			
 		
-		double x11 = Settings.WIDTHFRAME * 0.50 - Settings.DIMENSIONOFBALLTOPLAY ;
-		double y11 = Settings.HEIGHTFRAME * 0.50 - Settings.DIMENSIONOFBALLTOPLAY ;
+		double x11 = Settings.FIELDWIDTHFRAME * 0.50 - Settings.DIMENSIONOFBALLTOPLAY ;
+		double y11 = Settings.FIELDHEIGHTFRAME * 0.50 - Settings.DIMENSIONOFBALLTOPLAY ;
 		VectorFioreNoSync position11 = new VectorFioreNoSync(x11,y11);
 		
 		Ball ball = new Ball(position11,new VelocityNoSync(0.0),Settings.DIMENSIONOFBALLTOPLAY , Ball.NOPLAYER);
@@ -131,11 +133,11 @@ public class MatchClient extends Task<Void>{
 		
 		message = in.readLine();
 		
-		
-		
 		if(!message.equals(Protocol.GAMESTARTED)) {
 			return;
 		}
+		
+		System.out.println("[CLIENT] Setting message: "+Protocol.GAMESTARTED);
 		
 		showView();
 		match_activated  = true ;
@@ -149,11 +151,13 @@ public class MatchClient extends Task<Void>{
 			
 			message = in.readLine();
 			
-			System.out.println(message);
+			System.out.print("[CLIENT] Match message: "+message);
 			
 			if(message.equals(Protocol.MOVEBALL)) {
 				
 				message = in.readLine();
+				
+				System.out.println(usernameGuest+" -> "+message);
 				
 				String[] stringa = message.split(";");
 				
@@ -166,7 +170,7 @@ public class MatchClient extends Task<Void>{
 				xPos+= Settings.DIMENSIONSTANDARDBALL;
 				yPos+= Settings.DIMENSIONSTANDARDBALL;
 				
-				xPos = Settings.WIDTHFRAME - xPos ;
+				xPos = Settings.FIELDWIDTHFRAME - xPos ;
 				
 				Ball b = matchHandler.tookBall(xPos, yPos);
 				
@@ -177,6 +181,14 @@ public class MatchClient extends Task<Void>{
 				b.setVelocity(new VelocityNoSync(xVel, yVel));
 				
 				matchHandler.setTurn(!matchHandler.getTurn());
+			}
+			else if(message.equals(Protocol.LEFTGAME)) {
+				
+				setMatch_activated(false);
+				
+			}
+			else {
+				System.out.println();
 			}
 		}
 		
@@ -208,4 +220,12 @@ public class MatchClient extends Task<Void>{
 		return null;
 	}
 	
+	
+	public boolean isMatch_activated() {
+		return match_activated;
+	}
+	
+	public void setMatch_activated(boolean match_activated) {
+		this.match_activated = match_activated;
+	}
 }

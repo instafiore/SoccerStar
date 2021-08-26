@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
+import application.Settings;
 import application.model.game.entity.LoginClient;
 import application.model.game.entity.RegistrationClient;
 import application.net.common.Protocol;
@@ -96,7 +97,6 @@ public class ClientHandler implements Runnable{
 			}else {
 				
 				// ERROR
-				System.out.println("SENT FROM HERE 1");
 				sendMessage(Protocol.GENERALERROR);
 				username = null ;
 				return;
@@ -107,7 +107,7 @@ public class ClientHandler implements Runnable{
 
 		while(!Thread.interrupted()) {
 			
-			System.out.println("CLIENT HANDLER IS RUNNING FOR "+username);
+			System.out.println("[SERVER] CLIENT HANDLER IS RUNNING FOR "+username);
 		
 			message = read();
 			
@@ -130,20 +130,18 @@ public class ClientHandler implements Runnable{
 				
 			}else if(message.equals(Protocol.REGISTRATIONREQUEST)) {
 				
-				System.out.println("SENT FROM HERE 2");
 				sendMessage(Protocol.GENERALERROR);
 				return;
 			
 			}else if(message.equals(Protocol.LOGINREQUEST)) {
 				
-				System.out.println("SENT FROM HERE 1");
 				sendMessage(Protocol.GENERALERROR);
 				return;
 			
 			}
 			
 			try {
-				Thread.sleep(500);
+				Thread.sleep(Settings.REFRESHSERVER);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -164,7 +162,7 @@ public class ClientHandler implements Runnable{
 		if(out == null || message == null)
 			return ;
 		
-		System.out.print("SENT : "+message);
+		System.out.print("[SERVER] SENT : "+message);
 		
 		if(username != null)
 			System.out.println(" to: "+username);
@@ -181,20 +179,21 @@ public class ClientHandler implements Runnable{
 		try {
 			
 			message = in.readLine();
-			if(username != null)
-				System.out.print("Message from : "+username + " ");
 			
 			if(message == null)
 			{
-				System.out.println(Protocol.CONNECTION_LOST);
 				if(username != null)
 					System.out.println( Protocol.CONNECTION_LOST + " with: "+ username );
 				else 
 					System.out.println( Protocol.CONNECTION_LOST) ;
+				
 				return Protocol.CONNECTION_LOST;
 			}
-		
-			System.out.println("RECEIVED: " + message);
+			
+			if(username != null)
+				System.out.print("[SERVER] Message from : "+username + " -> receive: " + message);
+			else 	
+				System.out.println("[SERVER] Unknown sender -> receive: " + message);
 		
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

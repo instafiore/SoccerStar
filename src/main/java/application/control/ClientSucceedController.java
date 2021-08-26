@@ -13,7 +13,7 @@ public class ClientSucceedController implements EventHandler<WorkerStateEvent>{
 		
 		Message message = (Message) event.getSource().getValue();
 		
-		System.out.println("CLIENTSUCCEED:  "+message);
+		System.out.println("[CLIENTSUCCEED] "+message);
 		
 		if(message.getProtocol().equals(Protocol.REGISTRATIONCOMPLETED)) {
 			

@@ -36,6 +36,7 @@ public class Client extends Service<Message>{
 	//TODO DO USERNAME THING 
 	
 	private int currentState = 1;
+	private MatchClient currentMatch = null ;
 	
 	private Client() {}
 	
@@ -57,6 +58,13 @@ public class Client extends Service<Message>{
 	
 	public String getUsername() {
 		return username;
+	}
+	
+	public MatchClient getCurrentMatch() {
+		return currentMatch;
+	}
+	public void setCurrentMatch(MatchClient currentMatch) {
+		this.currentMatch = currentMatch;
 	}
 	
 	public static Client getInstance() {
@@ -84,14 +92,14 @@ public class Client extends Service<Message>{
 		
 		String message = in.readLine();
 		
-		System.out.println("FROM READ OF CLIENT: "+message);
+		System.out.println("[CLIENT] RECEIVE CLIENT : "+message);
 		
 		if(message.equals(Protocol.GENERALERROR))
 		{
 			// RELOADING APP
 			in = null ;
-			System.err.println(Protocol.RELOADING_APP);
-			return new Message(Protocol.RELOADING_APP);
+			System.err.println("[CLIENT] "+Protocol.RELOADING_APP);
+			return new Message("[CLIENT] "+Protocol.RELOADING_APP);
 			
 		}
 		
@@ -179,6 +187,7 @@ public class Client extends Service<Message>{
 		setCurrentState(IN_GAME);
 		sendMessage(Protocol.NEWGAMEREQUEST);
 		MatchClient match = new MatchClient(this);
+		setCurrentMatch(match);
 		match.setOnSucceeded(new MatchSucceedController());
 		
 	}
@@ -195,10 +204,10 @@ public class Client extends Service<Message>{
 	public void restart() {
 		if(currentState != IN_GAME)
 		{
-			System.out.println("DONE RESTART");
+			System.out.println("[CLIENT] DONE RESTART");
 			super.restart();
 		}else {
-			System.out.println("DIDN'T RESTART");
+			System.out.println("[CLIENT] DIDN'T RESTART");
 		}
 	}
 
