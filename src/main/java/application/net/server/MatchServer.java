@@ -9,6 +9,9 @@ import java.net.Socket;
 import java.security.MessageDigestSpi;
 import java.util.ArrayList;
 import java.util.Random;
+
+import com.sun.prism.paint.Stop;
+
 import application.Settings;
 import application.model.game.entity.Ball;
 import application.model.game.entity.Field;
@@ -38,6 +41,11 @@ public class MatchServer implements Runnable {
 	private Lineup lineup1 ;
 	private Lineup lineup2 ;
 	
+	private static final String DISCONNECTEDBOTH = "Both are disconneted" ;
+	private static final String DISCONNECTEDPLAYER1 = "Player1 is disconnected" ;
+	private static final String DISCONNECTEDPLAYER2 = "Player2 is disconnected" ;
+	private static final String NOONEISDISCONNETED = "No one is disconnected" ;
+	
 	private Integer[] typeOfLineup = new Integer[2] ;
 	private boolean matchActive = false ;
 	
@@ -65,28 +73,21 @@ public class MatchServer implements Runnable {
 		matchActive = true ;
 	}
 
+	
 	public void run() {
 		
 		
 		try {
-			
+
 			sendMessageAll(Protocol.PREPARINGMATCH);
 			
-			if(!matchActive)
-			{
-				return;
-			}
-			
 			String message = null ;
+			
 			matchHandler.setTurn( new Random().nextBoolean() );
+	
 			
 			sendMessageAll(Protocol.ITSTHETURNOF);
-			
-			if(!matchActive)
-			{
-				return;
-			}
-			
+	
 			if(matchHandler.getTurn())
 			{
 				sendMessage(Protocol.ITSYOURTURN, 2);
@@ -97,69 +98,109 @@ public class MatchServer implements Runnable {
 				sendMessage(Protocol.ITSYOURTURN, 1);
 				sendMessage(Protocol.ITSNOTYOURTURN, 2);
 			}
-
-			if(!matchActive)
-			{
-				return;
-			}
+			
 			
 			sendMessage(Protocol.USERNAMEGUEST, 1);
 			sendMessage(username1, 1);
 			
-			if(!matchActive)
-			{
-				return;
-			}
 			
 			sendMessage(Protocol.USERNAMEGUEST, 2);
 			sendMessage(username2, 2);
 			
-			if(!matchActive)
+			
+			message = read1(); 
+			if(message == null)
 			{
-				return;
+				sendMessage(Protocol.CONNECTION_LOST, 1);
+				notifyClients(DISCONNECTEDPLAYER1);
+				return ;
+			
 			}
 			
-			message = in1.readLine();
-			
-			if(message == null || !message.equals(Protocol.TYPEOFLINEUP)) {
-				System.out.println("ERRORE");
-				player1.notifyClient();
-				player2.notifyClient();
-				sendMessageAll(Protocol.LEFTGAME);
+			if(!message.equals(Protocol.TYPEOFLINEUP)) {
+				
+				sendMessage(Protocol.CONNECTION_LOST, 1);
+				sendMessage(Protocol.RELOADING_APP, 2);
+				notifyClients(DISCONNECTEDPLAYER1);
 				return;
 			}
 		
-			message = in1.readLine();
+			message = read1();
+			if(message == null)
+			{
+				sendMessage(Protocol.CONNECTION_LOST, 1);
+				sendMessage(Protocol.RELOADING_APP, 2);
+				notifyClients(DISCONNECTEDPLAYER1);
+				return ;
+			}
 			
-			typeOfLineup[0] = Integer.parseInt(message);
+			try {
+				typeOfLineup[0] = Integer.parseInt(message);
+			} catch (Exception e) {
+				
+				System.out.println("[MATCHSERVER] Type of lineup1 is not a number ");
+			
+				sendMessage(Protocol.CONNECTION_LOST, 1);
+				sendMessage(Protocol.RELOADING_APP, 2);
+				notifyClients(DISCONNECTEDPLAYER1);
+				return ;
+			}
+			
 			sendMessage(Protocol.TYPEOFLINEUP, 1);
 			sendMessage(""+typeOfLineup[0], 1);
 			
-			message = in2.readLine();
+			message = read2();
+			
+			if(message == null)
+			{
+				sendMessage(Protocol.CONNECTION_LOST, 2);
+				sendMessage(Protocol.RELOADING_APP, 1);
+				notifyClients(DISCONNECTEDPLAYER2);
+				return ;
+			
+			}
 			
 			if(!message.equals(Protocol.TYPEOFLINEUP)) {
-				System.out.println("ERRORE");
-				player1.notifyClient();
-				player2.notifyClient();
-				sendMessageAll(Protocol.LEFTGAME);
+				sendMessage(Protocol.CONNECTION_LOST, 2);
+				sendMessage(Protocol.RELOADING_APP, 1);
+				notifyClients(DISCONNECTEDPLAYER2);
 				return;
 			}
 	
-			message = in2.readLine();
-			typeOfLineup[1] = Integer.parseInt(message);
+			message = read2();
+			
+			if(message == null)
+			{
+				sendMessage(Protocol.CONNECTION_LOST, 2);
+				sendMessage(Protocol.RELOADING_APP, 1);
+				notifyClients(DISCONNECTEDPLAYER2);
+				return ;
+			
+			}
+			
+			try {
+				typeOfLineup[1] = Integer.parseInt(message);
+			} catch (Exception e) {
+				
+				System.out.println("[MATCHSERVER] Type of lineup2 is not a number ");
+				
+				sendMessage(Protocol.CONNECTION_LOST, 2);
+				sendMessage(Protocol.RELOADING_APP, 1);
+				notifyClients(DISCONNECTEDPLAYER2);
+				return ;
+
+			}
+			
+			
 			sendMessage(Protocol.TYPEOFLINEUP, 2);
 			sendMessage(""+typeOfLineup[1], 2);
-			
 			
 			
 			ArrayList<Ball> balls1 = new ArrayList<Ball>();
 			for(int j = 0 ; j < 5 ; ++j)
 				balls1.add(new Ball(new VectorFioreNoSync(0.0), new VelocityNoSync(0.0), Settings.DIMENSIONSTANDARDBALL, 1));
 			
-			
 			lineup1 = new Lineup(balls1, typeOfLineup[0]);
-			
-
 			
 			ArrayList<Ball> balls2 = new ArrayList<Ball>();
 			for(int j = 0 ; j < 5 ; ++j)
@@ -187,9 +228,9 @@ public class MatchServer implements Runnable {
 			sendMessageAll(Protocol.GAMESTARTED);
 			
 			
-			System.out.println("[SERVER] "+Protocol.GAMESTARTED+" -> Player1: "+username1+" , Player2: "+username2);
+			System.out.println("[MATCHSERVER] "+Protocol.GAMESTARTED+" -> Player1: "+username1+" , Player2: "+username2);
 			
-			while(!Thread.interrupted()) {
+			while(whoIsDisconnected().equals(NOONEISDISCONNETED)) {
 					
 				int i ; 
 				
@@ -198,25 +239,43 @@ public class MatchServer implements Runnable {
 				if(p == null)
 					continue;
 				
+				if(p.getKey() == null) {
+					
+					i = p.getValue();
+					
+					if(i == 1) 
+					{
+						System.out.println("[Player 1] -> "+ Protocol.CONNECTION_LOST);
+						sendMessage(Protocol.CONNECTION_LOST, i);
+						notifyClients(NOONEISDISCONNETED);
+					}
+					else 
+					{
+						System.out.println("[Player 2] -> "+ Protocol.CONNECTION_LOST);
+						sendMessage(Protocol.CONNECTION_LOST, i);
+						notifyClients(NOONEISDISCONNETED);
+					}
+					
+				}
 				if(p.getKey().equals(Protocol.LEFTGAME)) {
 					
 					i = p.getValue();
 					
 					if(i == 1) 
 					{
-						System.out.println("[Player 1] -> "+ Protocol.LEFTGAME);
-						sendMessage(Protocol.LEFTGAME, i);
+						System.out.println("[Player 1] -> "+ Protocol.CONNECTION_LOST);
+						sendMessage(Protocol.CONNECTION_LOST, i);
+						notifyClients(NOONEISDISCONNETED);
 					}
 					else 
 					{
-						System.out.println("[Player 2] -> "+ Protocol.LEFTGAME);
-						sendMessage(Protocol.LEFTGAME, i);
-						
+						System.out.println("[Player 2] -> "+ Protocol.CONNECTION_LOST);
+						sendMessage(Protocol.CONNECTION_LOST, i);
+						notifyClients(NOONEISDISCONNETED);
 					}
 					
 					// The game is over	
-					player1.notifyClient();
-					player2.notifyClient();
+
 					return ;
 					
 				}else if(p.getKey().equals(Protocol.MOVEBALL)) {
@@ -224,11 +283,27 @@ public class MatchServer implements Runnable {
 					i = p.getValue();
 					
 					if(i == 1) {
-						message = in1.readLine();
+						message = read1();
+						if(message == null)
+						{
+							sendMessage(Protocol.CONNECTION_LOST, 1);
+							sendMessage(Protocol.RELOADING_APP, 2);
+							notifyClients(DISCONNECTEDPLAYER1);
+							return ;
+						
+						}
 						System.out.print("[Player 1] -> ");
 						
 					}else {
-						message = in2.readLine();
+						message = read2();
+						if(message == null)
+						{
+							sendMessage(Protocol.CONNECTION_LOST, 2);
+							sendMessage(Protocol.RELOADING_APP, 1);
+							notifyClients(DISCONNECTEDPLAYER2);
+							return ;
+						
+						}
 						System.out.print("[Player 2] -> ");
 					}
 					
@@ -273,29 +348,61 @@ public class MatchServer implements Runnable {
 					
 				}else if(p.getKey().equals(Protocol.MYUSERNAMEIS)) {
 					
-					player1.notifyClient();
-					player2.notifyClient();
-					return;
+					
+					i = p.getValue();
+					
+					if(i == 1) {
+						
+						sendMessage(Protocol.CONNECTION_LOST, 1);
+						sendMessage(Protocol.RELOADING_APP, 2);
+						notifyClients(DISCONNECTEDPLAYER1);
+						return ;
+						
+					}else {
+						sendMessage(Protocol.CONNECTION_LOST, 2);
+						sendMessage(Protocol.RELOADING_APP, 1);
+						notifyClients(DISCONNECTEDPLAYER2);
+						return ;
+					}
+					
 				
 				}else if(p.getKey().equals(Protocol.TYPEOFLINEUP)) {
 					
-					player1.notifyClient();
-					player2.notifyClient();
-					return;
+					i = p.getValue();
+					
+					if(i == 1) {
+						
+						sendMessage(Protocol.CONNECTION_LOST, 1);
+						sendMessage(Protocol.RELOADING_APP, 2);
+						notifyClients(DISCONNECTEDPLAYER1);
+						return ;
+						
+					}else {
+						sendMessage(Protocol.CONNECTION_LOST, 2);
+						sendMessage(Protocol.RELOADING_APP, 1);
+						notifyClients(DISCONNECTEDPLAYER2);
+						return ;
+					}
 					
 				}
+				
+				try {
+					Thread.sleep(Settings.REFRESHSERVER);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
-		
+			
+			sendMessageAll(Protocol.GAMEOVER);
+			System.out.println("[MATCHSERVER] "+Protocol.GAMEOVER);
+			notifyClients(NOONEISDISCONNETED);
+					
 		} catch (IOException e) {
 			e.printStackTrace();
-		}
+		} 
 		
-		try {
-			Thread.sleep(500);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
 	}
 	
 	private Pair<String, Integer> getAction() throws IOException{
@@ -307,10 +414,15 @@ public class MatchServer implements Runnable {
 			
 			mess = in1.readLine();
 			i = 1 ;
+			if(mess == null)
+				return new Pair<String, Integer>(null, i);
 			return new Pair<String, Integer>(mess, i);
+		
 		}else if(in2.ready()) {
 			mess = in2.readLine();
 			i = 2 ;
+			if(mess == null)
+				return new Pair<String, Integer>(null, i);
 			return new Pair<String, Integer>(mess, i);
 		}
 		
@@ -321,20 +433,22 @@ public class MatchServer implements Runnable {
 	
 	private void sendMessage(String message, int sender)
 	{
-		if(sender == 1 && out2 != null) 
+		String disconnected = whoIsDisconnected() ;
+		
+		if(sender == 1 && out2 != null && !disconnected.equals(DISCONNECTEDPLAYER2)) 
 		{
 			if(username1 != null && username2 != null)
-				System.out.println("[SERVER] Message from :"+username1+" to : "+username2+" , Message: "+message);
+				System.out.println("[MATCHSERVER] Message from :"+username1+" to : "+username2+" , Message: "+message);
 			else
-				System.out.println("[SERVER] Message from : player1 to : player2 , Message: "+message);
+				System.out.println("[MATCHSERVER] Message from : player1 to : player2 , Message: "+message);
 			out2.println(message);
 		}
-		else if(out1 != null)
+		else if(out1 != null && !disconnected.equals(DISCONNECTEDPLAYER1))
 		{
-			if(username1 != null && username2 != null)
-				System.out.println("[SERVER] Message from :"+username2+" to : "+username1+" , Message: "+message);
+			if(username1 != null && username2 != null && !disconnected.equals(DISCONNECTEDPLAYER1))
+				System.out.println("[MATCHSERVER] Message from :"+username2+" to : "+username1+" , Message: "+message);
 			else
-				System.out.println("[SERVER] Message from : player2 to : player1 , Message: "+message);
+				System.out.println("[MATCHSERVER] Message from : player2 to : player1 , Message: "+message);
 			out1.println(message);
 		}
 
@@ -342,17 +456,221 @@ public class MatchServer implements Runnable {
 	
 	private void sendMessageAll(String message) {
 		
-		if(out1 == null && out2 == null )
-			matchActive = false ;
+		String disconnected = whoIsDisconnected() ;
 		
-		if(out1 != null && out2 != null )
-			System.out.println("[SERVER] Message from server for "+username1+" and "+username2+" , message: "+message);
-		else
-			System.out.println("[SERVER] Message from server for player1 and player2 , message: "+message);
+		if(disconnected.equals(NOONEISDISCONNETED) )
+		{
+			if(username1 != null && username2 != null )
+				System.out.println("[MATCHSERVER] Message from server for "+username1+" and "+username2+" , message: "+message);
+			else
+				System.out.println("[MATCHSERVER] Message from server for player1 and player2 , message: "+message);
+		}else if(disconnected.equals(DISCONNECTEDPLAYER1)) {
+			if(username2 != null )
+				System.out.println("[MATCHSERVER] Message from server just for "+username2+" , message: "+message);
+			else
+				System.out.println("[MATCHSERVER] Message from server just for player2 , message: "+message);
+		}else if(disconnected.equals(DISCONNECTEDPLAYER2)) {
+			if(username1 != null )
+				System.out.println("[MATCHSERVER] Message from server just for "+username1+" , message: "+message);
+			else
+				System.out.println("[MATCHSERVER] Message from server just for player1 , message: "+message);
+		}else {
+			return ;
+		}
 	
+		if(out1 != null && !disconnected.equals(DISCONNECTEDPLAYER1))
 			out1.println(message);
-			out2.println(message);
 		
+		if(out2 != null && !disconnected.equals(DISCONNECTEDPLAYER2))
+			out2.println(message);
+
+			
+	}
+	
+	private String whoIsDisconnected() {
+		
+		if(in1 == null && in2 == null)
+		{
+			System.out.println("[MATCHSERVER] "+DISCONNECTEDBOTH);
+			return DISCONNECTEDBOTH ;
+		}
+		
+		if(in1 == null)
+		{
+			System.out.println("[MATCHSERVER] "+DISCONNECTEDPLAYER1);
+			return DISCONNECTEDPLAYER1 ;
+		}
+		
+		if(in2 == null)
+		{
+			System.out.println("[MATCHSERVER] "+DISCONNECTEDPLAYER2);
+			return DISCONNECTEDPLAYER2 ;
+		}
+		
+		return NOONEISDISCONNETED ;
+		
+	}
+	
+	public String read1() {
+		
+		String message = null ;
+		
+		String disconnected = whoIsDisconnected() ;
+		
+		if(!disconnected.equals(NOONEISDISCONNETED) )
+		{
+			if(!whoIsDisconnected().equals(DISCONNECTEDBOTH))
+			{
+				if(whoIsDisconnected().equals(DISCONNECTEDPLAYER1))
+					out2.println(Protocol.LEFTGAME);
+				else 
+					out1.println(Protocol.LEFTGAME);
+			}
+			
+			return null;
+		}
+		
+		try {
+			message = in1.readLine();
+			
+			if(message == null) {
+				if(username1 != null)
+					System.out.println("[MATCHSERVER] "+Protocol.CONNECTION_LOST+" with "+username1);
+				else
+					System.out.println("[MATCHSERVER] "+Protocol.CONNECTION_LOST+" with player1");
+				in1 = null ;
+				out1 = null ;
+				out2.println(Protocol.LEFTGAME);
+				return null;
+			}else
+			{
+				if(username1 != null)
+					System.out.println("[MATCHSERVER] Message: "+message+" from "+username1);
+				else
+					System.out.println("[MATCHSERVER] Message: "+message+" from player1");
+			}
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		return message ;
+	}
+	
+	public String read2() {
+
+		String message = null ;
+
+		String disconnected = whoIsDisconnected() ;
+		
+		if(!disconnected.equals(NOONEISDISCONNETED) )
+		{
+			if(!whoIsDisconnected().equals(DISCONNECTEDBOTH))
+			{
+				if(whoIsDisconnected().equals(DISCONNECTEDPLAYER1))
+					out2.println(Protocol.LEFTGAME);
+				else 
+					out1.println(Protocol.LEFTGAME);
+			}
+			return null;
+		}
+		
+		try {
+			message = in2.readLine();
+			
+			if(message == null) {
+				if(username2 != null)
+					System.out.println("[MATCHSERVER] "+Protocol.CONNECTION_LOST+" with "+username2);
+				else
+					System.out.println("[MATCHSERVER] "+Protocol.CONNECTION_LOST+" with player2");
+				in2 = null ;
+				out2 = null ;
+				out1.println(Protocol.LEFTGAME);
+				
+				return null;
+			}else
+			{
+				if(username2 != null)
+					System.out.println("[MATCHSERVER] Message: "+message+" from "+username2);
+				else
+					System.out.println("[MATCHSERVER] Message: "+message+" from player2");
+			}
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		return message ;
+	}
+
+	private void closeStreams() {
+		
+		try {
+			if(in1 != null) 
+				in1.close();
+			in1 = null ;
+			if(out1 != null)
+				out1.close(); 
+			out1 = null ;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		try {
+			if(in2 != null) 
+				in2.close();
+			in2 = null ;
+			if(out2 != null)
+				out2.close(); 
+			out2 = null ;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		
+	}
+	
+	private void closeStream1() {
+		try {
+			if(in1 != null) 
+				in1.close();
+			in1 = null ;
+			if(out1 != null)
+				out1.close(); 
+			out1 = null ;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	private void closeStream2() {
+		try {
+			if(in2 != null) 
+				in2.close();
+			in2 = null ;
+			if(out2 != null)
+				out2.close(); 
+			out2 = null ;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	private void notifyClients(String whoIsDisconnected) {
+		player1.notifyEndMatch();
+		player2.notifyEndMatch();
+		
+		if(whoIsDisconnected.equals(DISCONNECTEDBOTH)) {
+			closeStreams();
+		}else if(whoIsDisconnected.equals(DISCONNECTEDPLAYER1)){
+			closeStream1();
+		}else if(whoIsDisconnected.equals(DISCONNECTEDPLAYER2)){
+			closeStream2();
+		}
 	}
 
 }

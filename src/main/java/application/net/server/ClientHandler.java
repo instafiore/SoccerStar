@@ -18,7 +18,7 @@ public class ClientHandler implements Runnable{
 	private BufferedReader in = null ;
 	private PrintWriter out = null ;
 	private String username = null ;
-	
+	private boolean throwMessagesMatch = false ;
 	
 	
 	public String getUsername() {
@@ -47,13 +47,23 @@ public class ClientHandler implements Runnable{
 		
 		String message = null ;
 		
-		message = read();
-		
 		while(username == null) {
+			
+			message = read();
+
+			if(message == null ) {
+				printConnectionLost();
+				return;
+			}
 			
 			if(message.equals(Protocol.REGISTRATIONREQUEST)) {
 				
-				message  = read();
+				message = read();
+				
+				if(message == null ) {
+					printConnectionLost();
+					return;
+				}
 				
 				RegistrationClient client = new RegistrationClient();
 				client.parseRegistrationClient(message);
@@ -69,6 +79,7 @@ public class ClientHandler implements Runnable{
 				{
 					sendMessage(Protocol.REGISTRATIONFAILED);
 					username = null ;
+					
 				}
 				
 		
@@ -76,7 +87,10 @@ public class ClientHandler implements Runnable{
 			}else if(message.equals(Protocol.LOGINREQUEST)) {
 				
 				message = read();
-				
+				if(message == null ) {
+					printConnectionLost();
+					return;
+				}
 				LoginClient client = new LoginClient();
 				client.parseLoginClient(message);
 				
@@ -97,8 +111,9 @@ public class ClientHandler implements Runnable{
 			}else {
 				
 				// ERROR
-				sendMessage(Protocol.GENERALERROR);
+				sendMessage(Protocol.RELOADING_APP);
 				username = null ;
+				printConnectionLost();
 				return;
 			}
 		}
@@ -107,12 +122,14 @@ public class ClientHandler implements Runnable{
 
 		while(!Thread.interrupted()) {
 			
-			System.out.println("[SERVER] CLIENT HANDLER IS RUNNING FOR "+username);
+			System.out.println("[CLIENTHANDLER] CLIENT HANDLER IS RUNNING FOR "+username);
 		
 			message = read();
 			
-			if(message == Protocol.CONNECTION_LOST)
+			if(message == null ) {
+				printConnectionLost();
 				return;
+			}
 			
 			if(message.equals(Protocol.NEWGAMEREQUEST)) {
 				
@@ -130,12 +147,14 @@ public class ClientHandler implements Runnable{
 				
 			}else if(message.equals(Protocol.REGISTRATIONREQUEST)) {
 				
-				sendMessage(Protocol.GENERALERROR);
+				sendMessage(Protocol.RELOADING_APP);
+				printConnectionLost();
 				return;
 			
 			}else if(message.equals(Protocol.LOGINREQUEST)) {
 				
-				sendMessage(Protocol.GENERALERROR);
+				sendMessage(Protocol.RELOADING_APP);
+				printConnectionLost();
 				return;
 			
 			}
@@ -150,8 +169,9 @@ public class ClientHandler implements Runnable{
 		
 	}
 	
-	public void notifyClient() {
+	public void notifyEndMatch() {
 		synchronized (this) {
+			throwMessagesMatch = true ;
 			this.notify();
 		}
 	}
@@ -160,47 +180,87 @@ public class ClientHandler implements Runnable{
 	public void sendMessage(String message) {
 		
 		if(out == null || message == null)
-			return ;
+			return;
 		
-		System.out.print("[SERVER] SENT : "+message);
+		
+		System.out.print("[CLIENTHANDLER] SENT : "+message);
 		
 		if(username != null)
 			System.out.println(" to: "+username);
 		else 
-			System.out.println();
+			System.out.println(" to unknown receiver");
 		
 		out.println(message);
 	}
 	
+	private void printConnectionLost() {
+		if(username != null)
+			System.out.println("[CLIENTHANDLER] "+ Protocol.CONNECTION_LOST + " with: "+ username );
+		else 
+			System.out.println("[CLIENTHANDLER] "+ Protocol.CONNECTION_LOST) ;
+		closeStreams();
+	}
 	
-	public String read() {
 		
+
+	public String read() {
+	
 		String message = null ;
 		try {
 			
-			message = in.readLine();
-			
-			if(message == null)
-			{
-				if(username != null)
-					System.out.println( Protocol.CONNECTION_LOST + " with: "+ username );
-				else 
-					System.out.println( Protocol.CONNECTION_LOST) ;
+			do {
 				
-				return Protocol.CONNECTION_LOST;
-			}
+				if(in == null || out == null)
+					return null ;
+				
+				message = in.readLine();
+				
+				if(message == null)
+				{
+					printConnectionLost();
+					return null;
+				}
+				
+				
+				if(Protocol.protocolMatch().contains(message) && !throwMessagesMatch) {
+					//TODO
+					// ERROR 
+					System.out.println("[CLIENTHANDLER] "+Protocol.RELOADING_APP);
+					printConnectionLost();
+					return null;
+				}
+			
+			}while(Protocol.protocolMatch().contains(message) && throwMessagesMatch);
+			
+			throwMessagesMatch = false ;
 			
 			if(username != null)
-				System.out.print("[SERVER] Message from : "+username + " -> receive: " + message);
+				System.out.println("[CLIENTHANDLER] Message from : "+username + " -> receive: " + message);
 			else 	
-				System.out.println("[SERVER] Unknown sender -> receive: " + message);
+				System.out.println("[CLIENTHANDLER] Unknown sender -> receive: " + message);
 		
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			closeStreams();
 			
 		}
+		return message ;
+	}
+	
+	private void closeStreams() {
 		
-		return message;
+		try {
+			if(in != null) 
+				in.close();
+			in = null ;
+			if(out != null)
+				out.close(); 
+			out = null ;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 }

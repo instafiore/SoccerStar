@@ -21,7 +21,6 @@ public class ClientSucceedController implements EventHandler<WorkerStateEvent>{
 		
 		}else if(message.getProtocol().equals(Protocol.LOGINCOMPLETED)) {
 		
-			
 			SceneHandler.getInstance().loadScene("MainPage", true);
 			
 		}else if(message.getProtocol().equals(Protocol.GENERALERROR)) {
@@ -35,6 +34,10 @@ public class ClientSucceedController implements EventHandler<WorkerStateEvent>{
 			System.exit(0);
 		
 		}else if(message.getProtocol().equals(Protocol.INPUT_STREAM_NULL)) {
+			
+			// RELOADING APP
+			System.exit(0);
+		}else if(message.getProtocol().equals(Protocol.CONNECTION_LOST)) {
 			
 			// RELOADING APP
 			System.exit(0);

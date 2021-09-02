@@ -92,7 +92,14 @@ public class Client extends Service<Message>{
 		
 		String message = in.readLine();
 		
-		System.out.println("[CLIENT] RECEIVE CLIENT : "+message);
+		
+		if(message == null )
+		{
+			printConnectionLost();
+			return new Message(Protocol.CONNECTION_LOST);
+		}
+		
+		System.out.println("[CLIENT] RECEIVED CLIENT : "+message);
 		
 		if(message.equals(Protocol.GENERALERROR))
 		{
@@ -136,6 +143,12 @@ public class Client extends Service<Message>{
 		{
 			setCurrentState(STEP_LOGIN);
 			username = in.readLine();
+			if(username == null)
+			{
+				closeStreams();
+				message = new Message(Protocol.GENERALERROR);
+				return message ;
+			}
 			message = new Message(protocol, username);
 		}else {
 			
@@ -152,6 +165,12 @@ public class Client extends Service<Message>{
 		if(protocol.equals(Protocol.LOGINCOMPLETED)) {
 			
 			username = in.readLine();
+			if(username == null)
+			{
+				closeStreams();
+				message = new Message(Protocol.GENERALERROR);
+				return message ;
+			}
 			message = new Message(protocol, username);
 			
 		}else {
@@ -214,5 +233,27 @@ public class Client extends Service<Message>{
 	public void matchEnded() {
 		currentState = IN_APP;
 		restart();
+	}
+	
+	private void printConnectionLost() {
+		
+		System.out.println("[CLIENT] "+ Protocol.CONNECTION_LOST + " with: SERVER " );
+		closeStreams();
+	}
+	
+	private void closeStreams() {
+		
+		try {
+			if(in != null) 
+				in.close();
+			in = null ;
+			if(out != null)
+				out.close(); 
+			out = null ;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 }

@@ -1,5 +1,6 @@
 package application.net.client;
 
+import java.awt.PageAttributes.PrintQualityType;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -18,7 +19,7 @@ import application.model.game.physics.VelocityNoSync;
 import application.net.common.Protocol;
 import javafx.concurrent.Task;
 
-public class MatchClient extends Task<Void>{
+public class MatchClient extends Task<Boolean>{
 
 	
 	private Client client = null ;
@@ -27,6 +28,10 @@ public class MatchClient extends Task<Void>{
 	private Lineup lineup1 = new Lineup(Lineup.LINEUP1);
 	private String usernameGuest = null ;
 	private boolean match_activated = false ;
+	
+	private static final int ERROR = 0 ;
+	private static final int NOERROR = 1 ;
+	private static final int NOERRORBUTLEFT = 2 ;
 	
 	public MatchClient(Client client) {
 		super();
@@ -44,19 +49,50 @@ public class MatchClient extends Task<Void>{
 	}
 
 	
-	public void initalSettings() throws IOException {
+	public int initalSettings() throws IOException {
 		
 		String message = null ;
 		
-		message = in.readLine();
+		message = read() ;
 		
-		if(!message.equals(Protocol.ITSTHETURNOF)) {
-			return ;
+		if(message == null)
+			return ERROR;
+	
+	
+		if(message.equals(Protocol.CONNECTION_LOST))
+		{
+			printConnectionLost();
+			return NOERRORBUTLEFT ;
 		}
-
-		message = in.readLine();
 		
-		System.out.println("[CLIENT] Setting message: "+Protocol.ITSTHETURNOF+" -> "+message);
+		if(message.equals(Protocol.RELOADING_APP)) {
+			printConnectionLost();
+			return ERROR;
+		}
+		
+		if(!message.equals(Protocol.ITSTHETURNOF)) 
+		{
+			printConnectionLost();
+			return ERROR;
+		}
+		
+
+		message = read() ;
+		if(message == null)
+			return ERROR;
+		
+		if(message.equals(Protocol.CONNECTION_LOST))
+		{
+			printConnectionLost();
+			return NOERRORBUTLEFT ;
+		}
+		
+		if(message.equals(Protocol.RELOADING_APP)) {
+			printConnectionLost();
+			return ERROR;
+		}
+		
+		System.out.println("[MATCHCLIENT] Setting message: "+Protocol.ITSTHETURNOF+" -> "+message);
 		
 		if(message.equals(Protocol.ITSYOURTURN))
 			matchHandler.setTurn(true);
@@ -68,30 +104,94 @@ public class MatchClient extends Task<Void>{
 		client.sendMessage(""+lineup1.getCurrentLineup());
 		
 		
-		message = in.readLine();
+		message = read() ;
+		
+		if(message == null)
+			return ERROR;
+		
+		
+		if(message.equals(Protocol.CONNECTION_LOST))
+		{
+			printConnectionLost();
+			return NOERRORBUTLEFT ;
+		}
+		
+		if(message.equals(Protocol.RELOADING_APP)) {
+			printConnectionLost();
+			return ERROR;
+		}
+		
 		
 		if(!message.equals(Protocol.USERNAMEGUEST))
 		{
-			return;
+			printConnectionLost();
+			return ERROR;
 		}
 		
-		usernameGuest = in.readLine();
-						
-		System.out.println("[CLIENT] Setting message: "+Protocol.USERNAMEGUEST+" -> "+usernameGuest);
 		
-		message = in.readLine();
-
+		usernameGuest = read() ;
+		if(usernameGuest == null)
+			return ERROR;
+		
+		
+		if(usernameGuest.equals(Protocol.CONNECTION_LOST)) 
+		{
+			printConnectionLost();
+			return NOERRORBUTLEFT ;
+		}
+		
+		if(usernameGuest.equals(Protocol.RELOADING_APP)) {
+			printConnectionLost();
+			return ERROR;
+		}
+						
+		System.out.println("[MATCHCLIENT] Setting message: "+Protocol.USERNAMEGUEST+" -> "+usernameGuest);
+		
+		message = read() ;
+		if(message == null)
+			return ERROR;
+		
+		
+		if(message.equals(Protocol.CONNECTION_LOST)) {
+			
+			printConnectionLost();
+			return NOERRORBUTLEFT ;
+		}
 		
 		if(!message.equals(Protocol.TYPEOFLINEUP))
 		{
-			return;
+			printConnectionLost();
+			return ERROR;
 		}
 		
-		message = in.readLine();
+		message = read() ;
 		
-		System.out.println("[CLIENT] Setting message: "+Protocol.TYPEOFLINEUP+" -> "+message);
+		if(message == null)
+			return ERROR;
+
 		
-		int typeOfGuestLineUp = Integer.parseInt(message);
+		if(message.equals(Protocol.CONNECTION_LOST)) {
+			printConnectionLost();
+			return NOERRORBUTLEFT ;
+		}
+		
+		if(message.equals(Protocol.RELOADING_APP)) {
+			printConnectionLost();
+			return ERROR;
+		}
+		
+		System.out.println("[MATCHCLIENT] Setting message: "+Protocol.TYPEOFLINEUP+" -> "+message);
+		
+		int typeOfGuestLineUp ;
+		try {
+			typeOfGuestLineUp = Integer.parseInt(message);
+		} catch (Exception e) {
+			System.out.println("[MATCHCLIENT] Type of typeOfGuestLineUp is not a number ");
+			
+			client.sendMessage(Protocol.LEFTGAME);
+			printConnectionLost();
+			return ERROR;
+		}
 		
 		ArrayList<Ball> balls1 = new ArrayList<Ball>();
 		
@@ -131,31 +231,95 @@ public class MatchClient extends Task<Void>{
 		ball.setColor(Ball.WHITE);
 		matchHandler.add(ball);
 		
-		message = in.readLine();
+		message = read() ;
 		
-		if(!message.equals(Protocol.GAMESTARTED)) {
-			return;
+		if(message == null)
+			return ERROR;
+		
+		if(message.equals(Protocol.CONNECTION_LOST)) {
+			printConnectionLost();
+			return NOERRORBUTLEFT ;
+		}
+		if(message.equals(Protocol.RELOADING_APP)) {
+			printConnectionLost();
+			return ERROR;
 		}
 		
-		System.out.println("[CLIENT] Setting message: "+Protocol.GAMESTARTED);
+		if(!message.equals(Protocol.GAMESTARTED))
+			return ERROR;
+		
+		
+		System.out.println("[MATCHCLIENT] Setting message: "+Protocol.GAMESTARTED);
 		
 		showView();
-		match_activated  = true ;
-	}
+		setMatch_activated(true);
+		
+		return NOERROR;
+}
 	
-	public void read() throws IOException {
+	public String read() {
 		
 		String message = null ;
 		
-		if(in.ready()) {
+		try {
+			
+			if(in == null) {
+				System.out.println("[MATCHCLIENT] "+Protocol.SERVERDISCONNETED);
+				return null ;
+			}
 			
 			message = in.readLine();
 			
-			System.out.print("[CLIENT] Match message: "+message);
+			if(message == null)
+			{
+				printConnectionLost();
+				return null ;
+			}
+			
+			if(!message.equals(Protocol.USERNAMEGUEST))
+				System.out.println("[MATCHCLIENT] "+message);
+			
+			
+		} catch (IOException e) {
+			
+			e.printStackTrace();
+			printConnectionLost();
+			return null ;
+		
+		}
+		return message;
+	}
+	
+	public boolean readingMatchStarted() throws IOException {
+		
+		String message = null ;
+		
+		if(in == null) {
+			setMatch_activated(false);
+			return false;
+		}
+		
+		if(in.ready()) {
+			
+			message = read() ;
+			
+			if(message == null)
+			{
+				setMatch_activated(false);
+				return false;
+			}
+			
+			
+			System.out.print("[MATCHCLIENT] Match message: "+message);
 			
 			if(message.equals(Protocol.MOVEBALL)) {
 				
-				message = in.readLine();
+				message = read() ;
+				if(message == null)
+				{
+					setMatch_activated(false);
+					return false;
+				}
 				
 				System.out.println(usernameGuest+" -> "+message);
 				
@@ -175,22 +339,26 @@ public class MatchClient extends Task<Void>{
 				Ball b = matchHandler.tookBall(xPos, yPos);
 				
 				if(b == null || b.getPlayer() == 1 || matchHandler.getTurn()) {
-					return;
+					return false;
 				}
 				
 				b.setVelocity(new VelocityNoSync(xVel, yVel));
 				
 				matchHandler.setTurn(!matchHandler.getTurn());
 			}
-			else if(message.equals(Protocol.LEFTGAME)) {
+			else if(message.equals(Protocol.CONNECTION_LOST)){
 				
 				setMatch_activated(false);
-				
-			}
-			else {
 				System.out.println();
+				return true;
+			}else if(message.equals(Protocol.RELOADING_APP) || message.equals(Protocol.GENERALERROR)){
+				setMatch_activated(false);
+				System.out.println();
+				return false;
 			}
 		}
+		
+		return true ;
 		
 	}
 
@@ -200,10 +368,23 @@ public class MatchClient extends Task<Void>{
 
 
 	@Override
-	protected Void call() throws Exception {
+	protected Boolean call() throws Exception {
+		
+		boolean res = false ;
 		
 		try {
-			initalSettings();
+			
+			switch (initalSettings()) {
+			case NOERROR:
+				break;
+			case NOERRORBUTLEFT:
+					return true;		
+			case ERROR:
+					return false;
+			default:
+					return false;
+			}
+			
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
@@ -211,13 +392,13 @@ public class MatchClient extends Task<Void>{
 		while(match_activated) {
 			
 			try {
-				read();
+				res = readingMatchStarted();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 			
 		}
-		return null;
+		return res;
 	}
 	
 	
@@ -228,4 +409,26 @@ public class MatchClient extends Task<Void>{
 	public void setMatch_activated(boolean match_activated) {
 		this.match_activated = match_activated;
 	}
+	
+	
+	private void printConnectionLost() {
+		
+		System.out.println("[MATCHCLIENT] "+ Protocol.CONNECTION_LOST + " with: SERVER " );
+		closeStream();
+	}
+	
+	private void closeStream() {
+		
+		try {
+			if(in != null) 
+				in.close();
+			in = null ;
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
 }

@@ -1,9 +1,6 @@
 package application.net.common;
 
 import java.util.ArrayList;
-import java.util.StringTokenizer;
-
-import application.model.game.physics.VectorFioreNoSync;
 
 public class Protocol {
 
@@ -14,6 +11,10 @@ public class Protocol {
 	public static final String OUTPUT_STREAM_NULL = "Output stream is null";
 	public static final String RELOADING_APP = "App will be reloaded";
 	public static final String CONNECTION_LOST ="Connection lost";
+	public static final String SERVERDISCONNETED = "Server is disconnected";
+	public static final String BADBEHAVIOROFCLIENT = "Bad client behavior ";
+	public static final String MATCHSUCCEED = "Match completed without errors";
+	public static final String MATCHFAILED = "Match completed with errors";
 	
 	// Email
 	public static final String EMAILASSISTANCE = "fiorentinosalvatore65@gmail.com";
@@ -48,7 +49,25 @@ public class Protocol {
 	public static final String ITSNOTYOURTURN = "It's not your turn";
 	public static final String TYPEOFLINEUP = "Type of lineup" ;
 	
-	
+	public static ArrayList<String> protocolMatch(){
+		
+		ArrayList<String> strings = new ArrayList<String>();
+		
+		strings.add(PREPARINGMATCH);
+		strings.add(MOVEBALL);
+		strings.add(SCORED);
+		strings.add(LEFTGAME);
+		strings.add(GAMEOVER);
+		strings.add(GAMESTARTED);
+		strings.add(MYUSERNAMEIS);
+		strings.add(USERNAMEGUEST);
+		strings.add(ITSTHETURNOF);
+		strings.add(ITSYOURTURN);
+		strings.add(ITSNOTYOURTURN);
+		strings.add(TYPEOFLINEUP);
+		
+		return strings ;
+	}
 	
 	public static Double[] parseCoordinates(String coordinates) {
 		
