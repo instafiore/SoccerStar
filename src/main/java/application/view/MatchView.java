@@ -65,15 +65,14 @@ public class MatchView extends StackPane{
 		if (matchController == null) return;
 		
 		
-		
-		for(Ball ball : matchController.getMatchHandler().getBalls()) {
+		for(Ball ball : matchController.getParseMatchInformation().getBalls()) {
 
 			switch (ball.getColor()) {
 			case Ball.RED:
 				canvas.getGraphicsContext2D().setFill(Color.web("#ff0000", 1.0));
 				break;
 			case Ball.BLUE:
-				if(matchController.getMatchHandler().getTurn())
+				if(matchController.getParseMatchInformation().isTurn())
 					canvas.getGraphicsContext2D().setFill(Color.web("#16004d", 1.0));
 				else
 					canvas.getGraphicsContext2D().setFill(Color.web("#205a8c", 1.0));
@@ -148,33 +147,6 @@ public class MatchView extends StackPane{
 		canvas.getGraphicsContext2D().setLineWidth(5);
 		
 	}
-	
-//	public void drawArrow(Arrow arrow) {
-//	
-//		if(arrow  == null )
-//			return;
-//		
-//		System.out.print(arrow);
-//		this.arrowImage = new Image(getClass().getResourceAsStream("/application/view/arrow.png"), arrow.getLength().getX(),arrow.getLength().getY(), true, true);
-//		
-//		double x = arrow.getPosition().getX();
-//		double y = arrow.getPosition().getY();
-//		double dx = arrow.getLength().getX();
-//		double dy = arrow.getLength().getY();
-//		
-//		double magnitude = arrow.getLength().getMagnitude();
-//		double angle =Math.toDegrees(Math.acos(-dx/magnitude));
-//		
-//
-//		if( dy >= 0 )
-//			angle = 180 - angle ;
-//		else
-//			angle += 180 ;
-//		
-//
-//
-//	}
-	
 	
 	private int intersectBorders(Ball b) {
 		if(b.getPosition().getY() <= 0 + stroke )

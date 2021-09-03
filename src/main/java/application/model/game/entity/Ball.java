@@ -14,9 +14,7 @@ public class Ball {
 	private boolean inDoor = false;
 	private int player ;
 	
-	public static final int PLAYER1 = 1 ;
-	public static final int PLAYER2 = 2 ;
-	public static final int NOPLAYER = 3 ;
+
 	public static final int RED = 0;
 	public static final int BLUE = 1 ;
 	public static final int WHITE = 2 ;
@@ -24,14 +22,14 @@ public class Ball {
 	
 
 	
-	public Ball(VectorFioreNoSync position, VelocityNoSync velocity, Double radius, int player) {
+	public Ball(VectorFioreNoSync position, VelocityNoSync velocity, Double radius, int color) {
 		super();
 		this.position = position;
 		this.radius = radius;
 		updatePositionCenter();
 		this.velocity = velocity;
 		velocity.setMag(velocity.getMagnitude()*Settings.FREQUENCY);
-		this.player = player ;
+		this.color = color ;
 	}
 	
 	public void updatePositionCenter() {
@@ -103,11 +101,7 @@ public class Ball {
 	public int getColor() {
 		return color;
 	}
-	
-	public int getPlayer() {
-		return player;
-	}
-	
+
 
 	@Override
 	public boolean equals(Object obj) {

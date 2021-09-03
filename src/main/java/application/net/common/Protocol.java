@@ -51,6 +51,11 @@ public class Protocol {
 	public static final String NOBALLTOOK = "You didn't take a ball" ;
 	public static final String NOTYOURBALL = "That is not your ball" ;
 	public static final String NOTALLARESTOPPED = "Every ball is not stopped yet" ;
+	public static final String INFORMATIONMATCHMESSAGE = "A information match message" ;
+	public static final String INFORMATIONDELIMITER = "&";
+	public static final String BALLDELIMITER = ";";
+	public static final String INFORMATIONBALLDELIMITER = "#";
+	public static final String POSITIONBALLDELIMITER = ":" ;
 	
 	public static ArrayList<String> protocolMatch(){
 		
@@ -83,6 +88,5 @@ public class Protocol {
 		
 		return coordinatesI;
 	}
-	
 	
 }

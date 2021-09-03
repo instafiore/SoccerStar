@@ -2,6 +2,7 @@ package application.control;
 
 import application.Settings;
 import application.model.game.entity.Ball;
+import application.model.game.entity.ParseMatchInformation;
 import application.model.game.handler.MatchHandler;
 import application.model.game.physics.VectorFioreNoSync;
 import application.model.game.physics.VelocityNoSync;
@@ -14,7 +15,7 @@ import javafx.scene.shape.Line;
 
 public class MatchController implements EventHandler<MouseEvent>{
 
-	private MatchHandler matchHandler = null ;
+	private ParseMatchInformation parseMatchInformation ;
 	private MatchView matchView = null;
 	private long interval = 500;
 	public static MatchController instance = null;
@@ -32,27 +33,30 @@ public class MatchController implements EventHandler<MouseEvent>{
 		super();
 	}
 
+	public void setParseMatchInformation(ParseMatchInformation parseMatchInformation) {
+		this.parseMatchInformation = parseMatchInformation;
+	}
+	
+	public ParseMatchInformation getParseMatchInformation() {
+		return parseMatchInformation;
+	}
+	
 	public static MatchController getInstance() {
 		if(instance == null)
 			instance = new MatchController();
 		return instance ;
 	}
 	
-	public void addMatchHandler(MatchHandler matchHandler) {
-		this.matchHandler = matchHandler ;
-	}
+	
 	
 	public void addMatchView(MatchView matchView) {
 		this.matchView = matchView ;
 	}
 	
-	public MatchHandler getMatchHandler() {
-		return matchHandler;
-	}
+
 
 	public void update() {
 		
-		matchHandler.moveBalls(matchView.getField());
 		matchView.draw();
 		
 	}
@@ -63,9 +67,9 @@ public class MatchController implements EventHandler<MouseEvent>{
 			initialX = event.getX();
 			initialY = event.getY();
 			
-			ballTook = matchHandler.tookBall(initialX, initialY); 
+			ballTook = parseMatchInformation.tookBall(initialX, initialY); 
 			
-			if( ballTook != null && ballTook.getPlayer() == 1 && ballTook.getColor() != Ball.WHITE && matchHandler.allStopped() && matchHandler.getTurn())
+			if( ballTook != null && ballTook.getColor() != Ball.BLUE && ballTook.getColor() != Ball.WHITE  && parseMatchInformation.isTurn())
 			{
 				ballTook.setColor(Ball.TOOK);
 			}
@@ -73,14 +77,12 @@ public class MatchController implements EventHandler<MouseEvent>{
 				ballTook = null ;
 				initialX = null;
 				initialY = null;
-				if(!matchHandler.getTurn()) {
+				if(!parseMatchInformation.isTurn()) {
 					System.out.println("[CLIENT] "+Protocol.ITSNOTYOURTURN);
 				}else if(ballTook == null ) {
 					System.out.println("[CLIENT] "+Protocol.NOBALLTOOK);
-				}else if(ballTook.getPlayer() != 1) {
+				}else if(ballTook.getColor() != Ball.BLUE) {
 					System.out.println("[CLIENT] "+Protocol.NOTYOURBALL);
-				}else if(!matchHandler.allStopped()) {
-					System.out.println("[CLIENT] "+Protocol.NOTALLARESTOPPED);
 				}
 				
 			}
@@ -129,8 +131,7 @@ public class MatchController implements EventHandler<MouseEvent>{
 			
 			Client.getInstance().sendMessage(Protocol.MOVEBALL);
 			Client.getInstance().sendMessage(message);
-			
-			matchHandler.setTurn(false);
+		
 			
 			initialX = null;
 			initialY = null;

@@ -17,4 +17,6 @@ public class Settings {
 	public static final int MAX_GOAL = 3 ;
 	public static final long REFRESHCLIENT = 1000 ;
 	public static final int REFRESHSERVER = 1000;
+	public static final int REFRESHMATCHSERVER = 10;
+	
 }

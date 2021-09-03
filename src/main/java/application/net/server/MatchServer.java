@@ -16,6 +16,7 @@ import application.Settings;
 import application.model.game.entity.Ball;
 import application.model.game.entity.Field;
 import application.model.game.entity.Lineup;
+import application.model.game.entity.ParseMatchInformation;
 import application.model.game.handler.MatchHandler;
 import application.model.game.physics.VectorFioreNoSync;
 import application.model.game.physics.VelocityNoSync;
@@ -88,20 +89,6 @@ public class MatchServer implements Runnable {
 			matchHandler.setTurn( new Random().nextBoolean() );
 	
 			
-			sendMessageAll(Protocol.ITSTHETURNOF);
-	
-			if(matchHandler.getTurn())
-			{
-				sendMessage(Protocol.ITSYOURTURN, 2);
-				sendMessage(Protocol.ITSNOTYOURTURN, 1);
-			}
-			else
-			{
-				sendMessage(Protocol.ITSYOURTURN, 1);
-				sendMessage(Protocol.ITSNOTYOURTURN, 2);
-			}
-			
-			
 			sendMessage(Protocol.USERNAMEGUEST, 1);
 			sendMessage(username1, 1);
 			
@@ -148,8 +135,7 @@ public class MatchServer implements Runnable {
 				return ;
 			}
 			
-			sendMessage(Protocol.TYPEOFLINEUP, 1);
-			sendMessage(""+typeOfLineup[0], 1);
+
 			
 			message = read2();
 			
@@ -194,19 +180,15 @@ public class MatchServer implements Runnable {
 			}
 			
 			
-			sendMessage(Protocol.TYPEOFLINEUP, 2);
-			sendMessage(""+typeOfLineup[1], 2);
-			
-			
 			ArrayList<Ball> balls1 = new ArrayList<Ball>();
 			for(int j = 0 ; j < 5 ; ++j)
-				balls1.add(new Ball(new VectorFioreNoSync(0.0), new VelocityNoSync(0.0), Settings.DIMENSIONSTANDARDBALL, 1));
+				balls1.add(new Ball(new VectorFioreNoSync(0.0), new VelocityNoSync(0.0), Settings.DIMENSIONSTANDARDBALL, Ball.BLUE));
 			
 			lineup1 = new Lineup(balls1, typeOfLineup[0]);
 			
 			ArrayList<Ball> balls2 = new ArrayList<Ball>();
 			for(int j = 0 ; j < 5 ; ++j)
-				balls2.add(new Ball(new VectorFioreNoSync(0.0), new VelocityNoSync(0.0), Settings.DIMENSIONSTANDARDBALL, 2));
+				balls2.add(new Ball(new VectorFioreNoSync(0.0), new VelocityNoSync(0.0), Settings.DIMENSIONSTANDARDBALL, Ball.RED));
 			
 			
 			lineup2 = new Lineup(balls2, typeOfLineup[1]);
@@ -223,14 +205,20 @@ public class MatchServer implements Runnable {
 			double y11 = Settings.FIELDHEIGHTFRAME * 0.50 - Settings.DIMENSIONOFBALLTOPLAY ;
 			VectorFioreNoSync position11 = new VectorFioreNoSync(x11,y11);
 			
-			Ball ball = new Ball(position11,new VelocityNoSync(0.0),Settings.DIMENSIONOFBALLTOPLAY , Ball.NOPLAYER);
+			Ball ball = new Ball(position11,new VelocityNoSync(0.0),Settings.DIMENSIONOFBALLTOPLAY , Ball.WHITE);
 			ball.setColor(Ball.WHITE);
 			matchHandler.add(ball);
+			
 			
 			sendMessageAll(Protocol.GAMESTARTED);
 			
 			
 			System.out.println("[MATCHSERVER] "+Protocol.GAMESTARTED+" -> Player1: "+username1+" , Player2: "+username2);
+			
+			sendMessageAll(Protocol.INFORMATIONMATCHMESSAGE);
+			
+			sendMessage(ParseMatchInformation.getString(matchHandler.getBalls(), matchHandler.getTurn() , 1), 2 );
+			sendMessage(ParseMatchInformation.getString(matchHandler.getBalls(), !matchHandler.getTurn(), 2), 1 );
 			
 			while(whoIsDisconnected().equals(NOONEISDISCONNETED)) {
 					
@@ -238,10 +226,14 @@ public class MatchServer implements Runnable {
 				
 				Pair<String, Integer> p = getAction();
 				
-				if(p == null)
-					continue;
-				
-				if(p.getKey() == null) {
+				if(p == null) {
+					
+					sendMessageAll(Protocol.INFORMATIONMATCHMESSAGE);
+					
+					sendMessage(ParseMatchInformation.getString(matchHandler.getBalls(), matchHandler.getTurn() , 1), 2 );
+					sendMessage(ParseMatchInformation.getString(matchHandler.getBalls(), !matchHandler.getTurn(), 2), 1 );
+					
+				}else if(p.getKey() == null) {
 					
 					i = p.getValue();
 					
@@ -347,7 +339,7 @@ public class MatchServer implements Runnable {
 						return ;
 					}
 					
-					if(b.getPlayer() == i && ( i == 1 && matchHandler.getTurn() || i == 2 && !matchHandler.getTurn() ) )
+					if(b.getColor() == i && ( i == 1 && matchHandler.getTurn() || i == 2 && !matchHandler.getTurn() ) )
 					{
 						matchHandler.setTurn(!matchHandler.getTurn());
 						
@@ -403,7 +395,7 @@ public class MatchServer implements Runnable {
 
 				
 				try {
-					Thread.sleep(Settings.REFRESHSERVER);
+					Thread.sleep(Settings.REFRESHCLIENT);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -429,14 +421,14 @@ public class MatchServer implements Runnable {
 		if(in1.ready()) {
 			
 			mess = in1.readLine();
-			i = 1 ;
+			i = Ball.BLUE ;
 			if(mess == null || mess.equals(Protocol.CONNECTION_LOST))
 				return new Pair<String, Integer>(null, i);
 			return new Pair<String, Integer>(mess, i);
 		
 		}else if(in2.ready()) {
 			mess = in2.readLine();
-			i = 2 ;
+			i = Ball.RED ;
 			if(mess == null || mess.equals(Protocol.CONNECTION_LOST))
 				return new Pair<String, Integer>(null, i);
 			return new Pair<String, Integer>(mess, i);
@@ -451,7 +443,7 @@ public class MatchServer implements Runnable {
 	{
 		String disconnected = whoIsDisconnected() ;
 		
-		if(sender == 1 && out2 != null && !disconnected.equals(DISCONNECTEDPLAYER2)) 
+		if(sender == Ball.BLUE && out2 != null && !disconnected.equals(DISCONNECTEDPLAYER2)) 
 		{
 			if(username1 != null && username2 != null)
 				System.out.println("[MATCHSERVER] Message from :"+username1+" to : "+username2+" , Message: "+message);

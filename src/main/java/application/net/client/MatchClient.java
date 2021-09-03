@@ -13,6 +13,7 @@ import application.Updater;
 import application.control.MatchController;
 import application.model.game.entity.Ball;
 import application.model.game.entity.Lineup;
+import application.model.game.entity.ParseMatchInformation;
 import application.model.game.handler.MatchHandler;
 import application.model.game.physics.VectorFioreNoSync;
 import application.model.game.physics.VelocityNoSync;
@@ -23,7 +24,6 @@ public class MatchClient extends Task<Boolean>{
 
 	
 	private Client client = null ;
-	private MatchHandler matchHandler = null ;
 	private BufferedReader in = null ;
 	private Lineup lineup1 = new Lineup(Lineup.LINEUP1);
 	private String usernameGuest = null ;
@@ -32,17 +32,16 @@ public class MatchClient extends Task<Boolean>{
 	private static final int ERROR = 0 ;
 	private static final int NOERROR = 1 ;
 	private static final int NOERRORBUTLEFT = 2 ;
+	private ParseMatchInformation parseMatchInformation ;
 	
 	public MatchClient(Client client) {
 		super();
 		this.client = client;
-		this.matchHandler = new MatchHandler();
-		
-		
 		in = client.getIn();
+		parseMatchInformation = new ParseMatchInformation();
 		
-		MatchController.getInstance().addMatchHandler(matchHandler);
-	
+		MatchController.getInstance().setParseMatchInformation(parseMatchInformation);
+		
 		Thread t = new Thread(this);
 		t.setDaemon(true);
 		t.start();
@@ -52,53 +51,6 @@ public class MatchClient extends Task<Boolean>{
 	public int initalSettings() throws IOException {
 		
 		String message = null ;
-		
-		message = read() ;
-		
-		if(message == null)
-			return ERROR;
-	
-	
-		if(message.equals(Protocol.CONNECTION_LOST))
-		{
-			printConnectionLost();
-			return NOERRORBUTLEFT ;
-		}
-		
-		if(message.equals(Protocol.RELOADING_APP)) {
-			printConnectionLost();
-			return ERROR;
-		}
-		
-		if(!message.equals(Protocol.ITSTHETURNOF)) 
-		{
-			printConnectionLost();
-			return ERROR;
-		}
-		
-
-		message = read() ;
-		if(message == null)
-			return ERROR;
-		
-		if(message.equals(Protocol.CONNECTION_LOST))
-		{
-			printConnectionLost();
-			return NOERRORBUTLEFT ;
-		}
-		
-		if(message.equals(Protocol.RELOADING_APP)) {
-			printConnectionLost();
-			return ERROR;
-		}
-		
-		System.out.println("[MATCHCLIENT] Setting message: "+Protocol.ITSTHETURNOF+" -> "+message);
-		
-		if(message.equals(Protocol.ITSYOURTURN))
-			matchHandler.setTurn(true);
-		else 
-			matchHandler.setTurn(false);
-
 		
 		client.sendMessage(Protocol.TYPEOFLINEUP);
 		client.sendMessage(""+lineup1.getCurrentLineup());
@@ -148,90 +100,6 @@ public class MatchClient extends Task<Boolean>{
 		System.out.println("[MATCHCLIENT] Setting message: "+Protocol.USERNAMEGUEST+" -> "+usernameGuest);
 		
 		message = read() ;
-		if(message == null)
-			return ERROR;
-		
-		
-		if(message.equals(Protocol.CONNECTION_LOST)) {
-			
-			printConnectionLost();
-			return NOERRORBUTLEFT ;
-		}
-		
-		if(!message.equals(Protocol.TYPEOFLINEUP))
-		{
-			printConnectionLost();
-			return ERROR;
-		}
-		
-		message = read() ;
-		
-		if(message == null)
-			return ERROR;
-
-		
-		if(message.equals(Protocol.CONNECTION_LOST)) {
-			printConnectionLost();
-			return NOERRORBUTLEFT ;
-		}
-		
-		if(message.equals(Protocol.RELOADING_APP)) {
-			printConnectionLost();
-			return ERROR;
-		}
-		
-		System.out.println("[MATCHCLIENT] Setting message: "+Protocol.TYPEOFLINEUP+" -> "+message);
-		
-		int typeOfGuestLineUp ;
-		try {
-			typeOfGuestLineUp = Integer.parseInt(message);
-		} catch (Exception e) {
-			System.out.println("[MATCHCLIENT] Type of typeOfGuestLineUp is not a number ");
-			
-			client.sendMessage(Protocol.LEFTGAME);
-			printConnectionLost();
-			return ERROR;
-		}
-		
-		ArrayList<Ball> balls1 = new ArrayList<Ball>();
-		
-		for(int j = 0 ; j < 5 ; ++j)
-			balls1.add(new Ball(new VectorFioreNoSync(0.0), new VelocityNoSync(0.0), Settings.DIMENSIONSTANDARDBALL, 1));
-		
-		lineup1.addBalls(balls1);
-		lineup1.setPositions();
-		
-		ArrayList<Ball> balls2 = new ArrayList<Ball>();
-		for(int j = 0 ; j < 5 ; ++j)
-			balls2.add(new Ball(new VectorFioreNoSync(0.0), new VelocityNoSync(0.0), Settings.DIMENSIONSTANDARDBALL, 2));
-		
-		
-		Lineup lineup2 = new Lineup(balls2, typeOfGuestLineUp);
-
-		lineup2.mirrorLineup();
-		
-		for(Ball b : balls1)
-		{
-			b.setColor(Ball.BLUE);
-			matchHandler.add(b);
-		}
-		
-		for(Ball b : balls2)
-		{
-			b.setColor(Ball.RED);
-			matchHandler.add(b);
-		}
-			
-		
-		double x11 = Settings.FIELDWIDTHFRAME * 0.50 - Settings.DIMENSIONOFBALLTOPLAY ;
-		double y11 = Settings.FIELDHEIGHTFRAME * 0.50 - Settings.DIMENSIONOFBALLTOPLAY ;
-		VectorFioreNoSync position11 = new VectorFioreNoSync(x11,y11);
-		
-		Ball ball = new Ball(position11,new VelocityNoSync(0.0),Settings.DIMENSIONOFBALLTOPLAY , Ball.NOPLAYER);
-		ball.setColor(Ball.WHITE);
-		matchHandler.add(ball);
-		
-		message = read() ;
 		
 		if(message == null)
 			return ERROR;
@@ -248,6 +116,27 @@ public class MatchClient extends Task<Boolean>{
 		if(!message.equals(Protocol.GAMESTARTED))
 			return ERROR;
 
+		
+		message = read();
+		
+		if(message.equals(Protocol.CONNECTION_LOST)) {
+			printConnectionLost();
+			return NOERRORBUTLEFT ;
+		}
+		if(message.equals(Protocol.RELOADING_APP)) {
+			printConnectionLost();
+			return ERROR;
+		}
+		
+		if(!message.equals(Protocol.INFORMATIONMATCHMESSAGE))
+		{
+			printConnectionLost();
+			return ERROR;
+		}
+		
+		message = read() ;
+		
+		parseMatchInformation.addNewInformation(message);
 		
 		showView();
 		setMatch_activated(true);
@@ -312,68 +201,11 @@ public class MatchClient extends Task<Boolean>{
 				return false;
 			}
 			
-			
-			if(message.equals(Protocol.MOVEBALL)) {
+			if(message.equals(Protocol.INFORMATIONMATCHMESSAGE)) {
 				
-				String otherPartOfMessage = read() ;
-				
-				if(otherPartOfMessage == null)
-				{
-					setMatch_activated(false);
-					return false;
-				}
-				
-				message ="[MATCHCLIENT] "+ message +": " + usernameGuest + " -> " + otherPartOfMessage ;
-				
-				
-				System.out.println(message);
-				
-				String[] stringa = otherPartOfMessage.split(";");
-				
-				double xPos  = 0 ;
-				double yPos = 0 ;
-				double xVel = 0 ;
-				double yVel = 0 ;
-				
-				try {
-					
-					xPos = Protocol.parseCoordinates(stringa[0])[0] ;
-					yPos = Protocol.parseCoordinates(stringa[0])[1] ;
-					xVel = Protocol.parseCoordinates(stringa[1])[0] * -1  ;
-					yVel = Protocol.parseCoordinates(stringa[1])[1] ;
-					
-				} catch (Exception e) {
-					System.out.println("[MATCHCLIENT] NOT A NUMBER");
-					client.sendMessage(Protocol.CONNECTION_LOST);
-					setMatch_activated(false);
-					return false;
-				}
-				
-				xPos+= Settings.DIMENSIONSTANDARDBALL;
-				yPos+= Settings.DIMENSIONSTANDARDBALL;
-				
-				xPos = Settings.FIELDWIDTHFRAME - xPos ;
-				
-				Ball b = matchHandler.tookBall(xPos, yPos);
-				
-				if(b == null || b.getPlayer() == 1 || matchHandler.getTurn()) {
-					if(b == null )
-					{
-						System.out.println("B NULL");
-						setMatch_activated(false);
-						return true;
-					}
-					if(b.getPlayer() == 1 )
-						System.out.println("PLAYER = 1");
-					if(matchHandler.getTurn() )
-						System.out.println("MY TURN NOT HIS");
-					setMatch_activated(false);
-					return true;
-				}
-				
-				b.setVelocity(new VelocityNoSync(xVel, yVel));
-				
-				matchHandler.setTurn(!matchHandler.getTurn());
+				message = read() ;
+				parseMatchInformation.addNewInformation(message);
+
 			}
 			else if(message.equals(Protocol.CONNECTION_LOST)){
 				
