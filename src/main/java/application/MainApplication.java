@@ -1,22 +1,17 @@
 package application;
 
 import java.io.File;
-import java.nio.ByteBuffer;
-import java.nio.IntBuffer;
-
-import com.sun.javafx.scene.shape.MeshHelper.MeshAccessor;
-
 import application.control.ClientSucceedController;
 import application.control.MatchController;
-import application.model.game.handler.MatchHandler;
+import application.control.WindowMatchController;
 import application.net.client.Client;
 import application.view.MatchView;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 
 public class MainApplication extends Application{
@@ -39,6 +34,7 @@ public class MainApplication extends Application{
 		
 		mainMatchView.setTop(menuMatchPane);
 		mainMatchView.setCenter(matchView);
+		primaryStage.addEventHandler(WindowEvent.WINDOW_CLOSE_REQUEST, new WindowMatchController());
 		
 		SceneHandler.getInstance().initStage(primaryStage);
 		SceneHandler.getInstance().addPane("MatchView", mainMatchView);
@@ -57,6 +53,7 @@ public class MainApplication extends Application{
 		Client.getInstance().connectToServer();
 		Client.getInstance().setCurrentState(Client.STEP_LOGIN);
 		Client.getInstance().setOnSucceeded(new ClientSucceedController());
+		
 	}
 
 	public static void main(String[] args) {

@@ -22,7 +22,7 @@ public class MatchView extends StackPane{
 	
 	
 	private Canvas canvas;
-	private MatchController ballController;
+	private MatchController matchController;
 	private int stroke = 40;
 	private Image fieldImg;
 	private Line line = null;
@@ -45,11 +45,12 @@ public class MatchView extends StackPane{
 		return field;
 	}
 	
-	public void addController(MatchController b) {
-		ballController = b;
-		this.setOnMousePressed(b);
-		this.setOnMouseReleased(b);
-		this.setOnMouseDragged(b);
+	public void addController(MatchController matchController) 
+	{
+		this.matchController = matchController;
+		this.setOnMousePressed(matchController);
+		this.setOnMouseReleased(matchController);
+		this.setOnMouseDragged(matchController);
 	}
 	
 	
@@ -61,18 +62,21 @@ public class MatchView extends StackPane{
 		drawField();
 		
 		
-		if (ballController == null) return;
+		if (matchController == null) return;
 		
 		
 		
-		for(Ball ball : ballController.getBallManager().getBalls()) {
+		for(Ball ball : matchController.getMatchHandler().getBalls()) {
 
 			switch (ball.getColor()) {
 			case Ball.RED:
 				canvas.getGraphicsContext2D().setFill(Color.web("#ff0000", 1.0));
 				break;
 			case Ball.BLUE:
-				canvas.getGraphicsContext2D().setFill(Color.web("#205a8c", 1.0));
+				if(matchController.getMatchHandler().getTurn())
+					canvas.getGraphicsContext2D().setFill(Color.web("#16004d", 1.0));
+				else
+					canvas.getGraphicsContext2D().setFill(Color.web("#205a8c", 1.0));
 				break;
 			case Ball.WHITE:
 				canvas.getGraphicsContext2D().setFill(Color.web("#fbf6f6", 1.0));

@@ -39,6 +39,14 @@ public class ClientHandler implements Runnable{
 		
 	}
 	
+	public BufferedReader getIn() {
+		return in;
+	}
+	
+	public PrintWriter getOut() {
+		return out;
+	}
+	
 	public Socket getClient() {
 		return client;
 	}
@@ -51,10 +59,8 @@ public class ClientHandler implements Runnable{
 			
 			message = read();
 
-			if(message == null ) {
-				printConnectionLost();
+			if(message == null ) 
 				return;
-			}
 			
 			if(message.equals(Protocol.REGISTRATIONREQUEST)) {
 				
@@ -87,10 +93,9 @@ public class ClientHandler implements Runnable{
 			}else if(message.equals(Protocol.LOGINREQUEST)) {
 				
 				message = read();
-				if(message == null ) {
-					printConnectionLost();
+				if(message == null )
 					return;
-				}
+				
 				LoginClient client = new LoginClient();
 				client.parseLoginClient(message);
 				
@@ -126,11 +131,9 @@ public class ClientHandler implements Runnable{
 		
 			message = read();
 			
-			if(message == null ) {
-				printConnectionLost();
+			if(message == null )
 				return;
-			}
-			
+		
 			if(message.equals(Protocol.NEWGAMEREQUEST)) {
 				
 				RequestMatchHandler.getInstace().addPlayer(this);
@@ -210,8 +213,11 @@ public class ClientHandler implements Runnable{
 			
 			do {
 				
-				if(in == null || out == null)
+				if(in == null || out == null || client.isClosed())
+				{
+					printConnectionLost();
 					return null ;
+				}
 				
 				message = in.readLine();
 				
@@ -240,10 +246,8 @@ public class ClientHandler implements Runnable{
 				System.out.println("[CLIENTHANDLER] Unknown sender -> receive: " + message);
 		
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			closeStreams();
-			
+			printConnectionLost();
+			return null ;
 		}
 		return message ;
 	}
@@ -257,6 +261,9 @@ public class ClientHandler implements Runnable{
 			if(out != null)
 				out.close(); 
 			out = null ;
+			if(client != null && !client.isClosed())
+				client.close();
+			client = null ;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

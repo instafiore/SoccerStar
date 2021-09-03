@@ -46,8 +46,11 @@ public class Protocol {
 	public static final String USERNAMEGUEST = "The username guest is" ;
 	public static final String ITSTHETURNOF = "It's the turn of" ;
 	public static final String ITSYOURTURN = "It's your turn" ;
-	public static final String ITSNOTYOURTURN = "It's not your turn";
+	public static final String ITSNOTYOURTURN = "It's not your turn" ;
 	public static final String TYPEOFLINEUP = "Type of lineup" ;
+	public static final String NOBALLTOOK = "You didn't take a ball" ;
+	public static final String NOTYOURBALL = "That is not your ball" ;
+	public static final String NOTALLARESTOPPED = "Every ball is not stopped yet" ;
 	
 	public static ArrayList<String> protocolMatch(){
 		

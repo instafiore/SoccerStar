@@ -247,9 +247,7 @@ public class MatchClient extends Task<Boolean>{
 		
 		if(!message.equals(Protocol.GAMESTARTED))
 			return ERROR;
-		
-		
-		System.out.println("[MATCHCLIENT] Setting message: "+Protocol.GAMESTARTED);
+
 		
 		showView();
 		setMatch_activated(true);
@@ -276,9 +274,14 @@ public class MatchClient extends Task<Boolean>{
 				return null ;
 			}
 			
-			if(!message.equals(Protocol.USERNAMEGUEST))
-				System.out.println("[MATCHCLIENT] "+message);
-			
+			if( message.equals(Protocol.GAMESTARTED) )
+				System.out.println("[MATCHCLIENT] Setting message: "+message);
+			else if(message.equals(Protocol.ITSTHETURNOF))
+				System.out.println("[MATCHCLIENT] Setting message: "+Protocol.ITSTHETURNOF+" -> "+message);
+			else if(message.equals(Protocol.USERNAMEGUEST))
+				System.out.println("[MATCHCLIENT] Setting message: "+Protocol.USERNAMEGUEST+" -> "+usernameGuest);
+			else if(!message.equals(Protocol.MOVEBALL))
+				System.out.println("[MATCHCLIENT] Match message: "+message);
 			
 		} catch (IOException e) {
 			
@@ -310,26 +313,41 @@ public class MatchClient extends Task<Boolean>{
 			}
 			
 			
-			System.out.print("[MATCHCLIENT] Match message: "+message);
-			
 			if(message.equals(Protocol.MOVEBALL)) {
 				
-				message = read() ;
-				if(message == null)
+				String otherPartOfMessage = read() ;
+				
+				if(otherPartOfMessage == null)
 				{
 					setMatch_activated(false);
 					return false;
 				}
 				
-				System.out.println(usernameGuest+" -> "+message);
+				message ="[MATCHCLIENT] "+ message +": " + usernameGuest + " -> " + otherPartOfMessage ;
 				
-				String[] stringa = message.split(";");
 				
-				double xPos = Protocol.parseCoordinates(stringa[0])[0] ;
-				double yPos = Protocol.parseCoordinates(stringa[0])[1] ;
+				System.out.println(message);
 				
-				double xVel = Protocol.parseCoordinates(stringa[1])[0] * -1  ;
-				double yVel = Protocol.parseCoordinates(stringa[1])[1] ;
+				String[] stringa = otherPartOfMessage.split(";");
+				
+				double xPos  = 0 ;
+				double yPos = 0 ;
+				double xVel = 0 ;
+				double yVel = 0 ;
+				
+				try {
+					
+					xPos = Protocol.parseCoordinates(stringa[0])[0] ;
+					yPos = Protocol.parseCoordinates(stringa[0])[1] ;
+					xVel = Protocol.parseCoordinates(stringa[1])[0] * -1  ;
+					yVel = Protocol.parseCoordinates(stringa[1])[1] ;
+					
+				} catch (Exception e) {
+					System.out.println("[MATCHCLIENT] NOT A NUMBER");
+					client.sendMessage(Protocol.CONNECTION_LOST);
+					setMatch_activated(false);
+					return false;
+				}
 				
 				xPos+= Settings.DIMENSIONSTANDARDBALL;
 				yPos+= Settings.DIMENSIONSTANDARDBALL;
@@ -339,7 +357,18 @@ public class MatchClient extends Task<Boolean>{
 				Ball b = matchHandler.tookBall(xPos, yPos);
 				
 				if(b == null || b.getPlayer() == 1 || matchHandler.getTurn()) {
-					return false;
+					if(b == null )
+					{
+						System.out.println("B NULL");
+						setMatch_activated(false);
+						return true;
+					}
+					if(b.getPlayer() == 1 )
+						System.out.println("PLAYER = 1");
+					if(matchHandler.getTurn() )
+						System.out.println("MY TURN NOT HIS");
+					setMatch_activated(false);
+					return true;
 				}
 				
 				b.setVelocity(new VelocityNoSync(xVel, yVel));
@@ -349,11 +378,9 @@ public class MatchClient extends Task<Boolean>{
 			else if(message.equals(Protocol.CONNECTION_LOST)){
 				
 				setMatch_activated(false);
-				System.out.println();
 				return true;
 			}else if(message.equals(Protocol.RELOADING_APP) || message.equals(Protocol.GENERALERROR)){
 				setMatch_activated(false);
-				System.out.println();
 				return false;
 			}
 		}

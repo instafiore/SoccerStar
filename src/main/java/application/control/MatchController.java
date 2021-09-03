@@ -46,7 +46,7 @@ public class MatchController implements EventHandler<MouseEvent>{
 		this.matchView = matchView ;
 	}
 	
-	public MatchHandler getBallManager() {
+	public MatchHandler getMatchHandler() {
 		return matchHandler;
 	}
 
@@ -70,14 +70,24 @@ public class MatchController implements EventHandler<MouseEvent>{
 				ballTook.setColor(Ball.TOOK);
 			}
 			else {
+				ballTook = null ;
 				initialX = null;
 				initialY = null;
-				System.out.println("[CLIENT] IS NOT YOUR TURN");
+				if(!matchHandler.getTurn()) {
+					System.out.println("[CLIENT] "+Protocol.ITSNOTYOURTURN);
+				}else if(ballTook == null ) {
+					System.out.println("[CLIENT] "+Protocol.NOBALLTOOK);
+				}else if(ballTook.getPlayer() != 1) {
+					System.out.println("[CLIENT] "+Protocol.NOTYOURBALL);
+				}else if(!matchHandler.allStopped()) {
+					System.out.println("[CLIENT] "+Protocol.NOTALLARESTOPPED);
+				}
+				
 			}
 		}
 		else if(event.getEventType() == MouseEvent.MOUSE_DRAGGED) {
 			
-			if(initialX == null)
+			if(ballTook == null )
 				return;
 			
 			double finalX = event.getX();
@@ -96,38 +106,37 @@ public class MatchController implements EventHandler<MouseEvent>{
 			return;
 		}else if(event.getEventType() == MouseEvent.MOUSE_RELEASED) {
 			
-			if(ballTook!= null && initialX != null) {
-				
-				double finalX = event.getX();
-				double finalY = event.getY();
-				
-				VectorFioreNoSync length = VectorFioreNoSync.sub(new VectorFioreNoSync(initialX, initialY), new VectorFioreNoSync(finalX, finalY));
-
-				if(length.getMagnitude() > Settings.MAXIMUMVELOCITY)
-					length.setMag(Settings.MAXIMUMVELOCITY);
-				
-				VelocityNoSync v = new VelocityNoSync(length.getX(),length.getY()) ;
-				
-				v.mult(150.0);
-				
-				ballTook.setVelocity(v);
-				ballTook.setColor(Ball.BLUE);
-				
-				
-				String message = ballTook.getPosition().getX() + "&" + ballTook.getPosition().getY() + ";" + ballTook.getVelocity().getX() + "&"+ ballTook.getVelocity().getY();
-				
-				Client.getInstance().sendMessage(Protocol.MOVEBALL);
-				Client.getInstance().sendMessage(message);
-				
-				matchHandler.setTurn(false);
-				
-				initialX = null;
-				initialY = null;
-				ballTook = null;
-				matchView.setLine(null);
-			
+			if(ballTook == null ) 
 				return;
-			}
+			
+			double finalX = event.getX();
+			double finalY = event.getY();
+			
+			VectorFioreNoSync length = VectorFioreNoSync.sub(new VectorFioreNoSync(initialX, initialY), new VectorFioreNoSync(finalX, finalY));
+
+			if(length.getMagnitude() > Settings.MAXIMUMVELOCITY)
+				length.setMag(Settings.MAXIMUMVELOCITY);
+			
+			VelocityNoSync v = new VelocityNoSync(length.getX(),length.getY()) ;
+			
+			v.mult(150.0);
+			
+			ballTook.setVelocity(v);
+			ballTook.setColor(Ball.BLUE);
+			
+			
+			String message = ballTook.getPosition().getX() + "&" + ballTook.getPosition().getY() + ";" + ballTook.getVelocity().getX() + "&"+ ballTook.getVelocity().getY();
+			
+			Client.getInstance().sendMessage(Protocol.MOVEBALL);
+			Client.getInstance().sendMessage(message);
+			
+			matchHandler.setTurn(false);
+			
+			initialX = null;
+			initialY = null;
+			ballTook = null;
+			matchView.setLine(null);
+			
 		}
 	}
 }

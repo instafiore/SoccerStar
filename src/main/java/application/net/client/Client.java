@@ -7,15 +7,10 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
-
-import org.springframework.core.task.SyncTaskExecutor;
-
-import application.SceneHandler;
 import application.Settings;
 import application.control.MatchSucceedController;
 import application.model.game.entity.Message;
 import application.net.common.Protocol;
-import javafx.animation.AnimationTimer;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 
@@ -63,6 +58,11 @@ public class Client extends Service<Message>{
 	public MatchClient getCurrentMatch() {
 		return currentMatch;
 	}
+	
+	public int getCurrentState() {
+		return currentState;
+	}
+
 	public void setCurrentMatch(MatchClient currentMatch) {
 		this.currentMatch = currentMatch;
 	}

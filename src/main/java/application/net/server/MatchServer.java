@@ -61,15 +61,17 @@ public class MatchServer implements Runnable {
 		
 		matchHandler = new MatchHandler();
 		
-		try {
-			in1 = new BufferedReader(new InputStreamReader(player1.getClient().getInputStream()));
-			in2 = new BufferedReader(new InputStreamReader(player2.getClient().getInputStream()));
-			out1 = new PrintWriter(new BufferedOutputStream(player1.getClient().getOutputStream()),true);
-			out2 = new PrintWriter(new BufferedOutputStream(player2.getClient().getOutputStream()),true);
+		
+//			in1 = new BufferedReader(new InputStreamReader(player1.getClient().getInputStream()));
+//			in2 = new BufferedReader(new InputStreamReader(player2.getClient().getInputStream()));
+//			out1 = new PrintWriter(new BufferedOutputStream(player1.getClient().getOutputStream()),true);
+//			out2 = new PrintWriter(new BufferedOutputStream(player2.getClient().getOutputStream()),true);
 			
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+			in1 = player1.getIn();
+			in2 = player2.getIn();
+			out1 = player1.getOut();
+			out2 = player2.getOut();
+			
 		matchActive = true ;
 	}
 
@@ -245,15 +247,15 @@ public class MatchServer implements Runnable {
 					
 					if(i == 1) 
 					{
-						System.out.println("[Player 1] -> "+ Protocol.CONNECTION_LOST);
+						System.out.println("[MATCHSERVER] Player 1 -> "+ Protocol.CONNECTION_LOST);
 						sendMessage(Protocol.CONNECTION_LOST, i);
-						notifyClients(NOONEISDISCONNETED);
+						notifyClients(DISCONNECTEDPLAYER1);
 					}
 					else 
 					{
-						System.out.println("[Player 2] -> "+ Protocol.CONNECTION_LOST);
+						System.out.println("[MATCHSERVER] Player 2 -> "+ Protocol.CONNECTION_LOST);
 						sendMessage(Protocol.CONNECTION_LOST, i);
-						notifyClients(NOONEISDISCONNETED);
+						notifyClients(DISCONNECTEDPLAYER2);
 					}
 					
 				}
@@ -263,13 +265,13 @@ public class MatchServer implements Runnable {
 					
 					if(i == 1) 
 					{
-						System.out.println("[Player 1] -> "+ Protocol.CONNECTION_LOST);
+						System.out.println("[MATCHSERVER] Player 1 -> "+ Protocol.LEFTGAME);
 						sendMessage(Protocol.CONNECTION_LOST, i);
 						notifyClients(NOONEISDISCONNETED);
 					}
 					else 
 					{
-						System.out.println("[Player 2] -> "+ Protocol.CONNECTION_LOST);
+						System.out.println("[MATCHSERVER] Player 2 -> "+ Protocol.LEFTGAME);
 						sendMessage(Protocol.CONNECTION_LOST, i);
 						notifyClients(NOONEISDISCONNETED);
 					}
@@ -292,7 +294,7 @@ public class MatchServer implements Runnable {
 							return ;
 						
 						}
-						System.out.print("[Player 1] -> ");
+						System.out.println("[MATCHSERVER] "+Protocol.MOVEBALL+ " player: "+username1+" -> " +message);
 						
 					}else {
 						message = read2();
@@ -304,10 +306,10 @@ public class MatchServer implements Runnable {
 							return ;
 						
 						}
-						System.out.print("[Player 2] -> ");
+						System.out.println("[MATCHSERVER] "+Protocol.MOVEBALL+ " player: "+username2+" -> " +message);
 					}
 					
-					System.out.println(Protocol.MOVEBALL+ " -> " +message);
+					
 					
 					String[] stringa = message.split(";");
 					
@@ -327,8 +329,22 @@ public class MatchServer implements Runnable {
 					Ball b = matchHandler.tookBall(xPos, yPos);
 					
 					if(b == null) {
-						// Error
-						return;
+						
+						if(i == 1) 
+						{
+							System.out.println("[MATCHSERVER] Player 1 -> "+ Protocol.CONNECTION_LOST);
+							sendMessage(Protocol.CONNECTION_LOST, 1);
+							sendMessage(Protocol.RELOADING_APP, 2);
+							notifyClients(DISCONNECTEDPLAYER1);
+						}
+						else 
+						{
+							System.out.println("[MATCHSERVER] Player 2 -> "+ Protocol.CONNECTION_LOST);
+							sendMessage(Protocol.CONNECTION_LOST, 2);
+							sendMessage(Protocol.RELOADING_APP, 1);
+							notifyClients(DISCONNECTEDPLAYER2);
+						}
+						return ;
 					}
 					
 					if(b.getPlayer() == i && ( i == 1 && matchHandler.getTurn() || i == 2 && !matchHandler.getTurn() ) )
@@ -337,6 +353,7 @@ public class MatchServer implements Runnable {
 						
 						if(i == 2)
 							xVel *= -1 ;
+						
 						b.setVelocity(new VelocityNoSync(xVel, yVel));
 						while(!matchHandler.allStopped())
 							matchHandler.moveBalls(field);
@@ -356,16 +373,14 @@ public class MatchServer implements Runnable {
 						sendMessage(Protocol.CONNECTION_LOST, 1);
 						sendMessage(Protocol.RELOADING_APP, 2);
 						notifyClients(DISCONNECTEDPLAYER1);
-						return ;
 						
 					}else {
 						sendMessage(Protocol.CONNECTION_LOST, 2);
 						sendMessage(Protocol.RELOADING_APP, 1);
 						notifyClients(DISCONNECTEDPLAYER2);
-						return ;
 					}
 					
-				
+					return ; 
 				}else if(p.getKey().equals(Protocol.TYPEOFLINEUP)) {
 					
 					i = p.getValue();
@@ -385,6 +400,7 @@ public class MatchServer implements Runnable {
 					}
 					
 				}
+
 				
 				try {
 					Thread.sleep(Settings.REFRESHSERVER);
@@ -414,14 +430,14 @@ public class MatchServer implements Runnable {
 			
 			mess = in1.readLine();
 			i = 1 ;
-			if(mess == null)
+			if(mess == null || mess.equals(Protocol.CONNECTION_LOST))
 				return new Pair<String, Integer>(null, i);
 			return new Pair<String, Integer>(mess, i);
 		
 		}else if(in2.ready()) {
 			mess = in2.readLine();
 			i = 2 ;
-			if(mess == null)
+			if(mess == null || mess.equals(Protocol.CONNECTION_LOST))
 				return new Pair<String, Integer>(null, i);
 			return new Pair<String, Integer>(mess, i);
 		}
@@ -515,21 +531,6 @@ public class MatchServer implements Runnable {
 		
 		String message = null ;
 		
-		String disconnected = whoIsDisconnected() ;
-		
-		if(!disconnected.equals(NOONEISDISCONNETED) )
-		{
-			if(!whoIsDisconnected().equals(DISCONNECTEDBOTH))
-			{
-				if(whoIsDisconnected().equals(DISCONNECTEDPLAYER1))
-					out2.println(Protocol.LEFTGAME);
-				else 
-					out1.println(Protocol.LEFTGAME);
-			}
-			
-			return null;
-		}
-		
 		try {
 			message = in1.readLine();
 			
@@ -559,20 +560,6 @@ public class MatchServer implements Runnable {
 	public String read2() {
 
 		String message = null ;
-
-		String disconnected = whoIsDisconnected() ;
-		
-		if(!disconnected.equals(NOONEISDISCONNETED) )
-		{
-			if(!whoIsDisconnected().equals(DISCONNECTEDBOTH))
-			{
-				if(whoIsDisconnected().equals(DISCONNECTEDPLAYER1))
-					out2.println(Protocol.LEFTGAME);
-				else 
-					out1.println(Protocol.LEFTGAME);
-			}
-			return null;
-		}
 		
 		try {
 			message = in2.readLine();
@@ -628,7 +615,23 @@ public class MatchServer implements Runnable {
 			e.printStackTrace();
 		}
 		
+		if(player1 != null && !player1.getClient().isClosed())
+			try {
+				player1.getClient().close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		player1 = null ;
 		
+		if(player2 != null && !player2.getClient().isClosed())
+			try {
+				player2.getClient().close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		player2 = null ;
 		
 	}
 	
@@ -644,6 +647,15 @@ public class MatchServer implements Runnable {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		if(player1 != null && !player1.getClient().isClosed())
+			try {
+				player1.getClient().close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		player1 = null ;
 	}
 	
 	private void closeStream2() {
@@ -658,6 +670,15 @@ public class MatchServer implements Runnable {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		if(player2 != null && !player2.getClient().isClosed())
+			try {
+				player2.getClient().close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		player2 = null ;
 	}
 	
 	private void notifyClients(String whoIsDisconnected) {
