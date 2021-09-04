@@ -4,6 +4,7 @@ import java.awt.image.RescaleOp;
 import java.util.ArrayList;
 
 import application.model.game.entity.Ball;
+import application.model.game.entity.DataMatch;
 import application.model.game.entity.Field;
 import application.model.game.entity.Result;
 import application.model.game.physics.VectorFioreNoSync;
@@ -18,13 +19,14 @@ public class MatchHandler {
 	private double height;
 	private boolean turn ;
 	private Result result;
-
+	private DataMatch dataMatch ;
 	
 	boolean f = true;
 	
-	public MatchHandler() {
+	public MatchHandler(DataMatch dataMatch) {
 		balls = new ArrayList<Ball>();
 		result = new Result() ;
+		this.dataMatch = dataMatch ;
 	}
 	
 	public void moveBalls(Field field) {

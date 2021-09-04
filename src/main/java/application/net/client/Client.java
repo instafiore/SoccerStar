@@ -8,9 +8,11 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import application.Settings;
+import application.control.MatchController;
 import application.control.MatchSucceedController;
 import application.model.game.entity.Message;
 import application.net.common.Protocol;
+import application.view.MatchView;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 
@@ -204,13 +206,40 @@ public class Client extends Service<Message>{
 		this.start();
 	}
 	
-	public void startMatch() {
+	public void startMatchField1() {
 		
 		if(currentState == IN_GAME)
 			return;
 		
+		MatchController.getInstance().getMatchView().setField(MatchView.FIELD1);
 		setCurrentState(IN_GAME);
-		sendMessage(Protocol.NEWGAMEREQUEST);
+		sendMessage(Protocol.NEWGAMEREQUESTFIELD1);
+		MatchClient match = new MatchClient(this);
+		setCurrentMatch(match);
+		match.setOnSucceeded(new MatchSucceedController());
+		
+	}
+	
+	public void startMatchField2() {
+			
+			if(currentState == IN_GAME)
+				return;
+			MatchController.getInstance().getMatchView().setField(MatchView.FIELD2);
+			setCurrentState(IN_GAME);
+			sendMessage(Protocol.NEWGAMEREQUESTFIELD2);
+			MatchClient match = new MatchClient(this);
+			setCurrentMatch(match);
+			match.setOnSucceeded(new MatchSucceedController());
+			
+		}
+	
+	public void startMatchField3() {
+		
+		if(currentState == IN_GAME)
+			return;
+		MatchController.getInstance().getMatchView().setField(MatchView.FIELD3);
+		setCurrentState(IN_GAME);
+		sendMessage(Protocol.NEWGAMEREQUESTFIELD3);
 		MatchClient match = new MatchClient(this);
 		setCurrentMatch(match);
 		match.setOnSucceeded(new MatchSucceedController());

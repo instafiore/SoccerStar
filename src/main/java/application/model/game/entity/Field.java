@@ -2,14 +2,16 @@ package application.model.game.entity;
 
 public class Field {
 	
+	private String name ;
 	private double borderHorizontal ;
 	private double borderVertical ;
 	private double width ;
 	private double height ;
 	private double mu ;
 		
-	public Field(double borderHorizontal, double borderVertical, double width, double height,double mu) {
+	public Field(String name , double borderHorizontal, double borderVertical, double width, double height,double mu) {
 		super();
+		this.name = name ;
 		this.borderHorizontal = borderHorizontal;
 		this.borderVertical = borderVertical;
 		this.width = width;
@@ -17,6 +19,14 @@ public class Field {
 		this.mu = mu ;
 	}
 
+	public String getName() {
+		return name;
+	}
+	
+	public void setName(String name) {
+		this.name = name;
+	}
+	
 	public double getBorderHorizontal() {
 		return borderHorizontal;
 	}

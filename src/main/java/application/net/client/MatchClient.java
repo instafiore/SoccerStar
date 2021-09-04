@@ -18,6 +18,7 @@ import application.model.game.handler.MatchHandler;
 import application.model.game.physics.VectorFioreNoSync;
 import application.model.game.physics.VelocityNoSync;
 import application.net.common.Protocol;
+import application.view.Field;
 import javafx.concurrent.Task;
 
 public class MatchClient extends Task<Boolean>{
@@ -33,8 +34,9 @@ public class MatchClient extends Task<Boolean>{
 	private static final int NOERROR = 1 ;
 	private static final int NOERRORBUTLEFT = 2 ;
 	private ParseMatchInformation parseMatchInformation ;
+	private int field ;
 	
-	public MatchClient(Client client) {
+	public MatchClient(Client client ) {
 		super();
 		this.client = client;
 		in = client.getIn();

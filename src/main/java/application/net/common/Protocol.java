@@ -36,7 +36,9 @@ public class Protocol {
 	
 	// Match
 	public static final String PREPARINGMATCH = "Let's prepare the match" ;
-	public static final String NEWGAMEREQUEST = "A new game request" ;
+	public static final String NEWGAMEREQUESTFIELD1 = "A new game request on field 1" ;
+	public static final String NEWGAMEREQUESTFIELD2 = "A new game request on field 2" ;
+	public static final String NEWGAMEREQUESTFIELD3 = "A new game request on field 3" ;
 	public static final String MOVEBALL = "The player moved the ball" ; 
 	public static final String SCORED = "The player scored" ;
 	public static final String LEFTGAME = "The player left the game" ;

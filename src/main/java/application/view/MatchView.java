@@ -31,17 +31,30 @@ public class MatchView extends StackPane{
 	private Line line = null;
 	private Field field = null ;
 	
+	public static final int FIELD1 = 0 ;
+	public static final int FIELD2 = 1 ;
+	public static final int FIELD3 = 2 ;
+	
+
+	
 	public MatchView() {
 		canvas = new Canvas();
 		canvas.widthProperty().bind(this.widthProperty());
 		canvas.heightProperty().bind(this.heightProperty());
 		this.getChildren().add(canvas);
-		Double borderHorizontal = 10.0 ;
-	    Double borderVertical = 45.0 ;
-	    
-		fieldImg = new Image(getClass().getResourceAsStream("/application/view/field.png"),Settings.FIELDWIDTHFRAME - borderVertical * 2 , Settings.FIELDHEIGHTFRAME - borderHorizontal * 2 , false , true);
-		field = new Field(borderHorizontal, borderVertical, Settings.FIELDWIDTHFRAME, Settings.FIELDHEIGHTFRAME, fieldImg , 15.0);
+		
+	}
 	
+	public void setField(int idField) {
+		
+		switch (idField) {
+		case FIELD1:
+			fieldImg = new Image(getClass().getResourceAsStream("/application/view/field.png"),Settings.FIELDWIDTHFRAME -  Settings.BORDERVERTICAL * 2 , Settings.FIELDHEIGHTFRAME - Settings.BORDERHORIZONTAL * 2 , false , true);
+			field = new Field(Settings.FIELD1 , Settings.BORDERHORIZONTAL, Settings.BORDERVERTICAL, Settings.FIELDWIDTHFRAME, Settings.FIELDHEIGHTFRAME, fieldImg , Settings.FRICTIONFIELD1);
+			break;
+		default:
+			break;
+		}
 	}
 	
 	public Field getField() {

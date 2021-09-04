@@ -29,7 +29,7 @@ public class MainPageController {
 
     @FXML
     void onClick_field_button_main_page(ActionEvent event) {
-    	Client.getInstance().startMatch();
+    	Client.getInstance().startMatchField1();
     }
 
     @FXML

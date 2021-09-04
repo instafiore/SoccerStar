@@ -53,6 +53,9 @@ public class MatchController implements EventHandler<MouseEvent>{
 		this.matchView = matchView ;
 	}
 	
+	public MatchView getMatchView() {
+		return matchView;
+	}
 
 
 	public void update() {

@@ -14,6 +14,7 @@ import com.sun.prism.paint.Stop;
 
 import application.Settings;
 import application.model.game.entity.Ball;
+import application.model.game.entity.DataMatch;
 import application.model.game.entity.Field;
 import application.model.game.entity.Lineup;
 import application.model.game.entity.ParseMatchInformation;
@@ -55,6 +56,7 @@ public class MatchServer implements Runnable {
 	private boolean matchActive = false ;
 	private String informationMessagePlayer1 = null ;
 	private String informationMessagePlayer2 = null ;
+	private DataMatch dataMatch = null ;
 	
 	public MatchServer(ClientHandler player1, ClientHandler player2 , Field field) {
 		super();
@@ -66,7 +68,8 @@ public class MatchServer implements Runnable {
 		username1 = player1.getUsername();
 		username2 = player2.getUsername();
 		
-		matchHandler = new MatchHandler();
+		dataMatch = new DataMatch();
+		matchHandler = new MatchHandler(dataMatch);
 
 		in1 = player1.getIn();
 		in2 = player2.getIn();
@@ -318,8 +321,8 @@ public class MatchServer implements Runnable {
 					double yVel = Protocol.parseCoordinates(stringa[1])[1];
 					
 					
-					xPos+= Settings.DIMENSIONSTANDARDBALL;
-					yPos+= Settings.DIMENSIONSTANDARDBALL;
+					xPos += Settings.DIMENSIONSTANDARDBALL;
+					yPos += Settings.DIMENSIONSTANDARDBALL;
 			
 					if(i == PLAYER2)
 						xPos = Settings.FIELDWIDTHFRAME - xPos ;

@@ -134,9 +134,9 @@ public class ClientHandler implements Runnable{
 			if(message == null )
 				return;
 		
-			if(message.equals(Protocol.NEWGAMEREQUEST)) {
+			if(message.equals(Protocol.NEWGAMEREQUESTFIELD1)) {
 				
-				RequestMatchHandler.getInstace().addPlayer(this);
+				RequestMatchHandler.getInstace().addPlayerField1(this);
 				try {
 					
 					synchronized (this) {
@@ -148,7 +148,36 @@ public class ClientHandler implements Runnable{
 					e.printStackTrace();
 				}
 				
-			}else if(message.equals(Protocol.REGISTRATIONREQUEST)) {
+			}else if(message.equals(Protocol.NEWGAMEREQUESTFIELD2)) {
+				
+				RequestMatchHandler.getInstace().addPlayerField2(this);
+				try {
+					
+					synchronized (this) {
+						this.wait();
+					}
+					
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+			}else if(message.equals(Protocol.NEWGAMEREQUESTFIELD3)) {
+				
+				RequestMatchHandler.getInstace().addPlayerField3(this);
+				try {
+					
+					synchronized (this) {
+						this.wait();
+					}
+					
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+			}
+			else if(message.equals(Protocol.REGISTRATIONREQUEST)) {
 				
 				sendMessage(Protocol.RELOADING_APP);
 				printConnectionLost();
