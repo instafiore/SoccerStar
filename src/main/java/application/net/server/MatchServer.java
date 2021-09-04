@@ -41,11 +41,15 @@ public class MatchServer implements Runnable {
 	private Field field ;
 	private Lineup lineup1 ;
 	private Lineup lineup2 ;
+	private boolean gotInformationMessage = false ;
 	
 	private static final String DISCONNECTEDBOTH = "Both are disconneted" ;
 	private static final String DISCONNECTEDPLAYER1 = "Player1 is disconnected" ;
 	private static final String DISCONNECTEDPLAYER2 = "Player2 is disconnected" ;
 	private static final String NOONEISDISCONNETED = "No one is disconnected" ;
+	
+	private static final int PLAYER1 = Ball.BLUE ;
+	private static final int PLAYER2 = Ball.RED ;
 	
 	private Integer[] typeOfLineup = new Integer[2] ;
 	private boolean matchActive = false ;
@@ -61,17 +65,11 @@ public class MatchServer implements Runnable {
 		username2 = player2.getUsername();
 		
 		matchHandler = new MatchHandler();
-		
-		
-//			in1 = new BufferedReader(new InputStreamReader(player1.getClient().getInputStream()));
-//			in2 = new BufferedReader(new InputStreamReader(player2.getClient().getInputStream()));
-//			out1 = new PrintWriter(new BufferedOutputStream(player1.getClient().getOutputStream()),true);
-//			out2 = new PrintWriter(new BufferedOutputStream(player2.getClient().getOutputStream()),true);
-			
-			in1 = player1.getIn();
-			in2 = player2.getIn();
-			out1 = player1.getOut();
-			out2 = player2.getOut();
+
+		in1 = player1.getIn();
+		in2 = player2.getIn();
+		out1 = player1.getOut();
+		out2 = player2.getOut();
 			
 		matchActive = true ;
 	}
@@ -89,18 +87,18 @@ public class MatchServer implements Runnable {
 			matchHandler.setTurn( new Random().nextBoolean() );
 	
 			
-			sendMessage(Protocol.USERNAMEGUEST, 1);
-			sendMessage(username1, 1);
+			sendMessage(Protocol.USERNAMEGUEST, PLAYER1);
+			sendMessage(username1, PLAYER1);
 			
 			
-			sendMessage(Protocol.USERNAMEGUEST, 2);
-			sendMessage(username2, 2);
+			sendMessage(Protocol.USERNAMEGUEST, PLAYER2);
+			sendMessage(username2, PLAYER2);
 			
 			
 			message = read1(); 
 			if(message == null)
 			{
-				sendMessage(Protocol.CONNECTION_LOST, 1);
+				sendMessage(Protocol.CONNECTION_LOST, PLAYER1);
 				notifyClients(DISCONNECTEDPLAYER1);
 				return ;
 			
@@ -108,8 +106,8 @@ public class MatchServer implements Runnable {
 			
 			if(!message.equals(Protocol.TYPEOFLINEUP)) {
 				
-				sendMessage(Protocol.CONNECTION_LOST, 1);
-				sendMessage(Protocol.RELOADING_APP, 2);
+				sendMessage(Protocol.CONNECTION_LOST, PLAYER1);
+				sendMessage(Protocol.RELOADING_APP, PLAYER2);
 				notifyClients(DISCONNECTEDPLAYER1);
 				return;
 			}
@@ -117,8 +115,8 @@ public class MatchServer implements Runnable {
 			message = read1();
 			if(message == null)
 			{
-				sendMessage(Protocol.CONNECTION_LOST, 1);
-				sendMessage(Protocol.RELOADING_APP, 2);
+				sendMessage(Protocol.CONNECTION_LOST, PLAYER1);
+				sendMessage(Protocol.RELOADING_APP, PLAYER2);
 				notifyClients(DISCONNECTEDPLAYER1);
 				return ;
 			}
@@ -129,8 +127,8 @@ public class MatchServer implements Runnable {
 				
 				System.out.println("[MATCHSERVER] Type of lineup1 is not a number ");
 			
-				sendMessage(Protocol.CONNECTION_LOST, 1);
-				sendMessage(Protocol.RELOADING_APP, 2);
+				sendMessage(Protocol.CONNECTION_LOST, PLAYER1);
+				sendMessage(Protocol.RELOADING_APP, PLAYER2);
 				notifyClients(DISCONNECTEDPLAYER1);
 				return ;
 			}
@@ -141,16 +139,16 @@ public class MatchServer implements Runnable {
 			
 			if(message == null)
 			{
-				sendMessage(Protocol.CONNECTION_LOST, 2);
-				sendMessage(Protocol.RELOADING_APP, 1);
+				sendMessage(Protocol.CONNECTION_LOST, PLAYER2);
+				sendMessage(Protocol.RELOADING_APP, PLAYER1);
 				notifyClients(DISCONNECTEDPLAYER2);
 				return ;
 			
 			}
 			
 			if(!message.equals(Protocol.TYPEOFLINEUP)) {
-				sendMessage(Protocol.CONNECTION_LOST, 2);
-				sendMessage(Protocol.RELOADING_APP, 1);
+				sendMessage(Protocol.CONNECTION_LOST, PLAYER2);
+				sendMessage(Protocol.RELOADING_APP, PLAYER1);
 				notifyClients(DISCONNECTEDPLAYER2);
 				return;
 			}
@@ -159,8 +157,8 @@ public class MatchServer implements Runnable {
 			
 			if(message == null)
 			{
-				sendMessage(Protocol.CONNECTION_LOST, 2);
-				sendMessage(Protocol.RELOADING_APP, 1);
+				sendMessage(Protocol.CONNECTION_LOST, PLAYER2);
+				sendMessage(Protocol.RELOADING_APP, PLAYER1);
 				notifyClients(DISCONNECTEDPLAYER2);
 				return ;
 			
@@ -172,8 +170,8 @@ public class MatchServer implements Runnable {
 				
 				System.out.println("[MATCHSERVER] Type of lineup2 is not a number ");
 				
-				sendMessage(Protocol.CONNECTION_LOST, 2);
-				sendMessage(Protocol.RELOADING_APP, 1);
+				sendMessage(Protocol.CONNECTION_LOST, PLAYER2);
+				sendMessage(Protocol.RELOADING_APP, PLAYER1);
 				notifyClients(DISCONNECTEDPLAYER2);
 				return ;
 
@@ -215,10 +213,10 @@ public class MatchServer implements Runnable {
 			
 			System.out.println("[MATCHSERVER] "+Protocol.GAMESTARTED+" -> Player1: "+username1+" , Player2: "+username2);
 			
-			sendMessageAll(Protocol.INFORMATIONMATCHMESSAGE);
+			sendMessageAll(Protocol.STARTINFORMATIONMATCHMESSAGE);
 			
-			sendMessage(ParseMatchInformation.getString(matchHandler.getBalls(), matchHandler.getTurn() , 1), 2 );
-			sendMessage(ParseMatchInformation.getString(matchHandler.getBalls(), !matchHandler.getTurn(), 2), 1 );
+			sendMessage(ParseMatchInformation.getString(matchHandler.getBalls(), matchHandler.getTurn() , PLAYER1), PLAYER2 );
+			sendMessage(ParseMatchInformation.getString(matchHandler.getBalls(), !matchHandler.getTurn(), PLAYER2), PLAYER1 );
 			
 			while(whoIsDisconnected().equals(NOONEISDISCONNETED)) {
 					
@@ -226,36 +224,41 @@ public class MatchServer implements Runnable {
 				
 				Pair<String, Integer> p = getAction();
 				
-				if(p == null) {
+				if(p == null && !matchHandler.allStopped()) {
 					
-					sendMessageAll(Protocol.INFORMATIONMATCHMESSAGE);
+					sendMessageAll(Protocol.STARTINFORMATIONMATCHMESSAGE);
 					
-					sendMessage(ParseMatchInformation.getString(matchHandler.getBalls(), matchHandler.getTurn() , 1), 2 );
-					sendMessage(ParseMatchInformation.getString(matchHandler.getBalls(), !matchHandler.getTurn(), 2), 1 );
+					sendMessage(ParseMatchInformation.getString(matchHandler.getBalls(), matchHandler.getTurn() , PLAYER1), PLAYER2 );
+					sendMessage(ParseMatchInformation.getString(matchHandler.getBalls(), !matchHandler.getTurn(), PLAYER2), PLAYER1 );
+
 					
-				}else if(p.getKey() == null) {
+				}else if(p == null) 
+					continue ;
+				else if(p.getKey() == null) {
 					
 					i = p.getValue();
 					
-					if(i == 1) 
+					if(i == PLAYER1) 
 					{
 						System.out.println("[MATCHSERVER] Player 1 -> "+ Protocol.CONNECTION_LOST);
 						sendMessage(Protocol.CONNECTION_LOST, i);
 						notifyClients(DISCONNECTEDPLAYER1);
 					}
-					else 
+					else if( i == PLAYER2)
 					{
 						System.out.println("[MATCHSERVER] Player 2 -> "+ Protocol.CONNECTION_LOST);
 						sendMessage(Protocol.CONNECTION_LOST, i);
 						notifyClients(DISCONNECTEDPLAYER2);
 					}
 					
+					return ;
+					
 				}
-				if(p.getKey().equals(Protocol.LEFTGAME)) {
+				else if(p.getKey().equals(Protocol.LEFTGAME)) {
 					
 					i = p.getValue();
 					
-					if(i == 1) 
+					if(i == PLAYER1) 
 					{
 						System.out.println("[MATCHSERVER] Player 1 -> "+ Protocol.LEFTGAME);
 						sendMessage(Protocol.CONNECTION_LOST, i);
@@ -276,12 +279,12 @@ public class MatchServer implements Runnable {
 					
 					i = p.getValue();
 					
-					if(i == 1) {
+					if(i == PLAYER1) {
 						message = read1();
 						if(message == null)
 						{
-							sendMessage(Protocol.CONNECTION_LOST, 1);
-							sendMessage(Protocol.RELOADING_APP, 2);
+							sendMessage(Protocol.CONNECTION_LOST, PLAYER1);
+							sendMessage(Protocol.RELOADING_APP, PLAYER2);
 							notifyClients(DISCONNECTEDPLAYER1);
 							return ;
 						
@@ -292,8 +295,8 @@ public class MatchServer implements Runnable {
 						message = read2();
 						if(message == null)
 						{
-							sendMessage(Protocol.CONNECTION_LOST, 2);
-							sendMessage(Protocol.RELOADING_APP, 1);
+							sendMessage(Protocol.CONNECTION_LOST, PLAYER2);
+							sendMessage(Protocol.RELOADING_APP, PLAYER1);
 							notifyClients(DISCONNECTEDPLAYER2);
 							return ;
 						
@@ -315,44 +318,42 @@ public class MatchServer implements Runnable {
 					xPos+= Settings.DIMENSIONSTANDARDBALL;
 					yPos+= Settings.DIMENSIONSTANDARDBALL;
 			
-					if(i == 2)
+					if(i == PLAYER2)
 						xPos = Settings.FIELDWIDTHFRAME - xPos ;
 					
 					Ball b = matchHandler.tookBall(xPos, yPos);
 					
 					if(b == null) {
 						
-						if(i == 1) 
+						if(i == PLAYER1) 
 						{
 							System.out.println("[MATCHSERVER] Player 1 -> "+ Protocol.CONNECTION_LOST);
-							sendMessage(Protocol.CONNECTION_LOST, 1);
-							sendMessage(Protocol.RELOADING_APP, 2);
+							sendMessage(Protocol.CONNECTION_LOST, PLAYER1);
+							sendMessage(Protocol.RELOADING_APP, PLAYER2);
 							notifyClients(DISCONNECTEDPLAYER1);
 						}
 						else 
 						{
 							System.out.println("[MATCHSERVER] Player 2 -> "+ Protocol.CONNECTION_LOST);
-							sendMessage(Protocol.CONNECTION_LOST, 2);
-							sendMessage(Protocol.RELOADING_APP, 1);
+							sendMessage(Protocol.CONNECTION_LOST, PLAYER2);
+							sendMessage(Protocol.RELOADING_APP, PLAYER1);
 							notifyClients(DISCONNECTEDPLAYER2);
 						}
 						return ;
 					}
 					
-					if(b.getColor() == i && ( i == 1 && matchHandler.getTurn() || i == 2 && !matchHandler.getTurn() ) )
+					if(b.getColor() == i && ( i == PLAYER1 && matchHandler.getTurn() || i == PLAYER2 && !matchHandler.getTurn() ) )
 					{
 						matchHandler.setTurn(!matchHandler.getTurn());
 						
-						if(i == 2)
+						if(i == PLAYER2)
 							xVel *= -1 ;
 						
 						b.setVelocity(new VelocityNoSync(xVel, yVel));
-						while(!matchHandler.allStopped())
+	
+						do {
 							matchHandler.moveBalls(field);
-						
-						sendMessage(Protocol.MOVEBALL, i);
-						sendMessage(message, i);
-						
+						}while(!matchHandler.allStopped());
 					}
 					
 				}else if(p.getKey().equals(Protocol.MYUSERNAMEIS)) {
@@ -360,15 +361,15 @@ public class MatchServer implements Runnable {
 					
 					i = p.getValue();
 					
-					if(i == 1) {
+					if(i == PLAYER1) {
 						
-						sendMessage(Protocol.CONNECTION_LOST, 1);
-						sendMessage(Protocol.RELOADING_APP, 2);
+						sendMessage(Protocol.CONNECTION_LOST, PLAYER1);
+						sendMessage(Protocol.RELOADING_APP, PLAYER2);
 						notifyClients(DISCONNECTEDPLAYER1);
 						
 					}else {
-						sendMessage(Protocol.CONNECTION_LOST, 2);
-						sendMessage(Protocol.RELOADING_APP, 1);
+						sendMessage(Protocol.CONNECTION_LOST, PLAYER2);
+						sendMessage(Protocol.RELOADING_APP, PLAYER1);
 						notifyClients(DISCONNECTEDPLAYER2);
 					}
 					
@@ -377,22 +378,21 @@ public class MatchServer implements Runnable {
 					
 					i = p.getValue();
 					
-					if(i == 1) {
+					if(i == PLAYER1) {
 						
-						sendMessage(Protocol.CONNECTION_LOST, 1);
-						sendMessage(Protocol.RELOADING_APP, 2);
+						sendMessage(Protocol.CONNECTION_LOST, PLAYER1);
+						sendMessage(Protocol.RELOADING_APP, PLAYER2);
 						notifyClients(DISCONNECTEDPLAYER1);
 						return ;
 						
 					}else {
-						sendMessage(Protocol.CONNECTION_LOST, 2);
-						sendMessage(Protocol.RELOADING_APP, 1);
+						sendMessage(Protocol.CONNECTION_LOST, PLAYER2);
+						sendMessage(Protocol.RELOADING_APP, PLAYER1);
 						notifyClients(DISCONNECTEDPLAYER2);
 						return ;
 					}
 					
 				}
-
 				
 				try {
 					Thread.sleep(Settings.REFRESHCLIENT);
@@ -400,6 +400,7 @@ public class MatchServer implements Runnable {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+				
 			}
 			
 			sendMessageAll(Protocol.GAMEOVER);
@@ -421,14 +422,14 @@ public class MatchServer implements Runnable {
 		if(in1.ready()) {
 			
 			mess = in1.readLine();
-			i = Ball.BLUE ;
+			i = PLAYER1 ;
 			if(mess == null || mess.equals(Protocol.CONNECTION_LOST))
 				return new Pair<String, Integer>(null, i);
 			return new Pair<String, Integer>(mess, i);
 		
 		}else if(in2.ready()) {
 			mess = in2.readLine();
-			i = Ball.RED ;
+			i = PLAYER2 ;
 			if(mess == null || mess.equals(Protocol.CONNECTION_LOST))
 				return new Pair<String, Integer>(null, i);
 			return new Pair<String, Integer>(mess, i);
@@ -443,15 +444,20 @@ public class MatchServer implements Runnable {
 	{
 		String disconnected = whoIsDisconnected() ;
 		
-		if(sender == Ball.BLUE && out2 != null && !disconnected.equals(DISCONNECTEDPLAYER2)) 
+		if(sender == PLAYER1 && out2 != null && !disconnected.equals(DISCONNECTEDPLAYER2)) 
 		{
-			if(username1 != null && username2 != null)
-				System.out.println("[MATCHSERVER] Message from :"+username1+" to : "+username2+" , Message: "+message);
-			else
-				System.out.println("[MATCHSERVER] Message from : player1 to : player2 , Message: "+message);
+			if(!message.equals(Protocol.STARTINFORMATIONMATCHMESSAGE) && !gotInformationMessage) {
+				gotInformationMessage = false;
+				if(username1 != null && username2 != null)
+					System.out.println("[MATCHSERVER] Message from :"+username1+" to : "+username2+" , Message: "+message);
+				else
+					System.out.println("[MATCHSERVER] Message from : player1 to : player2 , Message: "+message);
+			}else
+				gotInformationMessage = true ;
+			
 			out2.println(message);
 		}
-		else if(out1 != null && !disconnected.equals(DISCONNECTEDPLAYER1))
+		else if(sender == PLAYER2 && out1 != null && !disconnected.equals(DISCONNECTEDPLAYER1))
 		{
 			if(username1 != null && username2 != null && !disconnected.equals(DISCONNECTEDPLAYER1))
 				System.out.println("[MATCHSERVER] Message from :"+username2+" to : "+username1+" , Message: "+message);

@@ -114,13 +114,12 @@ public class Client extends Service<Message>{
 	
 		case STEP_REGISTRATION:
 			return readRegistation(message);
-			
 		case STEP_LOGIN:
 			return readLogin(message);
-			
 		case IN_GAME:
 			return readIN_GAME(message);
-			
+		case IN_APP:
+			return readIN_APP(message);
 		default:
 			return new Message(Protocol.GENERALERROR);
 		}
@@ -181,6 +180,13 @@ public class Client extends Service<Message>{
 		return message;
 	}
 	
+	
+	public Message readIN_APP(String protocol) throws IOException {
+		Message message = null ;
+		//TODO
+		String mess = in.readLine();
+		return message ;
+	}
 	
 	public void connectToServer() {
 		

@@ -27,6 +27,8 @@ public class MainApplication extends Application{
 		MatchView matchView = new MatchView();
 		matchView.setPrefWidth(Settings.FIELDWIDTHFRAME);
 		matchView.setPrefHeight(Settings.FIELDHEIGHTFRAME);
+		
+	
 			
 		FXMLLoader fxmlLoader = new FXMLLoader(this.getClass().getResource(File.separator+"application"+File.separator+"view"+File.separator+"MenuMatchPane.fxml"));
 		

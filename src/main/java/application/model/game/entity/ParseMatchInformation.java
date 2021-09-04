@@ -43,9 +43,7 @@ public class ParseMatchInformation {
 				b = new Ball(new VectorFioreNoSync(x,y), new VelocityNoSync(0.0), Settings.DIMENSIONSTANDARDBALL , color) ;
 			else
 				b = new Ball(new VectorFioreNoSync(x,y), new VelocityNoSync(0.0), Settings.DIMENSIONOFBALLTOPLAY , color) ;
-			
-			b.setColor(color);
-			
+
 			balls.add(b);
 		}
 		
@@ -67,9 +65,9 @@ public class ParseMatchInformation {
 			
 			int color = b.getColor() ;
 			
-			if(player == 2)
+			if(player == Ball.RED)
 			{
-				x = Settings.FIELDWIDTHFRAME - x;
+				x = Settings.FIELDWIDTHFRAME - x - b.getRadius() * 2;
 				
 				switch (color) {
 				case Ball.BLUE:
@@ -82,7 +80,6 @@ public class ParseMatchInformation {
 					color = Ball.WHITE ;
 					break;
 				}
-				
 				
 			}
 			

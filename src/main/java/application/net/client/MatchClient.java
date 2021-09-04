@@ -96,8 +96,6 @@ public class MatchClient extends Task<Boolean>{
 			printConnectionLost();
 			return ERROR;
 		}
-						
-		System.out.println("[MATCHCLIENT] Setting message: "+Protocol.USERNAMEGUEST+" -> "+usernameGuest);
 		
 		message = read() ;
 		
@@ -128,7 +126,7 @@ public class MatchClient extends Task<Boolean>{
 			return ERROR;
 		}
 		
-		if(!message.equals(Protocol.INFORMATIONMATCHMESSAGE))
+		if(!message.equals(Protocol.STARTINFORMATIONMATCHMESSAGE))
 		{
 			printConnectionLost();
 			return ERROR;
@@ -163,14 +161,7 @@ public class MatchClient extends Task<Boolean>{
 				return null ;
 			}
 			
-			if( message.equals(Protocol.GAMESTARTED) )
-				System.out.println("[MATCHCLIENT] Setting message: "+message);
-			else if(message.equals(Protocol.ITSTHETURNOF))
-				System.out.println("[MATCHCLIENT] Setting message: "+Protocol.ITSTHETURNOF+" -> "+message);
-			else if(message.equals(Protocol.USERNAMEGUEST))
-				System.out.println("[MATCHCLIENT] Setting message: "+Protocol.USERNAMEGUEST+" -> "+usernameGuest);
-			else if(!message.equals(Protocol.MOVEBALL))
-				System.out.println("[MATCHCLIENT] Match message: "+message);
+			System.out.println("[MATCHCLIENT] Message: "+message);
 			
 		} catch (IOException e) {
 			
@@ -191,8 +182,8 @@ public class MatchClient extends Task<Boolean>{
 			return false;
 		}
 		
+	
 		if(in.ready()) {
-			
 			message = read() ;
 			
 			if(message == null)
@@ -201,7 +192,7 @@ public class MatchClient extends Task<Boolean>{
 				return false;
 			}
 			
-			if(message.equals(Protocol.INFORMATIONMATCHMESSAGE)) {
+			if(message.equals(Protocol.STARTINFORMATIONMATCHMESSAGE)) {
 				
 				message = read() ;
 				parseMatchInformation.addNewInformation(message);
@@ -216,7 +207,6 @@ public class MatchClient extends Task<Boolean>{
 				return false;
 			}
 		}
-		
 		return true ;
 		
 	}
@@ -255,6 +245,8 @@ public class MatchClient extends Task<Boolean>{
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+			
+			Thread.sleep(Settings.REFRESHCLIENT);
 			
 		}
 		return res;

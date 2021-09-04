@@ -15,8 +15,8 @@ public class Ball {
 	private int player ;
 	
 
-	public static final int RED = 0;
-	public static final int BLUE = 1 ;
+	public static final int BLUE = 0 ;
+	public static final int RED = 1;
 	public static final int WHITE = 2 ;
 	public static final int TOOK = 3 ;
 	

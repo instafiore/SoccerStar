@@ -69,7 +69,7 @@ public class MatchController implements EventHandler<MouseEvent>{
 			
 			ballTook = parseMatchInformation.tookBall(initialX, initialY); 
 			
-			if( ballTook != null && ballTook.getColor() != Ball.BLUE && ballTook.getColor() != Ball.WHITE  && parseMatchInformation.isTurn())
+			if( ballTook != null && ballTook.getColor() == Ball.BLUE && ballTook.getColor() != Ball.WHITE  && parseMatchInformation.isTurn())
 			{
 				ballTook.setColor(Ball.TOOK);
 			}
