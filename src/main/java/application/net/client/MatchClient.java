@@ -126,10 +126,7 @@ public class MatchClient extends Task<Boolean>{
 		}
 		
 		parseMatchInformation.addNewInformation(message);
-		
-//		for(Ball b : parseMatchInformation.getLastInformationMatch().getBalls())
-//			System.out.println("X: "+b.getPosition().getX()+" Y"+b.getPosition().getY());
-//		
+				
 		message = read() ;
 		
 		if(message == null)
@@ -203,10 +200,8 @@ public class MatchClient extends Task<Boolean>{
 				setMatch_activated(false);
 				return false;
 			}else if(message.equals(Protocol.INFORMATIONMATCHMESSAGE)) {
-			
 				message = read() ;
 				parseMatchInformation.addNewInformation(message);
-
 			}
 			else if(message.equals(Protocol.CONNECTION_LOST)){
 				
@@ -255,9 +250,7 @@ public class MatchClient extends Task<Boolean>{
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			
-			Thread.sleep(Settings.REFRESHCLIENT);
-			
+		
 		}
 		return res;
 	}

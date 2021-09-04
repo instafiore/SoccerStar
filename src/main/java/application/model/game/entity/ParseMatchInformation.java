@@ -23,7 +23,7 @@ public class ParseMatchInformation {
 	
 	public void addNewInformation(String string) {
 		
-		ArrayList<Ball> balls = new ArrayList<Ball>() ;
+		ArrayList<Ball> balls ;
 		boolean turn ;
 		
 		StringTokenizer stringTokenizer = new StringTokenizer(string,Protocol.STRINGINFORMATIONDELIMITER);
@@ -32,7 +32,7 @@ public class ParseMatchInformation {
 			
 			StringTokenizer stringTokenizer1 = new StringTokenizer(stringTokenizer.nextToken(), Protocol.INFORMATIONDELIMITER);
 			StringTokenizer stringTokenizer2 = new StringTokenizer(stringTokenizer1.nextToken(),Protocol.BALLDELIMITER);
-			
+			balls = new ArrayList<Ball>() ;
 			while(stringTokenizer2.hasMoreElements()) {
 				
 				
@@ -53,8 +53,6 @@ public class ParseMatchInformation {
 
 				balls.add(b);
 			}
-			
-			System.out.println(balls.size());
 			
 			turn = Boolean.parseBoolean(stringTokenizer1.nextToken());
 			

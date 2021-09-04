@@ -356,11 +356,7 @@ public class MatchServer implements Runnable {
 	
 						informationMessagePlayer1 = "";
 						informationMessagePlayer2 = "";
-						
-//						for(Ball b1 : matchHandler.getBalls()) {
-//							System.out.println("X: "+b1.getPosition().getX()+" "+b1.getPosition().getY());
-//						}
-//						
+					
 						do {
 							matchHandler.moveBalls(field);
 							informationMessagePlayer1 += ParseMatchInformation.getString(matchHandler.getBalls(), matchHandler.getTurn(), PLAYER1);
@@ -369,11 +365,6 @@ public class MatchServer implements Runnable {
 							informationMessagePlayer2 += Protocol.STRINGINFORMATIONDELIMITER ;
 						}while(!matchHandler.allStopped());
 						
-//						System.out.println("-----------------------------------------------------------------");
-//						
-//						for(Ball b1 : matchHandler.getBalls()) {
-//							System.out.println("X: "+b1.getPosition().getX()+" "+b1.getPosition().getY());
-//						}
 					}
 					
 				}else if(p.getKey().equals(Protocol.MYUSERNAMEIS)) {
@@ -414,12 +405,7 @@ public class MatchServer implements Runnable {
 					
 				}
 				
-				try {
-					Thread.sleep(Settings.REFRESHCLIENT);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+
 				
 			}
 			
