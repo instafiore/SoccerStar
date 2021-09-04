@@ -97,6 +97,39 @@ public class MatchClient extends Task<Boolean>{
 			return ERROR;
 		}
 		
+		message = read();
+		
+		if(message.equals(Protocol.CONNECTION_LOST)) {
+			printConnectionLost();
+			return NOERRORBUTLEFT ;
+		}
+		if(message.equals(Protocol.RELOADING_APP)) {
+			printConnectionLost();
+			return ERROR;
+		}
+		
+		if(!message.equals(Protocol.INFORMATIONMATCHMESSAGE))
+		{
+			printConnectionLost();
+			return ERROR;
+		}
+		
+		message = read() ;
+		
+		if(message.equals(Protocol.CONNECTION_LOST)) {
+			printConnectionLost();
+			return NOERRORBUTLEFT ;
+		}
+		if(message.equals(Protocol.RELOADING_APP)) {
+			printConnectionLost();
+			return ERROR;
+		}
+		
+		parseMatchInformation.addNewInformation(message);
+		
+//		for(Ball b : parseMatchInformation.getLastInformationMatch().getBalls())
+//			System.out.println("X: "+b.getPosition().getX()+" Y"+b.getPosition().getY());
+//		
 		message = read() ;
 		
 		if(message == null)
@@ -114,27 +147,6 @@ public class MatchClient extends Task<Boolean>{
 		if(!message.equals(Protocol.GAMESTARTED))
 			return ERROR;
 
-		
-		message = read();
-		
-		if(message.equals(Protocol.CONNECTION_LOST)) {
-			printConnectionLost();
-			return NOERRORBUTLEFT ;
-		}
-		if(message.equals(Protocol.RELOADING_APP)) {
-			printConnectionLost();
-			return ERROR;
-		}
-		
-		if(!message.equals(Protocol.STARTINFORMATIONMATCHMESSAGE))
-		{
-			printConnectionLost();
-			return ERROR;
-		}
-		
-		message = read() ;
-		
-		parseMatchInformation.addNewInformation(message);
 		
 		showView();
 		setMatch_activated(true);
@@ -190,10 +202,8 @@ public class MatchClient extends Task<Boolean>{
 			{
 				setMatch_activated(false);
 				return false;
-			}
+			}else if(message.equals(Protocol.INFORMATIONMATCHMESSAGE)) {
 			
-			if(message.equals(Protocol.STARTINFORMATIONMATCHMESSAGE)) {
-				
 				message = read() ;
 				parseMatchInformation.addNewInformation(message);
 

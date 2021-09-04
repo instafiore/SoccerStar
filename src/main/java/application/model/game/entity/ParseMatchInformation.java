@@ -1,6 +1,8 @@
 package application.model.game.entity;
 
 import java.util.ArrayList;
+import java.util.PriorityQueue;
+import java.util.Queue;
 import java.util.StringTokenizer;
 
 import application.Settings;
@@ -10,44 +12,56 @@ import application.net.common.Protocol;
 
 public class ParseMatchInformation {
 
-	ArrayList<Ball> balls ;
+
+	private ArrayList<InformationMatch> informationMatchQueue = null ;
+	private InformationMatch lastInformationMatch = null ;
 	
-	boolean turn ;
 	
 	public ParseMatchInformation() {
-		
-		balls = new ArrayList<Ball>();
-		turn = false ;
+		informationMatchQueue = new ArrayList<InformationMatch>();
 	}
 	
 	public void addNewInformation(String string) {
 		
-		balls.clear();
+		ArrayList<Ball> balls = new ArrayList<Ball>() ;
+		boolean turn ;
 		
-		StringTokenizer stringTokenizer1 = new StringTokenizer(string, Protocol.INFORMATIONDELIMITER);
-		StringTokenizer stringTokenizer2 = new StringTokenizer(stringTokenizer1.nextToken(),Protocol.BALLDELIMITER);
+		StringTokenizer stringTokenizer = new StringTokenizer(string,Protocol.STRINGINFORMATIONDELIMITER);
 		
-		while(stringTokenizer2.hasMoreElements()) {
+		while (stringTokenizer.hasMoreTokens()) {
 			
-			// POSITION # COLOR 
-			String[] informationBall = stringTokenizer2.nextToken().split(Protocol.INFORMATIONBALLDELIMITER);
+			StringTokenizer stringTokenizer1 = new StringTokenizer(stringTokenizer.nextToken(), Protocol.INFORMATIONDELIMITER);
+			StringTokenizer stringTokenizer2 = new StringTokenizer(stringTokenizer1.nextToken(),Protocol.BALLDELIMITER);
 			
-			Double x = Double.parseDouble(informationBall[0].split(Protocol.POSITIONBALLDELIMITER)[0]);
-			Double y = Double.parseDouble(informationBall[0].split(Protocol.POSITIONBALLDELIMITER)[1]);
-			
-			int color = Integer.parseInt(informationBall[1]);
-			
-			Ball b = null ;
-			
-			if(color != Ball.WHITE)
-				b = new Ball(new VectorFioreNoSync(x,y), new VelocityNoSync(0.0), Settings.DIMENSIONSTANDARDBALL , color) ;
-			else
-				b = new Ball(new VectorFioreNoSync(x,y), new VelocityNoSync(0.0), Settings.DIMENSIONOFBALLTOPLAY , color) ;
+			while(stringTokenizer2.hasMoreElements()) {
+				
+				
+				// POSITION # COLOR 
+				String[] informationBall = stringTokenizer2.nextToken().split(Protocol.INFORMATIONBALLDELIMITER);
+				
+				Double x = Double.parseDouble(informationBall[0].split(Protocol.POSITIONBALLDELIMITER)[0]);
+				Double y = Double.parseDouble(informationBall[0].split(Protocol.POSITIONBALLDELIMITER)[1]);
+				
+				int color = Integer.parseInt(informationBall[1]);
+				
+				Ball b = null ;
+				
+				if(color != Ball.WHITE)
+					b = new Ball(new VectorFioreNoSync(x,y), new VelocityNoSync(0.0), Settings.DIMENSIONSTANDARDBALL , color) ;
+				else
+					b = new Ball(new VectorFioreNoSync(x,y), new VelocityNoSync(0.0), Settings.DIMENSIONOFBALLTOPLAY , color) ;
 
-			balls.add(b);
+				balls.add(b);
+			}
+			
+			System.out.println(balls.size());
+			
+			turn = Boolean.parseBoolean(stringTokenizer1.nextToken());
+			
+			InformationMatch informationMatch = new InformationMatch(turn, balls);
+
+			informationMatchQueue.add(informationMatch);
 		}
-		
-		turn = Boolean.parseBoolean(stringTokenizer1.nextToken());
 		
 	}
 	
@@ -90,24 +104,37 @@ public class ParseMatchInformation {
 		}
 		
 		string += Protocol.INFORMATIONDELIMITER ;
-		
 		string += "" + turn ;
-		
-		
+	
 		return string ;
 		
 	}
 	
-	public ArrayList<Ball> getBalls() {
-		return balls;
+	
+	public ArrayList<InformationMatch> getInformationMatchQueue() {
+		return informationMatchQueue;
 	}
 	
-	public boolean isTurn() {
-		return turn;
+	public InformationMatch getInformationMatch() {
+		if(informationMatchQueue == null)
+			return null ;
+		
+		if(informationMatchQueue.isEmpty())
+			return getLastInformationMatch();
+		
+		lastInformationMatch = informationMatchQueue.get(0);
+		informationMatchQueue.remove(0);
+		return lastInformationMatch;
+	}
+	
+	public InformationMatch getLastInformationMatch() {
+		if(lastInformationMatch == null && !informationMatchQueue.isEmpty())
+			lastInformationMatch = informationMatchQueue.get(0);
+		return lastInformationMatch;
 	}
 	
 	public Ball tookBall(double x , double y) {
-		for(Ball b:balls)
+		for(Ball b: lastInformationMatch.getBalls())
 		{
 			
 			if(intersect(b, x, y)) 

@@ -53,6 +53,8 @@ public class MatchServer implements Runnable {
 	
 	private Integer[] typeOfLineup = new Integer[2] ;
 	private boolean matchActive = false ;
+	private String informationMessagePlayer1 = null ;
+	private String informationMessagePlayer2 = null ;
 	
 	public MatchServer(ClientHandler player1, ClientHandler player2 , Field field) {
 		super();
@@ -208,15 +210,14 @@ public class MatchServer implements Runnable {
 			matchHandler.add(ball);
 			
 			
-			sendMessageAll(Protocol.GAMESTARTED);
-			
-			
 			System.out.println("[MATCHSERVER] "+Protocol.GAMESTARTED+" -> Player1: "+username1+" , Player2: "+username2);
 			
-			sendMessageAll(Protocol.STARTINFORMATIONMATCHMESSAGE);
+			sendMessageAll(Protocol.INFORMATIONMATCHMESSAGE);
 			
-			sendMessage(ParseMatchInformation.getString(matchHandler.getBalls(), matchHandler.getTurn() , PLAYER1), PLAYER2 );
-			sendMessage(ParseMatchInformation.getString(matchHandler.getBalls(), !matchHandler.getTurn(), PLAYER2), PLAYER1 );
+			sendMessage(ParseMatchInformation.getString(matchHandler.getBalls() , matchHandler.getTurn() , PLAYER1) + Protocol.STRINGINFORMATIONDELIMITER, PLAYER2 );
+			sendMessage(ParseMatchInformation.getString(matchHandler.getBalls() , !matchHandler.getTurn(), PLAYER2) + Protocol.STRINGINFORMATIONDELIMITER, PLAYER1 );
+			
+			sendMessageAll(Protocol.GAMESTARTED);
 			
 			while(whoIsDisconnected().equals(NOONEISDISCONNETED)) {
 					
@@ -224,13 +225,15 @@ public class MatchServer implements Runnable {
 				
 				Pair<String, Integer> p = getAction();
 				
-				if(p == null && !matchHandler.allStopped()) {
+				if(p == null && informationMessagePlayer1 != null && informationMessagePlayer2 != null) {
 					
-					sendMessageAll(Protocol.STARTINFORMATIONMATCHMESSAGE);
+					sendMessageAll(Protocol.INFORMATIONMATCHMESSAGE);
 					
-					sendMessage(ParseMatchInformation.getString(matchHandler.getBalls(), matchHandler.getTurn() , PLAYER1), PLAYER2 );
-					sendMessage(ParseMatchInformation.getString(matchHandler.getBalls(), !matchHandler.getTurn(), PLAYER2), PLAYER1 );
-
+					sendMessage(informationMessagePlayer1, PLAYER2 );
+					sendMessage(informationMessagePlayer2, PLAYER1 );
+					
+					informationMessagePlayer1 = null ;
+					informationMessagePlayer2 = null ;
 					
 				}else if(p == null) 
 					continue ;
@@ -351,9 +354,26 @@ public class MatchServer implements Runnable {
 						
 						b.setVelocity(new VelocityNoSync(xVel, yVel));
 	
+						informationMessagePlayer1 = "";
+						informationMessagePlayer2 = "";
+						
+//						for(Ball b1 : matchHandler.getBalls()) {
+//							System.out.println("X: "+b1.getPosition().getX()+" "+b1.getPosition().getY());
+//						}
+//						
 						do {
 							matchHandler.moveBalls(field);
+							informationMessagePlayer1 += ParseMatchInformation.getString(matchHandler.getBalls(), matchHandler.getTurn(), PLAYER1);
+							informationMessagePlayer1 += Protocol.STRINGINFORMATIONDELIMITER ;
+							informationMessagePlayer2 += ParseMatchInformation.getString(matchHandler.getBalls(), !matchHandler.getTurn(), PLAYER2);
+							informationMessagePlayer2 += Protocol.STRINGINFORMATIONDELIMITER ;
 						}while(!matchHandler.allStopped());
+						
+//						System.out.println("-----------------------------------------------------------------");
+//						
+//						for(Ball b1 : matchHandler.getBalls()) {
+//							System.out.println("X: "+b1.getPosition().getX()+" "+b1.getPosition().getY());
+//						}
 					}
 					
 				}else if(p.getKey().equals(Protocol.MYUSERNAMEIS)) {
@@ -446,7 +466,7 @@ public class MatchServer implements Runnable {
 		
 		if(sender == PLAYER1 && out2 != null && !disconnected.equals(DISCONNECTEDPLAYER2)) 
 		{
-			if(!message.equals(Protocol.STARTINFORMATIONMATCHMESSAGE) && !gotInformationMessage) {
+			if(!message.equals(Protocol.INFORMATIONMATCHMESSAGE) && !gotInformationMessage) {
 				gotInformationMessage = false;
 				if(username1 != null && username2 != null)
 					System.out.println("[MATCHSERVER] Message from :"+username1+" to : "+username2+" , Message: "+message);

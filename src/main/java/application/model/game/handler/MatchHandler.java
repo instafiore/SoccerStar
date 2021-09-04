@@ -121,7 +121,7 @@ public class MatchHandler {
 	public boolean allStopped() {
 		
 		for(Ball b : balls)
-			if(b.getVelocity().getMagnitude() != 0.0)
+			if(b.getVelocity().getMagnitude() != 0)
 				return false;
 		return true;
 	}

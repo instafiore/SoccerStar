@@ -1,10 +1,13 @@
 package application.view;
 
+import java.util.ArrayList;
+
 import javax.imageio.ImageIO;
 
 import application.Settings;
 import application.control.MatchController;
 import application.model.game.entity.Ball;
+import application.model.game.entity.InformationMatch;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.image.Image;
@@ -61,18 +64,27 @@ public class MatchView extends StackPane{
 		
 		drawField();
 		
+		InformationMatch informationMatch = null ;
 		
-		if (matchController == null) return;
+		if (matchController == null || matchController.getParseMatchInformation() == null)
+			return;
 		
+		if(!matchController.getParseMatchInformation().getInformationMatchQueue().isEmpty())
+			informationMatch = matchController.getParseMatchInformation().getInformationMatch();
+		else
+			informationMatch = matchController.getParseMatchInformation().getLastInformationMatch();
 		
-		for(Ball ball : matchController.getParseMatchInformation().getBalls()) {
-
+		ArrayList<Ball> balls = informationMatch.getBalls();
+		boolean turn = informationMatch.isTurn();
+		
+		for(Ball ball : balls) {
+			
 			switch (ball.getColor()) {
 			case Ball.RED:
 				canvas.getGraphicsContext2D().setFill(Color.web("#ff0000", 1.0));
 				break;
 			case Ball.BLUE:
-				if(matchController.getParseMatchInformation().isTurn())
+				if(turn)
 					canvas.getGraphicsContext2D().setFill(Color.web("#16004d", 1.0));
 				else
 					canvas.getGraphicsContext2D().setFill(Color.web("#205a8c", 1.0));
