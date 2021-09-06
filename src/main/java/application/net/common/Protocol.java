@@ -59,6 +59,7 @@ public class Protocol {
 	public static final String BALLDELIMITER = ";";
 	public static final String INFORMATIONBALLDELIMITER = "#";
 	public static final String POSITIONBALLDELIMITER = ":" ;
+	public static final String DELIMITERGOALMATCH = ":";
 	
 	public static ArrayList<String> protocolMatch(){
 		

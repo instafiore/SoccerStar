@@ -50,7 +50,7 @@ public class MatchView extends StackPane{
 		switch (idField) {
 		case FIELD1:
 			fieldImg = new Image(getClass().getResourceAsStream("/application/view/field.png"),Settings.FIELDWIDTHFRAME -  Settings.BORDERVERTICAL * 2 , Settings.FIELDHEIGHTFRAME - Settings.BORDERHORIZONTAL * 2 , false , true);
-			field = new Field(Settings.FIELD1 , Settings.BORDERHORIZONTAL, Settings.BORDERVERTICAL, Settings.FIELDWIDTHFRAME, Settings.FIELDHEIGHTFRAME, fieldImg , Settings.FRICTIONFIELD1);
+			field = new Field(Settings.FIELD1 , Settings.BORDERHORIZONTAL, Settings.BORDERVERTICAL, Settings.FIELDWIDTHFRAME, Settings.FIELDHEIGHTFRAME, fieldImg );
 			break;
 		default:
 			break;
@@ -94,7 +94,10 @@ public class MatchView extends StackPane{
 			
 			switch (ball.getColor()) {
 			case Ball.RED:
-				canvas.getGraphicsContext2D().setFill(Color.web("#ff0000", 1.0));
+				if(!turn)
+					canvas.getGraphicsContext2D().setFill(Color.web("#ff0000", 1.0));
+				else	
+					canvas.getGraphicsContext2D().setFill(Color.web("#8b0101", 1.0));
 				break;
 			case Ball.BLUE:
 				if(turn)
@@ -103,7 +106,11 @@ public class MatchView extends StackPane{
 					canvas.getGraphicsContext2D().setFill(Color.web("#205a8c", 1.0));
 				break;
 			case Ball.WHITE:
-				canvas.getGraphicsContext2D().setFill(Color.web("#fbf6f6", 1.0));
+				
+				if(ball.isInDoor())
+					canvas.getGraphicsContext2D().setFill(Color.web("#ffcc00", 1.0));
+				else
+					canvas.getGraphicsContext2D().setFill(Color.web("#fbf6f6", 1.0));
 				break;
 			case Ball.TOOK:
 				canvas.getGraphicsContext2D().setFill(Color.web("#f28444",1.0));

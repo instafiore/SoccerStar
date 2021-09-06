@@ -26,7 +26,7 @@ public class MatchClient extends Task<Boolean>{
 	
 	private Client client = null ;
 	private BufferedReader in = null ;
-	private Lineup lineup1 = new Lineup(Lineup.LINEUP1);
+	private int lineup = Lineup.LINEUP1;
 	private String usernameGuest = null ;
 	private boolean match_activated = false ;
 	
@@ -55,7 +55,7 @@ public class MatchClient extends Task<Boolean>{
 		String message = null ;
 		
 		client.sendMessage(Protocol.TYPEOFLINEUP);
-		client.sendMessage(""+lineup1.getCurrentLineup());
+		client.sendMessage(""+lineup);
 		
 		
 		message = read() ;

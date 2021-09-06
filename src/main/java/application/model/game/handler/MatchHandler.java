@@ -3,10 +3,11 @@ package application.model.game.handler;
 import java.awt.image.RescaleOp;
 import java.util.ArrayList;
 
+import application.Settings;
 import application.model.game.entity.Ball;
 import application.model.game.entity.DataMatch;
 import application.model.game.entity.Field;
-import application.model.game.entity.Result;
+import application.model.game.entity.Lineup;
 import application.model.game.physics.VectorFioreNoSync;
 import application.model.game.physics.VelocityNoSync;
 
@@ -18,18 +19,22 @@ public class MatchHandler {
 	private double width;
 	private double height;
 	private boolean turn ;
-	private Result result;
 	private DataMatch dataMatch ;
-	
+	private Field field = null ;
+
 	boolean f = true;
 	
-	public MatchHandler(DataMatch dataMatch) {
+	public MatchHandler(DataMatch dataMatch , Field field ) {
 		balls = new ArrayList<Ball>();
-		result = new Result() ;
 		this.dataMatch = dataMatch ;
+		this.field = field ;
+		dataMatch.setField(field.getName());
 	}
 	
-	public void moveBalls(Field field) {
+
+	
+
+	public boolean moveBalls() {
 		this.width = field.getWidth();
 		this.height = field.getHeight();
 
@@ -37,12 +42,21 @@ public class MatchHandler {
 		{
 			b1.move(field);
 			b1.setInDoor(field.inDoor(b1));
-			checkMove(field, b1);
-			
+			if(checkMove(b1))
+				return true ;
 			for(Ball b2 : balls)
 				if(b1 != b2 && intersect(b1, b2))
-					collision(b1, b2 , field);
+					collision(b1, b2);
 		}
+		return false ;
+	}
+	
+	public void setField(Field field) {
+		this.field = field;
+	}
+	
+	public Field getField() {
+		return field;
 	}
 	
 	public boolean getTurn() {
@@ -53,7 +67,16 @@ public class MatchHandler {
 		this.turn = turn;
 	}
 	
-	private void checkMove(Field field, Ball b) {
+	public void clearBalls() {
+		balls.clear();
+	}
+	
+	public void addBalls(ArrayList<Ball> balls) {
+		for(Ball b : balls)
+			this.balls.add(b);
+	}
+	
+	private boolean checkMove(Ball b) {
 	
 		
 		if(field.tookBorderUpDoor(b) && b.isInDoor() ) {
@@ -105,20 +128,26 @@ public class MatchHandler {
 		}
 		
 		if(field.goalLeft(b)) {
-			
-			result.goalGuest();
-//			b.getVelocity().mult(0.30);		
+	
+			b.getVelocity().mult(0.30);	
+			b.updatePositionCenter();
+			dataMatch.incGuest();
+			return true ;
 		}
 		
 		if(field.goalRight(b)) {
-			
-			result.goalHome();
-//			b.getVelocity().mult(0.30);
-			
+		
+			b.getVelocity().mult(0.30);
+			b.updatePositionCenter();
+			dataMatch.incHome();
+			return true ;
 		}
 		
 		b.updatePositionCenter();
+		return false ;
 	}
+	
+	
 	
 	public boolean allStopped() {
 		
@@ -128,7 +157,7 @@ public class MatchHandler {
 		return true;
 	}
 	
-	private void collision(Ball b1,Ball b2 , Field field) {
+	private void collision(Ball b1,Ball b2 ) {
 	
 		VectorFioreNoSync newPosition = null ; 
 		newPosition = newPosition(b1, b2);

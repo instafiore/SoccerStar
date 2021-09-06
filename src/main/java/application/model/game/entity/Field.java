@@ -8,7 +8,8 @@ public class Field {
 	private double width ;
 	private double height ;
 	private double mu ;
-		
+
+	
 	public Field(String name , double borderHorizontal, double borderVertical, double width, double height,double mu) {
 		super();
 		this.name = name ;
@@ -17,7 +18,9 @@ public class Field {
 		this.width = width;
 		this.height = height;
 		this.mu = mu ;
+
 	}
+	
 
 	public String getName() {
 		return name;
@@ -74,12 +77,12 @@ public class Field {
 	
 	public boolean goalLeft(Ball b) {
 		
-		return   b.getPosition().getX() + b.getRadius() * 2 < borderVertical    && ( b.getPosition().getY() > height / 3 && b.getPosition().getY() + b.getRadius().shortValue() < height * 2 / 3 ) && b.getColor() == Ball.WHITE;
+		return   b.getPosition().getX() + b.getRadius() * 2 < borderVertical    && ( b.getPosition().getY() + b.getRadius() * 2  > height / 3 && b.getPosition().getY()  + b.getRadius() * 2  < height * 2 / 3 ) && b.getColor() == Ball.WHITE;
 	}
 	
 	public boolean goalRight(Ball b) {
 			
-		return   b.getPosition().getX()  > width - borderVertical   && ( b.getPosition().getY() > height / 3 && b.getPosition().getY() + b.getRadius().shortValue() < height * 2 / 3 ) && b.getColor() == Ball.WHITE ;
+		return   b.getPosition().getX()  > width - borderVertical   && ( b.getPosition().getY() + b.getRadius() * 2   > height / 3 && b.getPosition().getY() +  b.getRadius() * 2  < height * 2 / 3 ) && b.getColor() == Ball.WHITE ;
 	}
 	
 	public boolean tookBorderLeftInDoor(Ball b) {

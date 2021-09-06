@@ -7,12 +7,16 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.security.MessageDigestSpi;
+import java.sql.Time;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Random;
 
 import com.sun.prism.paint.Stop;
 
 import application.Settings;
+import application.Utilities;
 import application.model.game.entity.Ball;
 import application.model.game.entity.DataMatch;
 import application.model.game.entity.Field;
@@ -37,11 +41,8 @@ public class MatchServer implements Runnable {
 	private BufferedReader in2 ;
 	private PrintWriter out1 ;
 	private PrintWriter out2 ;
-	private int ballAcquired = 0 ;
 	private MatchHandler matchHandler;
 	private Field field ;
-	private Lineup lineup1 ;
-	private Lineup lineup2 ;
 	private boolean gotInformationMessage = false ;
 	
 	private static final String DISCONNECTEDBOTH = "Both are disconneted" ;
@@ -69,8 +70,25 @@ public class MatchServer implements Runnable {
 		username2 = player2.getUsername();
 		
 		dataMatch = new DataMatch();
-		matchHandler = new MatchHandler(dataMatch);
-
+		
+		dataMatch.setHome(username1);
+		dataMatch.setGuest(username2);
+		
+		matchHandler = new MatchHandler(dataMatch,field);
+		
+		String date_match = Utilities.getDateFromString(Utilities.getCurrentISODate());
+		String time_match = "" ;
+		
+		
+		time_match += ""+Calendar.getInstance().get(Calendar.HOUR);
+		time_match += ":";
+		time_match += ""+Calendar.getInstance().get(Calendar.MINUTE);
+		time_match += ":";
+		time_match += ""+Calendar.getInstance().get(Calendar.SECOND);
+		
+		dataMatch.setDate(date_match);
+		dataMatch.setTime(time_match);
+		
 		in1 = player1.getIn();
 		in2 = player2.getIn();
 		out1 = player1.getOut();
@@ -182,36 +200,9 @@ public class MatchServer implements Runnable {
 
 			}
 			
-			
-			ArrayList<Ball> balls1 = new ArrayList<Ball>();
-			for(int j = 0 ; j < 5 ; ++j)
-				balls1.add(new Ball(new VectorFioreNoSync(0.0), new VelocityNoSync(0.0), Settings.DIMENSIONSTANDARDBALL, Ball.BLUE));
-			
-			lineup1 = new Lineup(balls1, typeOfLineup[0]);
-			
-			ArrayList<Ball> balls2 = new ArrayList<Ball>();
-			for(int j = 0 ; j < 5 ; ++j)
-				balls2.add(new Ball(new VectorFioreNoSync(0.0), new VelocityNoSync(0.0), Settings.DIMENSIONSTANDARDBALL, Ball.RED));
-			
-			
-			lineup2 = new Lineup(balls2, typeOfLineup[1]);
-
-			lineup2.mirrorLineup();
-			
-			for(Ball b : balls1)
-				matchHandler.add(b);
-			
-			for(Ball b : balls2)
-				matchHandler.add(b);
-			
-			double x11 = Settings.FIELDWIDTHFRAME * 0.50 - Settings.DIMENSIONOFBALLTOPLAY ;
-			double y11 = Settings.FIELDHEIGHTFRAME * 0.50 - Settings.DIMENSIONOFBALLTOPLAY ;
-			VectorFioreNoSync position11 = new VectorFioreNoSync(x11,y11);
-			
-			Ball ball = new Ball(position11,new VelocityNoSync(0.0),Settings.DIMENSIONOFBALLTOPLAY , Ball.WHITE);
-			ball.setColor(Ball.WHITE);
-			matchHandler.add(ball);
-			
+			matchHandler.addBalls(Lineup.getInstace().getLineup(typeOfLineup[0]));
+			matchHandler.addBalls(Lineup.getInstace().getLineupMirrored(typeOfLineup[1]));
+			matchHandler.add(Lineup.getInstace().getBallToPlay());
 			
 			System.out.println("[MATCHSERVER] "+Protocol.GAMESTARTED+" -> Player1: "+username1+" , Player2: "+username2);
 			
@@ -278,7 +269,10 @@ public class MatchServer implements Runnable {
 					}
 					
 					// The game is over	
-
+					System.out.println(dataMatch.getResult());
+					System.out.println(dataMatch.getHome()+" "+dataMatch.getGuest());
+					System.out.println(dataMatch.getDate());
+					System.out.println(dataMatch.getTime());
 					return ;
 					
 				}else if(p.getKey().equals(Protocol.MOVEBALL)) {
@@ -360,16 +354,44 @@ public class MatchServer implements Runnable {
 						informationMessagePlayer1 = "";
 						informationMessagePlayer2 = "";
 					
+						boolean f = true ;
 						do {
-							matchHandler.moveBalls(field);
-							informationMessagePlayer1 += ParseMatchInformation.getString(matchHandler.getBalls(), matchHandler.getTurn(), PLAYER1);
-							informationMessagePlayer1 += Protocol.STRINGINFORMATIONDELIMITER ;
-							informationMessagePlayer2 += ParseMatchInformation.getString(matchHandler.getBalls(), !matchHandler.getTurn(), PLAYER2);
-							informationMessagePlayer2 += Protocol.STRINGINFORMATIONDELIMITER ;
-						}while(!matchHandler.allStopped());
+							
+							f = !matchHandler.moveBalls() ;
+							if(f) {
+								informationMessagePlayer1 += ParseMatchInformation.getString(matchHandler.getBalls(), matchHandler.getTurn(), PLAYER1);
+								informationMessagePlayer1 += Protocol.STRINGINFORMATIONDELIMITER ;
+								informationMessagePlayer2 += ParseMatchInformation.getString(matchHandler.getBalls(), !matchHandler.getTurn(), PLAYER2);
+								informationMessagePlayer2 += Protocol.STRINGINFORMATIONDELIMITER ;
+							}else {
+								
+								for(Ball ball : Lineup.getInstace().getLineup(typeOfLineup[0])) {
+									
+								}
+								
+								resetLineups();
+								informationMessagePlayer1 += ParseMatchInformation.getString(matchHandler.getBalls(), matchHandler.getTurn(), PLAYER1);
+								informationMessagePlayer1 += Protocol.STRINGINFORMATIONDELIMITER ;
+								informationMessagePlayer2 += ParseMatchInformation.getString(matchHandler.getBalls(), !matchHandler.getTurn(), PLAYER2);
+								informationMessagePlayer2 += Protocol.STRINGINFORMATIONDELIMITER ;
+							}
+							
+						}while(!matchHandler.allStopped() && f);
 						
+					}else {
+						
+						if(i == PLAYER1) {
+							
+							sendMessage(Protocol.CONNECTION_LOST, PLAYER1);
+							sendMessage(Protocol.RELOADING_APP, PLAYER2);
+							notifyClients(DISCONNECTEDPLAYER1);
+							
+						}else {
+							sendMessage(Protocol.CONNECTION_LOST, PLAYER2);
+							sendMessage(Protocol.RELOADING_APP, PLAYER1);
+							notifyClients(DISCONNECTEDPLAYER2);
+						}
 					}
-					
 				}else if(p.getKey().equals(Protocol.MYUSERNAMEIS)) {
 					
 					
@@ -421,6 +443,13 @@ public class MatchServer implements Runnable {
 		} 
 		
 		
+	}
+	
+	private void resetLineups() {
+		matchHandler.clearBalls();
+		matchHandler.addBalls(Lineup.getInstace().getLineup(typeOfLineup[0]));
+		matchHandler.addBalls(Lineup.getInstace().getLineupMirrored(typeOfLineup[1]));
+		matchHandler.add(Lineup.getInstace().getBallToPlay());
 	}
 	
 	private Pair<String, Integer> getAction() throws IOException{

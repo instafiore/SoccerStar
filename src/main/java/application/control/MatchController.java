@@ -124,7 +124,7 @@ public class MatchController implements EventHandler<MouseEvent>{
 			
 			VelocityNoSync v = new VelocityNoSync(length.getX(),length.getY()) ;
 			
-			v.mult(150.0);
+			v.mult(Settings.MULTIPLIERVELOCITY);
 			
 			ballTook.setVelocity(v);
 			ballTook.setColor(Ball.BLUE);
