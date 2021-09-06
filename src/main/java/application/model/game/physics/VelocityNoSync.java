@@ -10,6 +10,9 @@ public class VelocityNoSync extends VectorFioreNoSync{
 		super(x,y);
 	}
 	
+	public VelocityNoSync(VectorFioreNoSync v) {
+		super(v.getX(),v.getY());
+	}
 	
 	public VelocityNoSync getInPixelPerMillisecond() {
 		

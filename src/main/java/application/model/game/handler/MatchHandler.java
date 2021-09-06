@@ -21,6 +21,10 @@ public class MatchHandler {
 	private boolean turn ;
 	private DataMatch dataMatch ;
 	private Field field = null ;
+	
+	public static final int NOSCORED = 0 ;
+	public static final int SCOREDHOME = 1 ;
+	public static final int SCOREDGUEST = 2 ;
 
 	boolean f = true;
 	
@@ -34,21 +38,22 @@ public class MatchHandler {
 
 	
 
-	public boolean moveBalls() {
+	public int moveBalls() {
 		this.width = field.getWidth();
 		this.height = field.getHeight();
-
+		int res = NOSCORED ;
 		for(Ball b1:balls)
 		{
-			b1.move(field);
+			b1.move(field,true);
 			b1.setInDoor(field.inDoor(b1));
-			if(checkMove(b1))
-				return true ;
+			res = checkMove(b1) ;
+			if(res != NOSCORED)
+				return res ;
 			for(Ball b2 : balls)
 				if(b1 != b2 && intersect(b1, b2))
 					collision(b1, b2);
 		}
-		return false ;
+		return res ;
 	}
 	
 	public void setField(Field field) {
@@ -76,7 +81,7 @@ public class MatchHandler {
 			this.balls.add(b);
 	}
 	
-	private boolean checkMove(Ball b) {
+	private int checkMove(Ball b) {
 	
 		
 		if(field.tookBorderUpDoor(b) && b.isInDoor() ) {
@@ -132,7 +137,7 @@ public class MatchHandler {
 			b.getVelocity().mult(0.30);	
 			b.updatePositionCenter();
 			dataMatch.incGuest();
-			return true ;
+			return SCOREDGUEST ;
 		}
 		
 		if(field.goalRight(b)) {
@@ -140,11 +145,11 @@ public class MatchHandler {
 			b.getVelocity().mult(0.30);
 			b.updatePositionCenter();
 			dataMatch.incHome();
-			return true ;
+			return SCOREDHOME ;
 		}
 		
 		b.updatePositionCenter();
-		return false ;
+		return NOSCORED ;
 	}
 	
 	
@@ -281,7 +286,6 @@ public class MatchHandler {
 	public ArrayList<Ball> getBalls() {
 		return balls;
 	}
-	
-	
+
 	
 }

@@ -1,6 +1,7 @@
 package application.model.game.entity;
 
 import application.net.common.Protocol;
+import application.net.server.MatchServer;
 
 public class DataMatch {
 	
@@ -11,6 +12,10 @@ public class DataMatch {
 	private String field = null ;
 	private String home = null ;
 	private String guest = null ;
+	
+	public static final int NOONE = 3;
+	public static final int HOME = Ball.BLUE;
+	public static final int GUEST = Ball.RED ;
 	
 	public DataMatch(String date,String field, String home, String guest) {
 		super();
@@ -34,6 +39,22 @@ public class DataMatch {
 	
 	public int getGoalHome() {
 		return goalHome;
+	}
+	
+	public void forfeitOnTheBooks(int who) {
+		
+		switch (who) {
+		case HOME:
+			goalHome = 0 ;
+			goalGuest = Protocol.GOALSTOWIN ;
+			break;
+		case GUEST:
+			goalHome =  Protocol.GOALSTOWIN;
+			goalGuest = 0 ;
+			break;
+		
+		}
+		
 	}
 	
 	public DataMatch() {}
@@ -99,5 +120,19 @@ public class DataMatch {
 		this.guest = guest;
 	}
 
+	
+	public boolean isConcluded() {
+		return goalHome >= Protocol.GOALSTOWIN || goalGuest >= Protocol.GOALSTOWIN ;
+	}
+	
+	public int whoWon() {
+		
+		if(!isConcluded())
+			return NOONE ;
+		
+		if(goalHome >= Protocol.GOALSTOWIN)
+			return HOME ;
+		return GUEST ;
+	}
 	
 }

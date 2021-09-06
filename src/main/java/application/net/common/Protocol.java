@@ -60,7 +60,12 @@ public class Protocol {
 	public static final String INFORMATIONBALLDELIMITER = "#";
 	public static final String POSITIONBALLDELIMITER = ":" ;
 	public static final String DELIMITERGOALMATCH = ":";
-	
+	public static final String YOUSCORED = "You scored!"; 
+	public static final String OPPONENTSCORED = "Your opponent scored..." ;
+	public static final String YOUWON = "You won the match!"; 
+	public static final String YOULOST = "You lost the match..." ;
+	public static final int    GOALSTOWIN = 2 ;
+
 	public static ArrayList<String> protocolMatch(){
 		
 		ArrayList<String> strings = new ArrayList<String>();

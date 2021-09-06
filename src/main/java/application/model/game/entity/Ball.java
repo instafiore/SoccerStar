@@ -35,19 +35,23 @@ public class Ball {
 	public void updatePositionCenter() {
 		this.positionCenter = new VectorFioreNoSync(position.getX()+radius, position.getY()+radius);
 	}
-	public void move(Field field) {
+	public void move(Field field,boolean f) {
 		
 		if(this.getVelocity().getMagnitude() == 0.0)
 			return;
 		
 		this.getPosition().add(this.getVelocity().getInPixelPerMillisecond());
-		VectorFioreNoSync friction = new VectorFioreNoSync(this.getVelocity().getX(),this.getVelocity().getY());
-		friction.mult(-1.0);
-		friction.setMag(this.getRadius()*field.getMu());
-		Double newMag = this.getVelocity().getMagnitude() - friction.getMagnitude() ;
-		if(newMag < 0 )
-				newMag = 0.0 ;
-		this.getVelocity().setMag(newMag);
+		
+		if(f) {
+			VectorFioreNoSync friction = new VectorFioreNoSync(this.getVelocity().getX(),this.getVelocity().getY());
+			friction.mult(-1.0);
+			friction.setMag(this.getRadius()*field.getMu());
+			Double newMag = this.getVelocity().getMagnitude() - friction.getMagnitude() ;
+			if(newMag < 0 )
+					newMag = 0.0 ;
+			this.getVelocity().setMag(newMag);
+		}
+		
 		
 	}
 	

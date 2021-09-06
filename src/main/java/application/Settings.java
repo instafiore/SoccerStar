@@ -25,5 +25,7 @@ public class Settings {
 	public static final double FRICTIONFIELD2 = 25.0 ;
 	public static final double FRICTIONFIELD3 = 5.0 ;
 	public static final double MULTIPLIERVELOCITY = 150.0 ;
+	public static final double STEPTOREPLACEBALLS = 70 ;
+	public static final int WAITFORGOAL = 20 ;
 	
 }

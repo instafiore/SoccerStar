@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import application.SceneHandler;
+import application.model.game.entity.DataMatch;
 import application.model.game.entity.LoginClient;
 import application.model.game.entity.RegistrationClient;
 import application.net.common.Protocol;
@@ -19,6 +20,7 @@ public class Database {
 	private static final String QUERY_INSERT_REGISTRATIONCLIENT = "insert into Account(username,password,email) values(?,?,?);";
 	private static final String SEARCH_CLIENT = "select * from Account where username = ? ;";
 	private static final String CHECK_LOGIN = "select * from Account where username = ? and password = ? ";
+	private static final String INSERT_MATCH = "insert into Match(date_match,result,field,home,guest,time_match) values(?,?,?,?,?,?);" ;
 	
 	private Connection connection;
 	private static Database instance = null;
@@ -26,6 +28,7 @@ public class Database {
 	private PreparedStatement insertion_client_query;
 	private PreparedStatement search_client_query;
 	private PreparedStatement check_login_query;
+	private PreparedStatement insert_match_query;
 	
 	private Database() {
 		
@@ -53,7 +56,7 @@ public class Database {
 		insertion_client_query = connection.prepareStatement(QUERY_INSERT_REGISTRATIONCLIENT);
 		search_client_query = connection.prepareStatement(SEARCH_CLIENT);
 		check_login_query = connection.prepareStatement(CHECK_LOGIN);
-		
+		insert_match_query = connection.prepareStatement(INSERT_MATCH);
 	}
 	
 	public void closeConnection() throws SQLException {
@@ -84,6 +87,40 @@ public class Database {
 		
 		try {
 			insertion_client_query.executeUpdate() ;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
+		
+		return true;
+	}
+	
+	public boolean insertMatch(DataMatch dataMatch) {
+		
+		try {
+			
+			
+			insert_match_query.setString(1, dataMatch.getDate());
+			insert_match_query.setString(2, dataMatch.getResult());
+			insert_match_query.setString(3, dataMatch.getField());
+			insert_match_query.setString(4, dataMatch.getHome());
+			insert_match_query.setString(5, dataMatch.getGuest());
+			insert_match_query.setString(6, dataMatch.getTime());
+			System.out.println(dataMatch.getDate());
+			System.out.println(dataMatch.getResult());
+			System.out.println(dataMatch.getField());
+			System.out.println(dataMatch.getHome());
+			System.out.println(dataMatch.getGuest());
+			System.out.println( dataMatch.getTime());
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
+		
+		try {
+			insert_match_query.executeUpdate() ;
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

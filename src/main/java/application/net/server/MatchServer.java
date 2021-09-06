@@ -123,6 +123,8 @@ public class MatchServer implements Runnable {
 			{
 				sendMessage(Protocol.CONNECTION_LOST, PLAYER1);
 				notifyClients(DISCONNECTEDPLAYER1);
+				dataMatch.forfeitOnTheBooks(PLAYER1);
+				Database.getInstance().insertMatch(dataMatch);
 				return ;
 			
 			}
@@ -132,6 +134,8 @@ public class MatchServer implements Runnable {
 				sendMessage(Protocol.CONNECTION_LOST, PLAYER1);
 				sendMessage(Protocol.RELOADING_APP, PLAYER2);
 				notifyClients(DISCONNECTEDPLAYER1);
+				dataMatch.forfeitOnTheBooks(PLAYER1);
+				Database.getInstance().insertMatch(dataMatch);
 				return;
 			}
 		
@@ -141,6 +145,8 @@ public class MatchServer implements Runnable {
 				sendMessage(Protocol.CONNECTION_LOST, PLAYER1);
 				sendMessage(Protocol.RELOADING_APP, PLAYER2);
 				notifyClients(DISCONNECTEDPLAYER1);
+				dataMatch.forfeitOnTheBooks(PLAYER1);
+				Database.getInstance().insertMatch(dataMatch);
 				return ;
 			}
 			
@@ -153,6 +159,8 @@ public class MatchServer implements Runnable {
 				sendMessage(Protocol.CONNECTION_LOST, PLAYER1);
 				sendMessage(Protocol.RELOADING_APP, PLAYER2);
 				notifyClients(DISCONNECTEDPLAYER1);
+				dataMatch.forfeitOnTheBooks(PLAYER1);
+				Database.getInstance().insertMatch(dataMatch);
 				return ;
 			}
 			
@@ -165,6 +173,8 @@ public class MatchServer implements Runnable {
 				sendMessage(Protocol.CONNECTION_LOST, PLAYER2);
 				sendMessage(Protocol.RELOADING_APP, PLAYER1);
 				notifyClients(DISCONNECTEDPLAYER2);
+				dataMatch.forfeitOnTheBooks(PLAYER2);
+				Database.getInstance().insertMatch(dataMatch);
 				return ;
 			
 			}
@@ -183,6 +193,8 @@ public class MatchServer implements Runnable {
 				sendMessage(Protocol.CONNECTION_LOST, PLAYER2);
 				sendMessage(Protocol.RELOADING_APP, PLAYER1);
 				notifyClients(DISCONNECTEDPLAYER2);
+				dataMatch.forfeitOnTheBooks(PLAYER2);
+				Database.getInstance().insertMatch(dataMatch);
 				return ;
 			
 			}
@@ -196,6 +208,8 @@ public class MatchServer implements Runnable {
 				sendMessage(Protocol.CONNECTION_LOST, PLAYER2);
 				sendMessage(Protocol.RELOADING_APP, PLAYER1);
 				notifyClients(DISCONNECTEDPLAYER2);
+				dataMatch.forfeitOnTheBooks(PLAYER2);
+				Database.getInstance().insertMatch(dataMatch);
 				return ;
 
 			}
@@ -213,6 +227,8 @@ public class MatchServer implements Runnable {
 			
 			sendMessageAll(Protocol.GAMESTARTED);
 			
+			int scored = matchHandler.NOSCORED;
+			
 			while(whoIsDisconnected().equals(NOONEISDISCONNETED)) {
 					
 				int i ; 
@@ -229,6 +245,34 @@ public class MatchServer implements Runnable {
 					informationMessagePlayer1 = null ;
 					informationMessagePlayer2 = null ;
 					
+					if(scored == MatchHandler.SCOREDHOME) {
+						sendMessage(Protocol.OPPONENTSCORED, PLAYER1);
+						sendMessage(Protocol.YOUSCORED, PLAYER2);
+						
+					}else if(scored == MatchHandler.SCOREDGUEST){
+						sendMessage(Protocol.OPPONENTSCORED, PLAYER2);
+						sendMessage(Protocol.YOUSCORED, PLAYER1);
+					}
+					
+					if(dataMatch.isConcluded()) {
+						int whoWon = dataMatch.whoWon() ;
+						
+						if(whoWon == DataMatch.HOME) {
+							
+							sendMessage(Protocol.YOUWON, PLAYER2);
+							sendMessage(Protocol.YOULOST, PLAYER1);
+							
+						}else {
+						
+							sendMessage(Protocol.YOULOST, PLAYER2);
+							sendMessage(Protocol.YOUWON, PLAYER1);
+							
+						}
+						notifyClients(NOONEISDISCONNETED);	
+						Database.getInstance().insertMatch(dataMatch);
+						return ;
+					}
+					
 				}else if(p == null) 
 					continue ;
 				else if(p.getKey() == null) {
@@ -238,14 +282,18 @@ public class MatchServer implements Runnable {
 					if(i == PLAYER1) 
 					{
 						System.out.println("[MATCHSERVER] Player 1 -> "+ Protocol.CONNECTION_LOST);
-						sendMessage(Protocol.CONNECTION_LOST, i);
+						sendMessage(Protocol.YOUWON, i);
 						notifyClients(DISCONNECTEDPLAYER1);
+						dataMatch.forfeitOnTheBooks(PLAYER1);
+						Database.getInstance().insertMatch(dataMatch);
 					}
 					else if( i == PLAYER2)
 					{
 						System.out.println("[MATCHSERVER] Player 2 -> "+ Protocol.CONNECTION_LOST);
-						sendMessage(Protocol.CONNECTION_LOST, i);
+						sendMessage(Protocol.YOUWON, i);
 						notifyClients(DISCONNECTEDPLAYER2);
+						dataMatch.forfeitOnTheBooks(PLAYER2);
+						Database.getInstance().insertMatch(dataMatch);
 					}
 					
 					return ;
@@ -258,19 +306,23 @@ public class MatchServer implements Runnable {
 					if(i == PLAYER1) 
 					{
 						System.out.println("[MATCHSERVER] Player 1 -> "+ Protocol.LEFTGAME);
-						sendMessage(Protocol.CONNECTION_LOST, i);
+						sendMessage(Protocol.YOUWON, i);
 						notifyClients(NOONEISDISCONNETED);
+						dataMatch.forfeitOnTheBooks(PLAYER1);
+						Database.getInstance().insertMatch(dataMatch);
 					}
 					else 
 					{
 						System.out.println("[MATCHSERVER] Player 2 -> "+ Protocol.LEFTGAME);
-						sendMessage(Protocol.CONNECTION_LOST, i);
+						sendMessage(Protocol.YOUWON, i);
 						notifyClients(NOONEISDISCONNETED);
+						dataMatch.forfeitOnTheBooks(PLAYER2);
+						Database.getInstance().insertMatch(dataMatch);
 					}
 					
 					// The game is over	
 					System.out.println(dataMatch.getResult());
-					System.out.println(dataMatch.getHome()+" "+dataMatch.getGuest());
+					System.out.println(dataMatch.getHome()+"ciao"+dataMatch.getGuest());
 					System.out.println(dataMatch.getDate());
 					System.out.println(dataMatch.getTime());
 					return ;
@@ -281,11 +333,13 @@ public class MatchServer implements Runnable {
 					
 					if(i == PLAYER1) {
 						message = read1();
-						if(message == null)
+						if(message == null )
 						{
 							sendMessage(Protocol.CONNECTION_LOST, PLAYER1);
 							sendMessage(Protocol.RELOADING_APP, PLAYER2);
 							notifyClients(DISCONNECTEDPLAYER1);
+							dataMatch.forfeitOnTheBooks(PLAYER1);
+							Database.getInstance().insertMatch(dataMatch);
 							return ;
 						
 						}
@@ -298,6 +352,8 @@ public class MatchServer implements Runnable {
 							sendMessage(Protocol.CONNECTION_LOST, PLAYER2);
 							sendMessage(Protocol.RELOADING_APP, PLAYER1);
 							notifyClients(DISCONNECTEDPLAYER2);
+							dataMatch.forfeitOnTheBooks(PLAYER2);
+							Database.getInstance().insertMatch(dataMatch);
 							return ;
 						
 						}
@@ -331,12 +387,16 @@ public class MatchServer implements Runnable {
 							sendMessage(Protocol.CONNECTION_LOST, PLAYER1);
 							sendMessage(Protocol.RELOADING_APP, PLAYER2);
 							notifyClients(DISCONNECTEDPLAYER1);
+							dataMatch.forfeitOnTheBooks(PLAYER1);
+							Database.getInstance().insertMatch(dataMatch);
 						}
 						else 
 						{
 							System.out.println("[MATCHSERVER] Player 2 -> "+ Protocol.CONNECTION_LOST);
 							sendMessage(Protocol.CONNECTION_LOST, PLAYER2);
 							sendMessage(Protocol.RELOADING_APP, PLAYER1);
+							dataMatch.forfeitOnTheBooks(PLAYER2);
+							Database.getInstance().insertMatch(dataMatch);
 							notifyClients(DISCONNECTEDPLAYER2);
 						}
 						return ;
@@ -354,21 +414,37 @@ public class MatchServer implements Runnable {
 						informationMessagePlayer1 = "";
 						informationMessagePlayer2 = "";
 					
-						boolean f = true ;
+						
 						do {
 							
-							f = !matchHandler.moveBalls() ;
-							if(f) {
+							scored = matchHandler.moveBalls() ;
+							if(scored == MatchHandler.NOSCORED) {
 								informationMessagePlayer1 += ParseMatchInformation.getString(matchHandler.getBalls(), matchHandler.getTurn(), PLAYER1);
 								informationMessagePlayer1 += Protocol.STRINGINFORMATIONDELIMITER ;
 								informationMessagePlayer2 += ParseMatchInformation.getString(matchHandler.getBalls(), !matchHandler.getTurn(), PLAYER2);
 								informationMessagePlayer2 += Protocol.STRINGINFORMATIONDELIMITER ;
 							}else {
 								
-								for(Ball ball : Lineup.getInstace().getLineup(typeOfLineup[0])) {
-									
+								modifyVelocityToReplaceBalls() ;
+								
+								for(int j = 0 ; j < Settings.WAITFORGOAL ; ++j)
+								{
+									informationMessagePlayer1 += ParseMatchInformation.getString(matchHandler.getBalls(), matchHandler.getTurn(), PLAYER1);
+									informationMessagePlayer1 += Protocol.STRINGINFORMATIONDELIMITER ;
+									informationMessagePlayer2 += ParseMatchInformation.getString(matchHandler.getBalls(), !matchHandler.getTurn(), PLAYER2);
+									informationMessagePlayer2 += Protocol.STRINGINFORMATIONDELIMITER ;
 								}
 								
+								for(int j = 0 ; j  <Settings.STEPTOREPLACEBALLS ; ++j) {
+									
+									for(Ball ball : matchHandler.getBalls())
+										ball.move(field,false);
+									
+									informationMessagePlayer1 += ParseMatchInformation.getString(matchHandler.getBalls(), matchHandler.getTurn(), PLAYER1);
+									informationMessagePlayer1 += Protocol.STRINGINFORMATIONDELIMITER ;
+									informationMessagePlayer2 += ParseMatchInformation.getString(matchHandler.getBalls(), !matchHandler.getTurn(), PLAYER2);
+									informationMessagePlayer2 += Protocol.STRINGINFORMATIONDELIMITER ;
+								}
 								resetLineups();
 								informationMessagePlayer1 += ParseMatchInformation.getString(matchHandler.getBalls(), matchHandler.getTurn(), PLAYER1);
 								informationMessagePlayer1 += Protocol.STRINGINFORMATIONDELIMITER ;
@@ -376,7 +452,7 @@ public class MatchServer implements Runnable {
 								informationMessagePlayer2 += Protocol.STRINGINFORMATIONDELIMITER ;
 							}
 							
-						}while(!matchHandler.allStopped() && f);
+						}while(!matchHandler.allStopped() && scored == MatchHandler.NOSCORED);
 						
 					}else {
 						
@@ -385,11 +461,15 @@ public class MatchServer implements Runnable {
 							sendMessage(Protocol.CONNECTION_LOST, PLAYER1);
 							sendMessage(Protocol.RELOADING_APP, PLAYER2);
 							notifyClients(DISCONNECTEDPLAYER1);
+							dataMatch.forfeitOnTheBooks(PLAYER1);
+							Database.getInstance().insertMatch(dataMatch);
 							
 						}else {
 							sendMessage(Protocol.CONNECTION_LOST, PLAYER2);
 							sendMessage(Protocol.RELOADING_APP, PLAYER1);
 							notifyClients(DISCONNECTEDPLAYER2);
+							dataMatch.forfeitOnTheBooks(PLAYER2);
+							Database.getInstance().insertMatch(dataMatch);
 						}
 					}
 				}else if(p.getKey().equals(Protocol.MYUSERNAMEIS)) {
@@ -402,11 +482,15 @@ public class MatchServer implements Runnable {
 						sendMessage(Protocol.CONNECTION_LOST, PLAYER1);
 						sendMessage(Protocol.RELOADING_APP, PLAYER2);
 						notifyClients(DISCONNECTEDPLAYER1);
+						dataMatch.forfeitOnTheBooks(PLAYER1);
+						Database.getInstance().insertMatch(dataMatch);
 						
 					}else {
 						sendMessage(Protocol.CONNECTION_LOST, PLAYER2);
 						sendMessage(Protocol.RELOADING_APP, PLAYER1);
 						notifyClients(DISCONNECTEDPLAYER2);
+						dataMatch.forfeitOnTheBooks(PLAYER2);
+						Database.getInstance().insertMatch(dataMatch);
 					}
 					
 					return ; 
@@ -419,12 +503,16 @@ public class MatchServer implements Runnable {
 						sendMessage(Protocol.CONNECTION_LOST, PLAYER1);
 						sendMessage(Protocol.RELOADING_APP, PLAYER2);
 						notifyClients(DISCONNECTEDPLAYER1);
+						dataMatch.forfeitOnTheBooks(PLAYER1);
+						Database.getInstance().insertMatch(dataMatch);
 						return ;
 						
 					}else {
 						sendMessage(Protocol.CONNECTION_LOST, PLAYER2);
 						sendMessage(Protocol.RELOADING_APP, PLAYER1);
 						notifyClients(DISCONNECTEDPLAYER2);
+						dataMatch.forfeitOnTheBooks(PLAYER2);
+						Database.getInstance().insertMatch(dataMatch);
 						return ;
 					}
 					
@@ -443,6 +531,35 @@ public class MatchServer implements Runnable {
 		} 
 		
 		
+	}
+	
+	private void modifyVelocityToReplaceBalls() {
+		ArrayList<VectorFioreNoSync> initialPositions = new ArrayList<VectorFioreNoSync>();
+		ArrayList<VectorFioreNoSync> endPositions = new ArrayList<VectorFioreNoSync>();
+		
+		for(Ball ball : matchHandler.getBalls())
+			initialPositions.add(ball.getPosition());
+		
+		for(Ball ball : Lineup.getInstace().getLineup(typeOfLineup[0]))
+			endPositions.add(ball.getPosition());
+		
+		for(Ball ball : Lineup.getInstace().getLineupMirrored(typeOfLineup[1]))
+			endPositions.add(ball.getPosition());
+		
+		endPositions.add(Lineup.getInstace().getBallToPlay().getPosition());
+		
+		int ind = 0 ;
+		
+		for(VectorFioreNoSync end : endPositions)
+		{
+			VectorFioreNoSync intial = initialPositions.get(ind);
+			VelocityNoSync vectDir =  new VelocityNoSync(VectorFioreNoSync.sub(end, intial));
+			vectDir.mult(1000.0);
+			vectDir.div(Settings.STEPTOREPLACEBALLS);
+			matchHandler.getBalls().get(ind).setVelocity(vectDir);
+			++ind;
+		}
+
 	}
 	
 	private void resetLineups() {

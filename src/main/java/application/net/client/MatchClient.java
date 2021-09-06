@@ -192,11 +192,9 @@ public class MatchClient extends Task<Boolean>{
 			setMatch_activated(false);
 			return false;
 		}
-		
 	
 		if(in.ready()) {
 			message = read() ;
-			
 			if(message == null)
 			{
 				setMatch_activated(false);
@@ -204,6 +202,33 @@ public class MatchClient extends Task<Boolean>{
 			}else if(message.equals(Protocol.INFORMATIONMATCHMESSAGE)) {
 				message = read() ;
 				parseMatchInformation.addNewInformation(message);
+			}
+			else if(message.equals(Protocol.YOUWON)){
+				//TODO
+				try {
+					Thread.sleep(2000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				setMatch_activated(false);
+				return true;
+			}else if(message.equals(Protocol.YOULOST)){
+				//TODO
+				try {
+					Thread.sleep(2000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				setMatch_activated(false);
+				return true;
+			}else if(message.equals(Protocol.YOUSCORED)){
+				//TODO
+				
+			}else if(message.equals(Protocol.OPPONENTSCORED)){
+				//TODO
+				
 			}
 			else if(message.equals(Protocol.CONNECTION_LOST)){
 				
@@ -268,7 +293,6 @@ public class MatchClient extends Task<Boolean>{
 	
 	
 	private void printConnectionLost() {
-		
 		System.out.println("[MATCHCLIENT] "+ Protocol.CONNECTION_LOST + " with: SERVER " );
 		closeStream();
 	}
