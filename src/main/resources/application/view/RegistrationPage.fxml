@@ -5,24 +5,30 @@
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="481.0" prefWidth="600.0" styleClass="pane" stylesheets="@css/stylesheet1.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.control.RegistrationController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="474.0" prefWidth="600.0" styleClass="pane" stylesheets="@css/stylesheet1.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.control.RegistrationController">
    <children>
-      <Label layoutX="174.0" layoutY="39.0" prefHeight="52.0" prefWidth="273.0" text="Soccer star">
+      <Line endX="608.2929077148438" endY="7.0" layoutY="242.0" startY="7.0" stroke="#fcf6f6" />
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff06" height="466.0" stroke="#eee9e9" strokeType="INSIDE" strokeWidth="5.0" width="600.0" />
+      <Circle fill="#1f93ff0b" layoutX="304.0" layoutY="250.0" radius="100.0" stroke="#fff9f9" strokeType="INSIDE" />
+      <Label fx:id="soccerstart_label" layoutX="174.0" layoutY="39.0" prefHeight="52.0" prefWidth="368.0" text="Soccer star" textFill="#f2f2f2">
          <font>
             <Font size="43.0" />
          </font>
       </Label>
-      <Label layoutX="150.0" layoutY="108.0" prefHeight="16.0" prefWidth="67.0" text="Username" />
-      <TextField fx:id="username_field_registration" layoutX="150.0" layoutY="135.0" prefHeight="36.0" prefWidth="320.0" />
-      <Label layoutX="150.0" layoutY="184.0" prefHeight="16.0" prefWidth="67.0" text="Password" />
-      <PasswordField fx:id="password_field_registration" layoutX="150.0" layoutY="206.0" prefHeight="36.0" prefWidth="320.0" />
-      <Label layoutX="152.0" layoutY="254.0" text="Repeat password" />
-      <PasswordField fx:id="repeat_password_field_registration" layoutX="150.0" layoutY="276.0" prefHeight="36.0" prefWidth="320.0" />
-      <Label layoutX="151.0" layoutY="325.0" prefHeight="16.0" prefWidth="67.0" text="Email" />
-      <TextField fx:id="email_field_registration" layoutX="151.0" layoutY="352.0" prefHeight="36.0" prefWidth="320.0" />
-      <Button fx:id="sign_up_button_registration" layoutX="227.0" layoutY="411.0" mnemonicParsing="false" onAction="#onClick_sign_up_button_registration" prefHeight="36.0" prefWidth="146.0" text="Sign-up" />
-      <Button fx:id="back_button_registration" layoutX="21.0" layoutY="21.0" mnemonicParsing="false" onAction="#onClick_back_button_registration" prefHeight="36.0" prefWidth="107.0" text="Back" />
+      <Label fx:id="username_label" layoutX="150.0" layoutY="108.0" prefHeight="16.0" prefWidth="113.0" text="Username" textFill="#ebe8e8" />
+      <TextField fx:id="username_field_registration" layoutX="150.0" layoutY="135.0" prefHeight="36.0" prefWidth="320.0" styleClass="input_field" />
+      <Label fx:id="password_label" layoutX="150.0" layoutY="184.0" prefHeight="16.0" prefWidth="185.0" text="Password" textFill="#eeebeb" />
+      <PasswordField fx:id="password_field_registration" layoutX="150.0" layoutY="206.0" prefHeight="36.0" prefWidth="320.0" styleClass="input_field" />
+      <Label fx:id="repeatpassword_label" layoutX="152.0" layoutY="254.0" prefHeight="16.0" prefWidth="281.0" text="Repeat password" textFill="#ffeeee" />
+      <PasswordField fx:id="repeat_password_field_registration" layoutX="150.0" layoutY="276.0" prefHeight="36.0" prefWidth="320.0" styleClass="input_field" />
+      <Label fx:id="email_label" layoutX="151.0" layoutY="325.0" prefHeight="16.0" prefWidth="168.0" text="Email" textFill="#f2eeee" />
+      <TextField fx:id="email_field_registration" layoutX="151.0" layoutY="352.0" prefHeight="36.0" prefWidth="320.0" styleClass="input_field" />
+      <Button fx:id="sign_up_button_registration" layoutX="227.0" layoutY="411.0" mnemonicParsing="false" onAction="#onClick_sign_up_button_registration" prefHeight="36.0" prefWidth="146.0" text="Sign-up" textFill="#f5f2f2" />
+      <Button fx:id="back_button_registration" layoutX="21.0" layoutY="21.0" mnemonicParsing="false" onAction="#onClick_back_button_registration" prefHeight="36.0" prefWidth="107.0" text="Back" textFill="#eeeaea" />
    </children>
 </AnchorPane>

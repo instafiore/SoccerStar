@@ -1,6 +1,7 @@
 package application.control;
 
 import application.net.client.Client;
+import application.view.Dialog;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -39,6 +40,8 @@ public class MainPageController {
 
     @FXML
     void onClick_leave_button_main_page(ActionEvent event) {
+    	if(Dialog.getInstance().showConfirmDialog(Dialog.CONFIRMLOGOUT) != Dialog.YES)
+    		return ;
     	Client.getInstance().logout();
     }
 
