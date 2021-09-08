@@ -65,6 +65,13 @@ public class RegistrationController {
     	sign_up_button_registration.setFont(Font.loadFont(getClass().getResourceAsStream("/application/view/fonts/AzeretMono-Italic-VariableFont_wght.ttf"), 15));
     	back_button_registration.setFont(Font.loadFont(getClass().getResourceAsStream("/application/view/fonts/AzeretMono-Italic-VariableFont_wght.ttf"), 15));
     	repeatpassword_label.setFont(Font.loadFont(getClass().getResourceAsStream("/application/view/fonts/AzeretMono-Italic-VariableFont_wght.ttf"), 15));
+    	
+    	sign_up_button_registration.setOnMouseEntered(new HoverCommonButton());
+    	sign_up_button_registration.setOnMouseExited(new HoverCommonButton());
+    	
+    	back_button_registration.setOnMouseEntered(new HoverCommonButton());
+    	back_button_registration.setOnMouseExited(new HoverCommonButton());
+    	
     }
 
     

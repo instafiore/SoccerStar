@@ -41,11 +41,6 @@ public class LoginController {
     private Button sign_up_button_login;
 
     
-    private static final String GREEN_BUTTON_HOVER = "#009a00" ;
-    
-    
-    private static final int STEPTRANSATION = 100 ;
-    
     @FXML
     void onClick_password_forgot_button(MouseEvent event) {
     	// TODO
@@ -62,6 +57,14 @@ public class LoginController {
     	username_label.setFont(Font.loadFont(getClass().getResourceAsStream("/application/view/fonts/AzeretMono-Italic-VariableFont_wght.ttf"), 15));
     	soccerstar_label.setFont(Font.loadFont(getClass().getResourceAsStream("/application/view/fonts/AzeretMono-Italic-VariableFont_wght.ttf"), 42));
     	password_label.setFont(Font.loadFont(getClass().getResourceAsStream("/application/view/fonts/AzeretMono-Italic-VariableFont_wght.ttf"), 15));
+    	
+    	sign_in_button_login.setOnMouseEntered(new HoverCommonButton());
+    	sign_in_button_login.setOnMouseExited(new HoverCommonButton());
+    	
+    	sign_up_button_login.setOnMouseEntered(new HoverCommonButton());
+    	sign_up_button_login.setOnMouseExited(new HoverCommonButton());
+    	
+    	
     }
 
     @FXML
@@ -80,37 +83,5 @@ public class LoginController {
     	Client.getInstance().setCurrentState(Client.STEP_REGISTRATION);
     }
     
-    @FXML
-    void onMouseEntered(MouseDragEvent event) {
-    	
-    	System.out.println("HERE");
-    	double opacity = 1 ;
-    	double less = STEPTRANSATION / 1000.0 ;
-    	
-//    	try {
-//			Thread.sleep(100);
-//		} catch (InterruptedException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-		
-		sign_in_button_login.setStyle("{"
-				+ "-fx-background-color: #009a00;"
-				+ "-fx-opacity;0.5"
-				+ "}");
-//    	for(int i = 0 ; i < STEPTRANSATION ;++i)
-//    	{
-//    		System.out.println("HERE");
-//    		try {
-//				Thread.sleep(100);
-//			} catch (InterruptedException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//    		sign_in_button_login.setTextFill(Color.web(GREEN_BUTTON_HOVER, opacity -= less ));
-//    		
-//    	}
-    		
-    }
 
 }
