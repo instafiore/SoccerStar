@@ -5,12 +5,24 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import application.Settings;
 
 public class Server implements Runnable{
 
 	private ServerSocket server ;
+	private ArrayList<String> usersOnline =  new ArrayList<String>();
+	private static Server instance = null ;
+	
+	public static Server getInstance() {
+		if(instance == null)
+			instance = new Server();
+		return instance;
+	}
+	
+	
+	private Server() {}
 	
 	public void startServer() throws IOException {
 	
@@ -32,7 +44,17 @@ public class Server implements Runnable{
 
 	}
 
+	public void addUserOnline(String user) {
+		usersOnline.add(user);
+	}
 	
+	public void removeUserOnline(String user) {
+		usersOnline.remove(user);
+	}
+	
+	public boolean isOnline(String user) {
+		return usersOnline.contains(user);
+	}
 
 	public void run() {
 		
@@ -43,7 +65,7 @@ public class Server implements Runnable{
 				
 				Socket socket = server.accept();
 				System.out.println("[SERVER] New Connection");
-				ClientHandler clientHandler = new ClientHandler(socket);
+				ClientHandler clientHandler = new ClientHandler(socket,this);
 				Thread t = new Thread(clientHandler);
 				t.start();
 			

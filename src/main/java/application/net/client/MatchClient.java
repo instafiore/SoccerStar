@@ -18,21 +18,19 @@ import application.model.game.handler.MatchHandler;
 import application.model.game.physics.VectorFioreNoSync;
 import application.model.game.physics.VelocityNoSync;
 import application.net.common.Protocol;
+import application.view.Dialog;
 import application.view.Field;
 import javafx.concurrent.Task;
 
-public class MatchClient extends Task<Boolean>{
+public class MatchClient extends Task<String>{
 
 	
 	private Client client = null ;
 	private BufferedReader in = null ;
-	private int lineup = Lineup.LINEUP1;
+	private int lineup = Lineup.LINEUP2;
 	private String usernameGuest = null ;
 	private boolean match_activated = false ;
 	
-	private static final int ERROR = 0 ;
-	private static final int NOERROR = 1 ;
-	private static final int NOERRORBUTLEFT = 2 ;
 	private ParseMatchInformation parseMatchInformation ;
 	private int field ;
 	
@@ -50,7 +48,7 @@ public class MatchClient extends Task<Boolean>{
 	}
 
 	
-	public int initalSettings() throws IOException {
+	public String initalSettings() throws IOException {
 		
 		String message = null ;
 		
@@ -61,70 +59,70 @@ public class MatchClient extends Task<Boolean>{
 		message = read() ;
 		
 		if(message == null)
-			return ERROR;
+			return Protocol.ERRORMATCH;
 		
 		
 		if(message.equals(Protocol.CONNECTION_LOST))
 		{
 			printConnectionLost();
-			return NOERRORBUTLEFT ;
+			return Protocol.NOERRORBUTLEFTMATCH ;
 		}
 		
-		if(message.equals(Protocol.RELOADING_APP)) {
+		if(message.equals(Protocol.GENERALERROR)) {
 			printConnectionLost();
-			return ERROR;
+			return Protocol.ERRORMATCH;
 		}
 		
 		
 		if(!message.equals(Protocol.USERNAMEGUEST))
 		{
 			printConnectionLost();
-			return ERROR;
+			return Protocol.ERRORMATCH;
 		}
 		
 		
 		usernameGuest = read() ;
 		if(usernameGuest == null)
-			return ERROR;
+			return Protocol.ERRORMATCH;
 		
 		
 		if(usernameGuest.equals(Protocol.CONNECTION_LOST)) 
 		{
 			printConnectionLost();
-			return NOERRORBUTLEFT ;
+			return Protocol.NOERRORBUTLEFTMATCH ;
 		}
 		
-		if(usernameGuest.equals(Protocol.RELOADING_APP)) {
+		if(usernameGuest.equals(Protocol.GENERALERROR)) {
 			printConnectionLost();
-			return ERROR;
+			return Protocol.ERRORMATCH;
 		}
 		
 		message = read();
 		
 		if(message.equals(Protocol.CONNECTION_LOST)) {
 			printConnectionLost();
-			return NOERRORBUTLEFT ;
+			return Protocol.NOERRORBUTLEFTMATCH ;
 		}
-		if(message.equals(Protocol.RELOADING_APP)) {
+		if(message.equals(Protocol.GENERALERROR)) {
 			printConnectionLost();
-			return ERROR;
+			return Protocol.ERRORMATCH;
 		}
 		
 		if(!message.equals(Protocol.INFORMATIONMATCHMESSAGE))
 		{
 			printConnectionLost();
-			return ERROR;
+			return Protocol.ERRORMATCH;
 		}
 		
 		message = read() ;
 		
 		if(message.equals(Protocol.CONNECTION_LOST)) {
 			printConnectionLost();
-			return NOERRORBUTLEFT ;
+			return Protocol.NOERRORBUTLEFTMATCH ;
 		}
-		if(message.equals(Protocol.RELOADING_APP)) {
+		if(message.equals(Protocol.GENERALERROR)) {
 			printConnectionLost();
-			return ERROR;
+			return Protocol.ERRORMATCH;
 		}
 		
 		parseMatchInformation.addNewInformation(message);
@@ -132,25 +130,25 @@ public class MatchClient extends Task<Boolean>{
 		message = read() ;
 		
 		if(message == null)
-			return ERROR;
+			return Protocol.ERRORMATCH;
 		
 		if(message.equals(Protocol.CONNECTION_LOST)) {
 			printConnectionLost();
-			return NOERRORBUTLEFT ;
+			return Protocol.NOERRORBUTLEFTMATCH ;
 		}
-		if(message.equals(Protocol.RELOADING_APP)) {
+		if(message.equals(Protocol.GENERALERROR)) {
 			printConnectionLost();
-			return ERROR;
+			return Protocol.ERRORMATCH;
 		}
 		
 		if(!message.equals(Protocol.GAMESTARTED))
-			return ERROR;
+			return Protocol.ERRORMATCH;
 
 		
 		showView();
 		setMatch_activated(true);
 		
-		return NOERROR;
+		return Protocol.NOERRORMATCH;
 }
 	
 	public String read() {
@@ -160,7 +158,6 @@ public class MatchClient extends Task<Boolean>{
 		try {
 			
 			if(in == null) {
-				System.out.println("[MATCHCLIENT] "+Protocol.SERVERDISCONNETED);
 				return null ;
 			}
 			
@@ -184,13 +181,13 @@ public class MatchClient extends Task<Boolean>{
 		return message;
 	}
 	
-	public boolean readingMatchStarted() throws IOException {
+	public String readingMatchStarted() throws IOException {
 		
 		String message = null ;
 		
 		if(in == null) {
 			setMatch_activated(false);
-			return false;
+			return Protocol.ERRORMATCH;
 		}
 	
 		if(in.ready()) {
@@ -198,7 +195,7 @@ public class MatchClient extends Task<Boolean>{
 			if(message == null)
 			{
 				setMatch_activated(false);
-				return false;
+				return Protocol.ERRORMATCH;
 			}else if(message.equals(Protocol.INFORMATIONMATCHMESSAGE)) {
 				message = read() ;
 				parseMatchInformation.addNewInformation(message);
@@ -212,7 +209,7 @@ public class MatchClient extends Task<Boolean>{
 					e.printStackTrace();
 				}
 				setMatch_activated(false);
-				return true;
+				return Protocol.YOUWON;
 			}else if(message.equals(Protocol.YOULOST)){
 				//TODO
 				try {
@@ -222,24 +219,24 @@ public class MatchClient extends Task<Boolean>{
 					e.printStackTrace();
 				}
 				setMatch_activated(false);
-				return true;
-			}else if(message.equals(Protocol.YOUSCORED)){
+				return Protocol.YOULOST;
+			}else if(message.equals(Protocol.LEFTGAME) || message.equals(Protocol.CONNECTION_LOST)){
+				
+				setMatch_activated(false);
+				return Protocol.NOERRORBUTLEFTMATCH;
+			}
+			else if(message.equals(Protocol.YOUSCORED)){
 				//TODO
 				
 			}else if(message.equals(Protocol.OPPONENTSCORED)){
 				//TODO
 				
-			}
-			else if(message.equals(Protocol.CONNECTION_LOST)){
-				
+			}else if(message.equals(Protocol.GENERALERROR) || message.equals(Protocol.GENERALERROR)){
 				setMatch_activated(false);
-				return true;
-			}else if(message.equals(Protocol.RELOADING_APP) || message.equals(Protocol.GENERALERROR)){
-				setMatch_activated(false);
-				return false;
+				return Protocol.ERRORMATCH;
 			}
 		}
-		return true ;
+		return Protocol.NOERRORMATCH ;
 		
 	}
 
@@ -249,22 +246,15 @@ public class MatchClient extends Task<Boolean>{
 
 
 	@Override
-	protected Boolean call() throws Exception {
+	protected String call() throws Exception {
 		
-		boolean res = false ;
+		String res = Protocol.NOERRORMATCH ;
 		
 		try {
 			
-			switch (initalSettings()) {
-			case NOERROR:
-				break;
-			case NOERRORBUTLEFT:
-					return true;		
-			case ERROR:
-					return false;
-			default:
-					return false;
-			}
+			res = initalSettings() ;
+			if(res.equals(Protocol.NOERRORBUTLEFTMATCH) || res.equals(Protocol.ERRORMATCH) ) 
+				return res ;
 			
 		} catch (IOException e1) {
 			e1.printStackTrace();
@@ -293,7 +283,6 @@ public class MatchClient extends Task<Boolean>{
 	
 	
 	private void printConnectionLost() {
-		System.out.println("[MATCHCLIENT] "+ Protocol.CONNECTION_LOST + " with: SERVER " );
 		closeStream();
 	}
 	

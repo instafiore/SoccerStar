@@ -67,13 +67,13 @@ public class Database {
 		connection = null ;
 	}
 	
-	public boolean insertUser(RegistrationClient user) {
+	public String insertUser(RegistrationClient user) {
 		
 		if(checkUser(user.getUsername()))
 		{
 			// Error
 			System.out.println("User already exits");
-			return false;
+			return Protocol.ALREADYEXISTS;
 		}
 		try {
 			insertion_client_query.setString(1, user.getUsername());
@@ -82,7 +82,7 @@ public class Database {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return false;
+			return Protocol.REGISTRATIONFAILED;
 		}
 		
 		try {
@@ -90,10 +90,10 @@ public class Database {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return false;
+			return Protocol.REGISTRATIONFAILED;
 		}
 		
-		return true;
+		return Protocol.REGISTRATIONCOMPLETED;
 	}
 	
 	public boolean insertMatch(DataMatch dataMatch) {
@@ -107,12 +107,7 @@ public class Database {
 			insert_match_query.setString(4, dataMatch.getHome());
 			insert_match_query.setString(5, dataMatch.getGuest());
 			insert_match_query.setString(6, dataMatch.getTime());
-			System.out.println(dataMatch.getDate());
-			System.out.println(dataMatch.getResult());
-			System.out.println(dataMatch.getField());
-			System.out.println(dataMatch.getHome());
-			System.out.println(dataMatch.getGuest());
-			System.out.println( dataMatch.getTime());
+
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -132,6 +127,9 @@ public class Database {
 	
 	
 	public boolean checkUser(String user) {
+		
+		if(Server.getInstance().isOnline(user))
+			return false ;
 		
 		try {
 			search_client_query.setString(1, user);
@@ -153,25 +151,28 @@ public class Database {
 		return false;
 	}
 	
-	public boolean checkLogin(LoginClient user) {
+	public String checkLogin(LoginClient user) {
+		
+		if(Server.getInstance().isOnline(user.getUsername()))
+			return Protocol.ALREADYONLINE ;
 		
 		try {
 			search_client_query.setString(1, user.getUsername());
 			ResultSet resultSet = search_client_query.executeQuery();
 			
 			if(!resultSet.next())
-				return false;
+				return Protocol.LOGINFAILED;
 			
 			String password_crypted = resultSet.getString("password");
 			
-			return BCrypt.checkpw(user.getPassword(), password_crypted) ;
+			if(BCrypt.checkpw(user.getPassword(), password_crypted))
+				return Protocol.LOGINCOMPLETED;
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return false;
+			
 		}
-		
-		
+		return Protocol.LOGINFAILED;
 	}
 	
 	

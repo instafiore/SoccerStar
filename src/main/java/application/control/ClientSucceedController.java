@@ -4,6 +4,7 @@ import application.SceneHandler;
 import application.model.game.entity.Message;
 import application.net.client.Client;
 import application.net.common.Protocol;
+import application.view.Dialog;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
 
@@ -18,34 +19,39 @@ public class ClientSucceedController implements EventHandler<WorkerStateEvent>{
 		if(message.getProtocol().equals(Protocol.REGISTRATIONCOMPLETED)) {
 			
 			SceneHandler.getInstance().loadScene("MainPage", true);
-		
+			
+		}else if(message.getProtocol().equals(Protocol.REGISTRATIONFAILED) || message.getProtocol().equals(Protocol.ALREADYEXISTS)){
+			
+			if(Dialog.getInstance().showInformationDialog(Dialog.ERROR_WINDOW,message.getProtocol()) != Dialog.OK)
+				System.exit(0);	
+			
 		}else if(message.getProtocol().equals(Protocol.LOGINCOMPLETED)) {
-		
+			
 			SceneHandler.getInstance().loadScene("MainPage", true);
 			
-		}else if(message.getProtocol().equals(Protocol.GENERALERROR)) {
+		}else if(message.getProtocol().equals(Protocol.LOGINFAILED) || message.getProtocol().equals(Protocol.ALREADYONLINE)){
 			
-			// SHOW ERROR
+			if(Dialog.getInstance().showInformationDialog(Dialog.ERROR_WINDOW,message.getProtocol()) != Dialog.OK)
+				System.exit(0);	
+		}
+		else if(message.getProtocol().equals(Protocol.GENERALERROR)) {
+			
+			Dialog.getInstance().showInformationDialog(Dialog.ERROR_WINDOW,message.getProtocol());
 			System.exit(0);
-			
-		}else if(message.getProtocol().equals(Protocol.RELOADING_APP)){
+		}else if(message.getProtocol().equals(Protocol.GENERALERROR)){
 			
 			// RELOADING APP
+			Dialog.getInstance().showInformationDialog(Dialog.ERROR_WINDOW,message.getProtocol());
 			System.exit(0);
-		
 		}else if(message.getProtocol().equals(Protocol.INPUT_STREAM_NULL)) {
 			
-			// RELOADING APP
+			Dialog.getInstance().showInformationDialog(Dialog.ERROR_WINDOW,message.getProtocol());
 			System.exit(0);
 		}else if(message.getProtocol().equals(Protocol.CONNECTION_LOST)) {
 			
-			// RELOADING APP
+			Dialog.getInstance().showInformationDialog(Dialog.ERROR_WINDOW,message.getProtocol());
 			System.exit(0);
-		}else if(message.getProtocol().equals(Protocol.PREPARINGMATCH)) {
-			
-			// JUST TO CONCLUDE THE READ OF THE CLIENT
-			
-		}
+		}else if(message.getProtocol().equals(Protocol.PREPARINGMATCH)) {/*JUST TO CONCLUDE THE READ OF THE CLIENT */}
 		
 		
 		Client.getInstance().restart();

@@ -39,7 +39,7 @@ public class MainPageController {
 
     @FXML
     void onClick_leave_button_main_page(ActionEvent event) {
-
+    	Client.getInstance().logout();
     }
 
     @FXML

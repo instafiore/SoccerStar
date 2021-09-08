@@ -9,7 +9,6 @@ public class Protocol {
 	public static final String GENERALERROR = "General error , app will reloading...";
 	public static final String INPUT_STREAM_NULL = "Input stream is null";
 	public static final String OUTPUT_STREAM_NULL = "Output stream is null";
-	public static final String RELOADING_APP = "App will be reloaded";
 	public static final String CONNECTION_LOST ="Connection lost";
 	public static final String SERVERDISCONNETED = "Server is disconnected";
 	public static final String BADBEHAVIOROFCLIENT = "Bad client behavior ";
@@ -25,13 +24,16 @@ public class Protocol {
 	public static final String LOGINREQUEST = "New login request" ;
 	public static final String DELIMITERLOGIN = "-" ;
 	public static final String LOGINCOMPLETED = "Login completed!" ;
-	public static final String LOGINFAILED = "We had a problem with your login , please try again or contact email: " + EMAILASSISTANCE;
-	
+	public static final String ALREADYONLINE = "You are already logged" ;
+	public static final String LOGINFAILED = "Your username or password aren't correct";
+	public static final String LOGOUT = "I want to do logout" ;
+	public static final String LOGUTDONE ="Logout done for ";
 	
 	// Registration
 	public static final String REGISTRATIONREQUEST = "New registration request" ;
 	public static final String DELIMITERREGISTRATION = "-" ;
 	public static final String REGISTRATIONCOMPLETED = "Registration completed!";
+	public static final String ALREADYEXISTS = "Your username alreadyExists" ;
 	public static final String REGISTRATIONFAILED = "We had a problem with your registration , please try again or contact email: " + EMAILASSISTANCE;
 	
 	// Match
@@ -65,7 +67,10 @@ public class Protocol {
 	public static final String YOUWON = "You won the match!"; 
 	public static final String YOULOST = "You lost the match..." ;
 	public static final int    GOALSTOWIN = 2 ;
-
+	public static final String ERRORMATCH = "Error during the match" ;
+	public static final String NOERRORMATCH = "Match completed whitout errors" ;
+	public static final String NOERRORBUTLEFTMATCH = "Your opponent left the match , you won!" ;
+	
 	public static ArrayList<String> protocolMatch(){
 		
 		ArrayList<String> strings = new ArrayList<String>();

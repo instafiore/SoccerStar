@@ -12,291 +12,288 @@ import application.model.game.entity.LoginClient;
 import application.model.game.entity.RegistrationClient;
 import application.net.common.Protocol;
 
-public class ClientHandler implements Runnable{
+public class ClientHandler implements Runnable {
 
-	private Socket client = null ;
-	private BufferedReader in = null ;
-	private PrintWriter out = null ;
-	private String username = null ;
-	private boolean throwMessagesMatch = false ;
+	private static final String INITIALWAITING = "[CLIENTHANDLER] Waiting for a registration or login request";
 	
-	
+	private Socket client = null;
+	private BufferedReader in = null;
+	private PrintWriter out = null;
+	private String username = null;
+	private boolean throwMessagesMatch = false;
+	private Server server;
+
 	public String getUsername() {
 		return username;
 	}
-	
-	public ClientHandler(Socket client) {
+
+	public ClientHandler(Socket client, Server server) {
 		super();
 		this.client = client;
-		
+		this.server = server;
 		try {
 			in = new BufferedReader(new InputStreamReader(client.getInputStream()));
-			out = new PrintWriter(new BufferedOutputStream(client.getOutputStream()),true);
-			
+			out = new PrintWriter(new BufferedOutputStream(client.getOutputStream()), true);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
 	}
-	
+
 	public BufferedReader getIn() {
 		return in;
 	}
-	
+
 	public PrintWriter getOut() {
 		return out;
 	}
-	
+
 	public Socket getClient() {
 		return client;
 	}
-	
+
 	public void run() {
+
+		String message = null;
+
+		System.out.println(INITIALWAITING);
 		
-		String message = null ;
-		
-		while(username == null) {
-			
+		while (username == null) {
+
 			message = read();
 
-			if(message == null ) 
+			if (message == null)
 				return;
-			
-			if(message.equals(Protocol.REGISTRATIONREQUEST)) {
-				
+
+			if (message.equals(Protocol.REGISTRATIONREQUEST)) {
+
 				message = read();
-				
-				if(message == null ) {
+
+				if (message == null) {
 					printConnectionLost();
 					return;
 				}
-				
+
 				RegistrationClient client = new RegistrationClient();
 				client.parseRegistrationClient(message);
+
+				String res = Database.getInstance().insertUser(client) ;
 				
-				if(Database.getInstance().insertUser(client))
-				{
+				if (res.equals(Protocol.REGISTRATIONCOMPLETED)) {
 					sendMessage(Protocol.REGISTRATIONCOMPLETED);
 					username = client.getUsername();
 					sendMessage(username);
 
+				} else {
+					sendMessage(res);
+					username = null;
+
 				}
-				else
-				{
-					sendMessage(Protocol.REGISTRATIONFAILED);
-					username = null ;
-					
-				}
-				
-		
-			
-			}else if(message.equals(Protocol.LOGINREQUEST)) {
-				
+
+			} else if (message.equals(Protocol.LOGINREQUEST)) {
+
 				message = read();
-				if(message == null )
+				if (message == null)
 					return;
-				
 				LoginClient client = new LoginClient();
 				client.parseLoginClient(message);
 				
-				
-				if(Database.getInstance().checkLogin(client))
-				{
+				String res = Database.getInstance().checkLogin(client) ;
+				if (res.equals(Protocol.LOGINCOMPLETED)) {
 					sendMessage(Protocol.LOGINCOMPLETED);
 					username = client.getUsername();
 					sendMessage(username);
-					
+				} else {
+					sendMessage(res);
+					username = null;
 				}
-				else
-				{
-					sendMessage(Protocol.LOGINFAILED);
-					username = null ;
-				}
-				
-			}else {
-				
+
+			} else {
+
 				// ERROR
-				sendMessage(Protocol.RELOADING_APP);
-				username = null ;
+				sendMessage(Protocol.GENERALERROR);
+				username = null;
 				printConnectionLost();
 				return;
 			}
 		}
-		
-		
 
-		while(!Thread.interrupted()) {
-			
-			System.out.println("[CLIENTHANDLER] CLIENT HANDLER IS RUNNING FOR "+username);
-		
+		server.addUserOnline(username);
+
+		while (!Thread.interrupted()) {
+
+			System.out.println("[CLIENTHANDLER] CLIENT HANDLER IS RUNNING FOR " + username);
+
 			message = read();
-			
-			if(message == null )
+
+			if (message == null)
 				return;
-		
-			if(message.equals(Protocol.NEWGAMEREQUESTFIELD1)) {
-				
+
+			if (message.equals(Protocol.NEWGAMEREQUESTFIELD1)) {
+
 				RequestMatchHandler.getInstace().addPlayerField1(this);
 				try {
-					
+
 					synchronized (this) {
 						this.wait();
 					}
-					
+
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
+					sendMessage(Protocol.GENERALERROR);
+					printConnectionLost();
 					e.printStackTrace();
 				}
-				
-			}else if(message.equals(Protocol.NEWGAMEREQUESTFIELD2)) {
-				
+
+			} else if (message.equals(Protocol.NEWGAMEREQUESTFIELD2)) {
+
 				RequestMatchHandler.getInstace().addPlayerField2(this);
 				try {
-					
+
 					synchronized (this) {
 						this.wait();
 					}
-					
+
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
+					sendMessage(Protocol.GENERALERROR);
+					printConnectionLost();
 					e.printStackTrace();
 				}
-				
-			}else if(message.equals(Protocol.NEWGAMEREQUESTFIELD3)) {
-				
+
+			} else if (message.equals(Protocol.NEWGAMEREQUESTFIELD3)) {
+
 				RequestMatchHandler.getInstace().addPlayerField3(this);
 				try {
-					
+
 					synchronized (this) {
 						this.wait();
 					}
-					
+
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
+					sendMessage(Protocol.GENERALERROR);
+					printConnectionLost();
 					e.printStackTrace();
 				}
-				
+
+			}else if(message.equals(Protocol.LOGOUT)) {
+				logout();
+				return ;
 			}
-			else if(message.equals(Protocol.REGISTRATIONREQUEST)) {
-				
-				sendMessage(Protocol.RELOADING_APP);
+			else{
+
+				sendMessage(Protocol.GENERALERROR);
 				printConnectionLost();
 				return;
-			
-			}else if(message.equals(Protocol.LOGINREQUEST)) {
-				
-				sendMessage(Protocol.RELOADING_APP);
-				printConnectionLost();
-				return;
-			
+
 			}
-			
+
 			try {
 				Thread.sleep(Settings.REFRESHSERVER);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
+				sendMessage(Protocol.GENERALERROR);
+				printConnectionLost();
 				e.printStackTrace();
 			}
 		}
-		
+
 	}
-	
+
 	public void notifyEndMatch() {
 		synchronized (this) {
-			throwMessagesMatch = true ;
+			throwMessagesMatch = true;
 			this.notify();
 		}
 	}
-	
 
+	private void logout() {
+		System.out.println("[CLIENTHANDLER] "+Protocol.LOGUTDONE+username);
+		Server.getInstance().removeUserOnline(username);
+		username = null ;
+		Thread t = new Thread(this);
+		t.start();
+	}
+	
 	public void sendMessage(String message) {
-		
-		if(out == null || message == null)
+
+		if (out == null || message == null)
 			return;
-		
-		
-		System.out.print("[CLIENTHANDLER] SENT : "+message);
-		
-		if(username != null)
-			System.out.println(" to: "+username);
-		else 
+
+		System.out.print("[CLIENTHANDLER] SENT : " + message);
+
+		if (username != null)
+			System.out.println(" to: " + username);
+		else
 			System.out.println(" to unknown receiver");
-		
+
 		out.println(message);
 	}
-	
+
 	private void printConnectionLost() {
-		if(username != null)
-			System.out.println("[CLIENTHANDLER] "+ Protocol.CONNECTION_LOST + " with: "+ username );
-		else 
-			System.out.println("[CLIENTHANDLER] "+ Protocol.CONNECTION_LOST) ;
+		if (username != null) {
+			System.out.println("[CLIENTHANDLER] " + Protocol.CONNECTION_LOST + " with: " + username);
+			server.removeUserOnline(username);
+		} else
+			System.out.println("[CLIENTHANDLER] " + Protocol.CONNECTION_LOST);
 		closeStreams();
 	}
-	
-		
 
 	public String read() {
-	
-		String message = null ;
+
+		String message = null;
 		try {
-			
+
 			do {
-				
-				if(in == null || out == null || client.isClosed())
-				{
+
+				if (in == null || out == null || client.isClosed()) {
 					printConnectionLost();
-					return null ;
+					return null;
 				}
-				
+
 				message = in.readLine();
-				
-				if(message == null)
-				{
+
+				if (message == null) {
 					printConnectionLost();
 					return null;
 				}
-				
-				
-				if(Protocol.protocolMatch().contains(message) && !throwMessagesMatch) {
-					//TODO
-					// ERROR 
-					System.out.println("[CLIENTHANDLER] "+Protocol.RELOADING_APP);
+
+				if (Protocol.protocolMatch().contains(message) && !throwMessagesMatch) {
+					// TODO
+					// ERROR
+					System.out.println("[CLIENTHANDLER] " + Protocol.GENERALERROR);
 					printConnectionLost();
 					return null;
 				}
-			
-			}while(Protocol.protocolMatch().contains(message) && throwMessagesMatch);
-			
-			throwMessagesMatch = false ;
-			
-			if(username != null)
-				System.out.println("[CLIENTHANDLER] Message from : "+username + " -> receive: " + message);
-			else 	
+
+			} while (Protocol.protocolMatch().contains(message) && throwMessagesMatch);
+
+			throwMessagesMatch = false;
+
+			if (username != null)
+				System.out.println("[CLIENTHANDLER] Message from : " + username + " -> receive: " + message);
+			else
 				System.out.println("[CLIENTHANDLER] Unknown sender -> receive: " + message);
-		
+
 		} catch (IOException e) {
 			printConnectionLost();
-			return null ;
+			return null;
 		}
-		return message ;
+		return message;
 	}
-	
+
 	private void closeStreams() {
-		
+
 		try {
-			if(in != null) 
+			if (in != null)
 				in.close();
-			in = null ;
-			if(out != null)
-				out.close(); 
-			out = null ;
-			if(client != null && !client.isClosed())
+			in = null;
+			if (out != null)
+				out.close();
+			out = null;
+			if (client != null && !client.isClosed())
 				client.close();
-			client = null ;
+			client = null;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 	}
 }

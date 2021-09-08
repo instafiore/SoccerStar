@@ -77,14 +77,7 @@ public class MatchServer implements Runnable {
 		matchHandler = new MatchHandler(dataMatch,field);
 		
 		String date_match = Utilities.getDateFromString(Utilities.getCurrentISODate());
-		String time_match = "" ;
-		
-		
-		time_match += ""+Calendar.getInstance().get(Calendar.HOUR);
-		time_match += ":";
-		time_match += ""+Calendar.getInstance().get(Calendar.MINUTE);
-		time_match += ":";
-		time_match += ""+Calendar.getInstance().get(Calendar.SECOND);
+		String time_match = Utilities.getHourFromString(Utilities.getCurrentISODate());
 		
 		dataMatch.setDate(date_match);
 		dataMatch.setTime(time_match);
@@ -132,7 +125,7 @@ public class MatchServer implements Runnable {
 			if(!message.equals(Protocol.TYPEOFLINEUP)) {
 				
 				sendMessage(Protocol.CONNECTION_LOST, PLAYER1);
-				sendMessage(Protocol.RELOADING_APP, PLAYER2);
+				sendMessage(Protocol.GENERALERROR, PLAYER2);
 				notifyClients(DISCONNECTEDPLAYER1);
 				dataMatch.forfeitOnTheBooks(PLAYER1);
 				Database.getInstance().insertMatch(dataMatch);
@@ -143,7 +136,7 @@ public class MatchServer implements Runnable {
 			if(message == null)
 			{
 				sendMessage(Protocol.CONNECTION_LOST, PLAYER1);
-				sendMessage(Protocol.RELOADING_APP, PLAYER2);
+				sendMessage(Protocol.GENERALERROR, PLAYER2);
 				notifyClients(DISCONNECTEDPLAYER1);
 				dataMatch.forfeitOnTheBooks(PLAYER1);
 				Database.getInstance().insertMatch(dataMatch);
@@ -157,7 +150,7 @@ public class MatchServer implements Runnable {
 				System.out.println("[MATCHSERVER] Type of lineup1 is not a number ");
 			
 				sendMessage(Protocol.CONNECTION_LOST, PLAYER1);
-				sendMessage(Protocol.RELOADING_APP, PLAYER2);
+				sendMessage(Protocol.GENERALERROR, PLAYER2);
 				notifyClients(DISCONNECTEDPLAYER1);
 				dataMatch.forfeitOnTheBooks(PLAYER1);
 				Database.getInstance().insertMatch(dataMatch);
@@ -171,7 +164,7 @@ public class MatchServer implements Runnable {
 			if(message == null)
 			{
 				sendMessage(Protocol.CONNECTION_LOST, PLAYER2);
-				sendMessage(Protocol.RELOADING_APP, PLAYER1);
+				sendMessage(Protocol.GENERALERROR, PLAYER1);
 				notifyClients(DISCONNECTEDPLAYER2);
 				dataMatch.forfeitOnTheBooks(PLAYER2);
 				Database.getInstance().insertMatch(dataMatch);
@@ -181,7 +174,7 @@ public class MatchServer implements Runnable {
 			
 			if(!message.equals(Protocol.TYPEOFLINEUP)) {
 				sendMessage(Protocol.CONNECTION_LOST, PLAYER2);
-				sendMessage(Protocol.RELOADING_APP, PLAYER1);
+				sendMessage(Protocol.GENERALERROR, PLAYER1);
 				notifyClients(DISCONNECTEDPLAYER2);
 				return;
 			}
@@ -191,7 +184,7 @@ public class MatchServer implements Runnable {
 			if(message == null)
 			{
 				sendMessage(Protocol.CONNECTION_LOST, PLAYER2);
-				sendMessage(Protocol.RELOADING_APP, PLAYER1);
+				sendMessage(Protocol.GENERALERROR, PLAYER1);
 				notifyClients(DISCONNECTEDPLAYER2);
 				dataMatch.forfeitOnTheBooks(PLAYER2);
 				Database.getInstance().insertMatch(dataMatch);
@@ -206,7 +199,7 @@ public class MatchServer implements Runnable {
 				System.out.println("[MATCHSERVER] Type of lineup2 is not a number ");
 				
 				sendMessage(Protocol.CONNECTION_LOST, PLAYER2);
-				sendMessage(Protocol.RELOADING_APP, PLAYER1);
+				sendMessage(Protocol.GENERALERROR, PLAYER1);
 				notifyClients(DISCONNECTEDPLAYER2);
 				dataMatch.forfeitOnTheBooks(PLAYER2);
 				Database.getInstance().insertMatch(dataMatch);
@@ -306,7 +299,7 @@ public class MatchServer implements Runnable {
 					if(i == PLAYER1) 
 					{
 						System.out.println("[MATCHSERVER] Player 1 -> "+ Protocol.LEFTGAME);
-						sendMessage(Protocol.YOUWON, i);
+						sendMessage(Protocol.LEFTGAME, i);
 						notifyClients(NOONEISDISCONNETED);
 						dataMatch.forfeitOnTheBooks(PLAYER1);
 						Database.getInstance().insertMatch(dataMatch);
@@ -314,17 +307,13 @@ public class MatchServer implements Runnable {
 					else 
 					{
 						System.out.println("[MATCHSERVER] Player 2 -> "+ Protocol.LEFTGAME);
-						sendMessage(Protocol.YOUWON, i);
+						sendMessage(Protocol.LEFTGAME, i);
 						notifyClients(NOONEISDISCONNETED);
 						dataMatch.forfeitOnTheBooks(PLAYER2);
 						Database.getInstance().insertMatch(dataMatch);
 					}
 					
 					// The game is over	
-					System.out.println(dataMatch.getResult());
-					System.out.println(dataMatch.getHome()+"ciao"+dataMatch.getGuest());
-					System.out.println(dataMatch.getDate());
-					System.out.println(dataMatch.getTime());
 					return ;
 					
 				}else if(p.getKey().equals(Protocol.MOVEBALL)) {
@@ -336,7 +325,7 @@ public class MatchServer implements Runnable {
 						if(message == null )
 						{
 							sendMessage(Protocol.CONNECTION_LOST, PLAYER1);
-							sendMessage(Protocol.RELOADING_APP, PLAYER2);
+							sendMessage(Protocol.GENERALERROR, PLAYER2);
 							notifyClients(DISCONNECTEDPLAYER1);
 							dataMatch.forfeitOnTheBooks(PLAYER1);
 							Database.getInstance().insertMatch(dataMatch);
@@ -350,7 +339,7 @@ public class MatchServer implements Runnable {
 						if(message == null)
 						{
 							sendMessage(Protocol.CONNECTION_LOST, PLAYER2);
-							sendMessage(Protocol.RELOADING_APP, PLAYER1);
+							sendMessage(Protocol.GENERALERROR, PLAYER1);
 							notifyClients(DISCONNECTEDPLAYER2);
 							dataMatch.forfeitOnTheBooks(PLAYER2);
 							Database.getInstance().insertMatch(dataMatch);
@@ -385,7 +374,7 @@ public class MatchServer implements Runnable {
 						{
 							System.out.println("[MATCHSERVER] Player 1 -> "+ Protocol.CONNECTION_LOST);
 							sendMessage(Protocol.CONNECTION_LOST, PLAYER1);
-							sendMessage(Protocol.RELOADING_APP, PLAYER2);
+							sendMessage(Protocol.GENERALERROR, PLAYER2);
 							notifyClients(DISCONNECTEDPLAYER1);
 							dataMatch.forfeitOnTheBooks(PLAYER1);
 							Database.getInstance().insertMatch(dataMatch);
@@ -394,7 +383,7 @@ public class MatchServer implements Runnable {
 						{
 							System.out.println("[MATCHSERVER] Player 2 -> "+ Protocol.CONNECTION_LOST);
 							sendMessage(Protocol.CONNECTION_LOST, PLAYER2);
-							sendMessage(Protocol.RELOADING_APP, PLAYER1);
+							sendMessage(Protocol.GENERALERROR, PLAYER1);
 							dataMatch.forfeitOnTheBooks(PLAYER2);
 							Database.getInstance().insertMatch(dataMatch);
 							notifyClients(DISCONNECTEDPLAYER2);
@@ -459,14 +448,14 @@ public class MatchServer implements Runnable {
 						if(i == PLAYER1) {
 							
 							sendMessage(Protocol.CONNECTION_LOST, PLAYER1);
-							sendMessage(Protocol.RELOADING_APP, PLAYER2);
+							sendMessage(Protocol.GENERALERROR, PLAYER2);
 							notifyClients(DISCONNECTEDPLAYER1);
 							dataMatch.forfeitOnTheBooks(PLAYER1);
 							Database.getInstance().insertMatch(dataMatch);
 							
 						}else {
 							sendMessage(Protocol.CONNECTION_LOST, PLAYER2);
-							sendMessage(Protocol.RELOADING_APP, PLAYER1);
+							sendMessage(Protocol.GENERALERROR, PLAYER1);
 							notifyClients(DISCONNECTEDPLAYER2);
 							dataMatch.forfeitOnTheBooks(PLAYER2);
 							Database.getInstance().insertMatch(dataMatch);
@@ -480,14 +469,14 @@ public class MatchServer implements Runnable {
 					if(i == PLAYER1) {
 						
 						sendMessage(Protocol.CONNECTION_LOST, PLAYER1);
-						sendMessage(Protocol.RELOADING_APP, PLAYER2);
+						sendMessage(Protocol.GENERALERROR, PLAYER2);
 						notifyClients(DISCONNECTEDPLAYER1);
 						dataMatch.forfeitOnTheBooks(PLAYER1);
 						Database.getInstance().insertMatch(dataMatch);
 						
 					}else {
 						sendMessage(Protocol.CONNECTION_LOST, PLAYER2);
-						sendMessage(Protocol.RELOADING_APP, PLAYER1);
+						sendMessage(Protocol.GENERALERROR, PLAYER1);
 						notifyClients(DISCONNECTEDPLAYER2);
 						dataMatch.forfeitOnTheBooks(PLAYER2);
 						Database.getInstance().insertMatch(dataMatch);
@@ -501,7 +490,7 @@ public class MatchServer implements Runnable {
 					if(i == PLAYER1) {
 						
 						sendMessage(Protocol.CONNECTION_LOST, PLAYER1);
-						sendMessage(Protocol.RELOADING_APP, PLAYER2);
+						sendMessage(Protocol.GENERALERROR, PLAYER2);
 						notifyClients(DISCONNECTEDPLAYER1);
 						dataMatch.forfeitOnTheBooks(PLAYER1);
 						Database.getInstance().insertMatch(dataMatch);
@@ -509,7 +498,7 @@ public class MatchServer implements Runnable {
 						
 					}else {
 						sendMessage(Protocol.CONNECTION_LOST, PLAYER2);
-						sendMessage(Protocol.RELOADING_APP, PLAYER1);
+						sendMessage(Protocol.GENERALERROR, PLAYER1);
 						notifyClients(DISCONNECTEDPLAYER2);
 						dataMatch.forfeitOnTheBooks(PLAYER2);
 						Database.getInstance().insertMatch(dataMatch);

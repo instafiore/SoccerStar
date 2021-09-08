@@ -7,6 +7,8 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
+
+import application.SceneHandler;
 import application.Settings;
 import application.control.MatchController;
 import application.control.MatchSucceedController;
@@ -107,8 +109,8 @@ public class Client extends Service<Message>{
 		{
 			// RELOADING APP
 			in = null ;
-			System.err.println("[CLIENT] "+Protocol.RELOADING_APP);
-			return new Message("[CLIENT] "+Protocol.RELOADING_APP);
+			System.err.println("[CLIENT] "+Protocol.GENERALERROR);
+			return new Message("[CLIENT] "+Protocol.GENERALERROR);
 			
 		}
 		
@@ -151,7 +153,11 @@ public class Client extends Service<Message>{
 				return message ;
 			}
 			message = new Message(protocol, username);
-		}else {
+		}else if(protocol.equals(Protocol.REGISTRATIONFAILED) || protocol.equals(Protocol.ALREADYEXISTS)){
+			message = new Message();
+			message.setProtocol(protocol);
+		}
+		else {
 			
 			message = new Message();
 			message.setProtocol(Protocol.GENERALERROR);
@@ -174,7 +180,11 @@ public class Client extends Service<Message>{
 			}
 			message = new Message(protocol, username);
 			
-		}else {
+		}else if(protocol.equals(Protocol.LOGINFAILED) || protocol.equals(Protocol.ALREADYONLINE)){
+			message = new Message();
+			message.setProtocol(protocol);
+		}
+		else {
 			message = new Message();
 			message.setProtocol(Protocol.GENERALERROR);
 		}
@@ -182,11 +192,18 @@ public class Client extends Service<Message>{
 		return message;
 	}
 	
+	public void logout() {
+		sendMessage(Protocol.LOGOUT);
+		SceneHandler.getInstance().loadScene("LoginPage", false);
+		currentState =  STEP_LOGIN ;
+	}
 	
 	public Message readIN_APP(String protocol) throws IOException {
 		Message message = null ;
 		//TODO
 		String mess = in.readLine();
+		
+		message = new Message(protocol);
 		return message ;
 	}
 	
