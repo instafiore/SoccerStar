@@ -57,8 +57,16 @@ public class MatchView extends StackPane{
 		
 		switch (idField) {
 		case FIELD1:
-			fieldImg = new Image(getClass().getResourceAsStream("/application/view/field.png"),Settings.FIELDWIDTHFRAME -  Settings.BORDERVERTICAL * 2 , Settings.FIELDHEIGHTFRAME - Settings.BORDERHORIZONTAL * 2 , false , true);
+			fieldImg = new Image(getClass().getResourceAsStream("/application/view/field1.png"),Settings.FIELDWIDTHFRAME -  Settings.BORDERVERTICAL * 2 , Settings.FIELDHEIGHTFRAME - Settings.BORDERHORIZONTAL * 2 , false , true);
 			field = new Field(Settings.FIELD1 , Settings.BORDERHORIZONTAL, Settings.BORDERVERTICAL, Settings.FIELDWIDTHFRAME, Settings.FIELDHEIGHTFRAME, fieldImg );
+			break;
+		case FIELD2:
+			fieldImg = new Image(getClass().getResourceAsStream("/application/view/field2.png"),Settings.FIELDWIDTHFRAME -  Settings.BORDERVERTICAL * 2 , Settings.FIELDHEIGHTFRAME - Settings.BORDERHORIZONTAL * 2 , false , true);
+			field = new Field(Settings.FIELD2 , Settings.BORDERHORIZONTAL, Settings.BORDERVERTICAL, Settings.FIELDWIDTHFRAME, Settings.FIELDHEIGHTFRAME, fieldImg );
+			break;
+		case FIELD3:
+			fieldImg = new Image(getClass().getResourceAsStream("/application/view/field3.png"),Settings.FIELDWIDTHFRAME -  Settings.BORDERVERTICAL * 2 , Settings.FIELDHEIGHTFRAME - Settings.BORDERHORIZONTAL * 2 , false , true);
+			field = new Field(Settings.FIELD3 , Settings.BORDERHORIZONTAL, Settings.BORDERVERTICAL, Settings.FIELDWIDTHFRAME, Settings.FIELDHEIGHTFRAME, fieldImg );
 			break;
 		default:
 			break;

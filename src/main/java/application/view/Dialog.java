@@ -1,5 +1,6 @@
 package application.view;
 
+import application.control.HoverButton;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -7,6 +8,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -44,6 +46,7 @@ public class Dialog {
 
 	private Dialog() {
 		root = new VBox();
+		root.getStyleClass().add("pane");
 		stage = new Stage();
 		scene = new Scene(root);
 		scene.getStylesheets().add(getClass().getResource("/application/view/css/stylesheet1.css").toExternalForm());
@@ -60,10 +63,21 @@ public class Dialog {
 		
 		Label textLabel = new Label(text_message);
 		textLabel.setWrapText(true);
-		textLabel.setFont(Font.loadFont(getClass().getResourceAsStream("/application/view/fonts/AzeretMono-Italic-VariableFont_wght.ttf"), 20));
-
+		textLabel.setFont(Font.loadFont(getClass().getResourceAsStream("/application/view/fonts/AzeretMono-Italic-VariableFont_wght.ttf"), 14));
+		textLabel.setTextFill(Color.web("#ffffff"));
+		
 		Button yes_button = new Button(YES_BUTTON);
 		Button no_button = new Button(NO_BUTTON);
+		
+		yes_button.setOnMouseEntered(new HoverButton());
+		yes_button.setOnMouseExited(new HoverButton());
+		yes_button.setTextFill(Color.web("#ffffff"));
+		
+		no_button.getStyleClass().add("leave_button");
+		no_button.setOnMouseEntered(new HoverButton());
+		no_button.setOnMouseExited(new HoverButton());
+		no_button.setTextFill(Color.web("#ffffff"));
+		
 		BorderPane borderPane = new BorderPane();
 		
 		HBox container = new HBox(no_button,yes_button);
@@ -103,9 +117,15 @@ public class Dialog {
 
 		Label textLabel = new Label(text_message);
 		textLabel.setWrapText(true);
-		textLabel.setFont(Font.loadFont(getClass().getResourceAsStream("/application/view/fonts/AzeretMono-Italic-VariableFont_wght.ttf"), 20));
+		textLabel.setFont(Font.loadFont(getClass().getResourceAsStream("/application/view/fonts/AzeretMono-Italic-VariableFont_wght.ttf"), 14));
+		textLabel.setTextFill(Color.web("#ffffff"));
+		
 		Button ok_button = new Button(OK_BUTTON);
 		BorderPane borderPane = new BorderPane();
+		
+		ok_button.setOnMouseEntered(new HoverButton());
+		ok_button.setOnMouseExited(new HoverButton());
+		ok_button.setTextFill(Color.web("#ffffff"));
 		
 		borderPane.setRight(ok_button);
 		borderPane.setMargin(ok_button, new Insets(0, 10, 10, 0));

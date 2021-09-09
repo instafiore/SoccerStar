@@ -14,6 +14,7 @@ import application.control.MatchController;
 import application.control.MatchSucceedController;
 import application.model.game.entity.Message;
 import application.net.common.Protocol;
+import application.view.Field;
 import application.view.MatchView;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
@@ -32,15 +33,34 @@ public class Client extends Service<Message>{
 	public static final int IN_GAME = 2 ;
 	public static final int IN_APP = 3 ;
 	
-	//TODO DO USERNAME THING 
+	public static final int FIELD1 = 1 ;
+	public static final int FIELD2 = 2 ;
+	public static final int FIELD3 = 3 ;
+	
 	
 	private int currentState = 1;
 	private MatchClient currentMatch = null ;
-	
+	private int currentField = FIELD1 ;
+		
 	private Client() {}
 	
 	public void setCurrentState(int currentState) {
 		this.currentState = currentState;
+	}
+	
+	public void clickButtonLeft() {
+		currentField--;
+		if(currentField < FIELD1)
+			currentField = FIELD3 ;
+	}
+	
+	public void clickButtonRight() {
+		currentField++;
+		if(currentField > FIELD3)
+			currentField = FIELD1 ;
+	}
+	public int getCurrentField() {
+		return currentField;
 	}
 	
 	public BufferedReader getIn() {
@@ -224,6 +244,7 @@ public class Client extends Service<Message>{
 	}
 	
 	public void startMatchField1() {
+		
 		
 		if(currentState == IN_GAME)
 			return;

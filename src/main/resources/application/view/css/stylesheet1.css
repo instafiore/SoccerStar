@@ -9,11 +9,13 @@
 ;}
 
 .button{
-
-    -fx-background-color: #009a00;
+    -fx-background-color: #198c19;
     -fx-background-radius: 15px;
     -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.8), 10, 0, 0, 0);
     -fx-cursor: hand;
+}
+.initial_button{
+    -fx-background-color: #009a00;
 }
 
 .leave_button{
@@ -21,3 +23,27 @@
     -fx-background-color: #ff0000 ;
 
 }
+
+.triangle_button1{
+    -fx-shape :"M 600 450 L 350 300 L 600 150 Z";
+}
+
+.triangle_button2{
+    -fx-shape :"M 350 450 L 600 350 L 350 250 Z";
+
+}
+
+
+.fiedl1{
+ -fx-background-color: #009a00 ;
+}
+
+.field2{
+ -fx-background-color: #bf9b30 ;
+}
+
+.field3{
+ -fx-background-color: #334afe ;
+}
+
+

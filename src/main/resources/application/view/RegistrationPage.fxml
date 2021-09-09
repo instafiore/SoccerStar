@@ -28,7 +28,7 @@
       <PasswordField fx:id="repeat_password_field_registration" layoutX="150.0" layoutY="276.0" prefHeight="36.0" prefWidth="320.0" styleClass="input_field" />
       <Label fx:id="email_label" layoutX="151.0" layoutY="325.0" prefHeight="16.0" prefWidth="168.0" text="Email" textFill="#f2eeee" />
       <TextField fx:id="email_field_registration" layoutX="151.0" layoutY="352.0" prefHeight="36.0" prefWidth="320.0" styleClass="input_field" />
-      <Button fx:id="sign_up_button_registration" layoutX="227.0" layoutY="411.0" mnemonicParsing="false" onAction="#onClick_sign_up_button_registration" prefHeight="36.0" prefWidth="146.0" text="Sign-up" textFill="#f5f2f2" />
+      <Button fx:id="sign_up_button_registration" layoutX="227.0" layoutY="411.0" mnemonicParsing="false" onAction="#onClick_sign_up_button_registration" prefHeight="36.0" prefWidth="146.0" styleClass="initial_button" text="Sign-up" textFill="#f5f2f2" />
       <Button fx:id="back_button_registration" layoutX="21.0" layoutY="21.0" mnemonicParsing="false" onAction="#onClick_back_button_registration" prefHeight="36.0" prefWidth="107.0" styleClass="leave_button" text="Back" textFill="#eeeaea" />
    </children>
 </AnchorPane>

@@ -15,7 +15,7 @@
       <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#2197ff00" height="403.0" stroke="#fcf2f2" strokeType="INSIDE" strokeWidth="5.0" styleClass="label" width="601.0" />
       <Circle fill="#1f93ff0d" layoutX="300.0" layoutY="191.0" radius="71.0" stroke="#eee9e9" strokeType="INSIDE" />
       <Line endX="305.0" endY="400.0000305175781" startX="300.0" stroke="#eeecec" />
-      <Button fx:id="sign_in_button_login" layoutX="201.0" layoutY="271.0" mnemonicParsing="false" onAction="#onClick_sign_in_button_login" prefHeight="42.0" prefWidth="184.0" text="Sign-in" textFill="#fffefe" />
+      <Button fx:id="sign_in_button_login" layoutX="201.0" layoutY="271.0" mnemonicParsing="false" onAction="#onClick_sign_in_button_login" prefHeight="42.0" prefWidth="184.0" styleClass="initial_button" text="Sign-in" textFill="#fffefe" />
       <Label fx:id="username_label" layoutX="142.0" layoutY="98.0" text="Username" textFill="WHITE">
          <font>
             <Font size="15.0" />
@@ -33,6 +33,6 @@
       </Label>
       <Label fx:id="password_forgot_button" layoutX="237.0" layoutY="239.0" onMouseClicked="#onClick_password_forgot_button" text="Password forgot?" />
       <Label layoutX="286.0" layoutY="323.0" text="or" textFill="#f2eaea" />
-      <Button fx:id="sign_up_button_login" layoutX="220.0" layoutY="350.0" mnemonicParsing="false" onAction="#onClick_sign_up_button_login" prefHeight="36.0" prefWidth="146.0" text="Sign-up" textFill="#f5eded" />
+      <Button fx:id="sign_up_button_login" layoutX="220.0" layoutY="350.0" mnemonicParsing="false" onAction="#onClick_sign_up_button_login" prefHeight="36.0" prefWidth="146.0" styleClass="initial_button" text="Sign-up" textFill="#f5eded" />
    </children>
 </AnchorPane>

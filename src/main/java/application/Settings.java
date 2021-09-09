@@ -18,14 +18,25 @@ public class Settings {
 	public static final long REFRESHCLIENT = 1000 ;
 	public static final int REFRESHSERVER = 1000;
 	public static final int REFRESHMATCHSERVER = 10;
-	public static final String FIELD1 = "FIELD 1";
-	public static final String FIELD2 = "FIELD 2";
-	public static final String FIELD3 = "FIELD 3";
-	public static final double FRICTIONFIELD1 = 15.0 ;
-	public static final double FRICTIONFIELD2 = 25.0 ;
-	public static final double FRICTIONFIELD3 = 5.0 ;
 	public static final double MULTIPLIERVELOCITY = 150.0 ;
 	public static final double STEPTOREPLACEBALLS = 70 ;
 	public static final int WAITFORGOAL = 20 ;
+	
+	//FIELDS
+	public static final String FIELD1 = "FIELD 1";
+	public static final String FIELD2 = "FIELD 2";
+	public static final String FIELD3 = "FIELD 3";
+	public static final String COLORFIELD1 = "#009a00";
+	public static final String COLORFIELD2 = "#bf9b30";
+	public static final String COLORFIELD3 = "#334afe";
+	public static final double FRICTIONFIELD1 = 15.0 ;
+	public static final double FRICTIONFIELD2 = 25.0 ;
+	public static final double FRICTIONFIELD3 = 5.0 ;
+	public static final int PRICEFIELD1 = 100 ;
+	public static final int REWARDFIELD1 = 200 ;
+	public static final int PRICEFIELD2 = 150 ;
+	public static final int REWARDFIELD2 = 300 ;
+	public static final int PRICEFIELD3 = 200 ;
+	public static final int REWARDFIELD3 = 400 ;
 	
 }

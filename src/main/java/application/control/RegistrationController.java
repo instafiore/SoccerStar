@@ -18,6 +18,9 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 
 public class RegistrationController {
 
+
+
+	
     @FXML
     private Label soccerstart_label;
 
@@ -69,8 +72,8 @@ public class RegistrationController {
     	sign_up_button_registration.setOnMouseEntered(new HoverButton());
     	sign_up_button_registration.setOnMouseExited(new HoverButton());
     	
-    	back_button_registration.setOnMouseEntered(new HoverButton(HoverButton.LEAVEBUTTON));
-    	back_button_registration.setOnMouseExited(new HoverButton(HoverButton.LEAVEBUTTON));
+    	back_button_registration.setOnMouseEntered(new HoverButton());
+    	back_button_registration.setOnMouseExited(new HoverButton());
     	
     }
 
