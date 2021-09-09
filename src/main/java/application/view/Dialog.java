@@ -7,6 +7,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -45,6 +46,7 @@ public class Dialog {
 		root = new VBox();
 		stage = new Stage();
 		scene = new Scene(root);
+		scene.getStylesheets().add(getClass().getResource("/application/view/css/stylesheet1.css").toExternalForm());
 		stage.setResizable(false);
 		stage.initModality(Modality.APPLICATION_MODAL);
 		stage.setScene(scene);
@@ -58,7 +60,8 @@ public class Dialog {
 		
 		Label textLabel = new Label(text_message);
 		textLabel.setWrapText(true);
-		
+		textLabel.setFont(Font.loadFont(getClass().getResourceAsStream("/application/view/fonts/AzeretMono-Italic-VariableFont_wght.ttf"), 20));
+
 		Button yes_button = new Button(YES_BUTTON);
 		Button no_button = new Button(NO_BUTTON);
 		BorderPane borderPane = new BorderPane();
@@ -100,6 +103,7 @@ public class Dialog {
 
 		Label textLabel = new Label(text_message);
 		textLabel.setWrapText(true);
+		textLabel.setFont(Font.loadFont(getClass().getResourceAsStream("/application/view/fonts/AzeretMono-Italic-VariableFont_wght.ttf"), 20));
 		Button ok_button = new Button(OK_BUTTON);
 		BorderPane borderPane = new BorderPane();
 		

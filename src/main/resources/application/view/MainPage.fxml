@@ -5,12 +5,11 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.text.Font?>
 
-
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="466.0" prefWidth="880.0" styleClass="pane" stylesheets="@css/stylesheet1.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.control.MainPageController">
    <center>
       <BorderPane prefHeight="200.0" prefWidth="200.0" styleClass="pane" stylesheets="@css/stylesheet1.css" BorderPane.alignment="CENTER">
          <center>
-            <Button fx:id="field_button_main_page" mnemonicParsing="false" onAction="#onClick_field_button_main_page" prefHeight="176.0" prefWidth="278.0" text="FIELD 1" BorderPane.alignment="CENTER" />
+            <Button fx:id="field_button_main_page" mnemonicParsing="false" onAction="#onClick_field_button_main_page" prefHeight="176.0" prefWidth="278.0" text="FIELD 1" textFill="#fffdfd" BorderPane.alignment="CENTER" />
          </center>
       </BorderPane>
    </center>
@@ -19,14 +18,14 @@
          <left>
             <BorderPane prefHeight="115.0" prefWidth="181.0" BorderPane.alignment="CENTER">
                <center>
-                  <Button fx:id="leave_button_main_page" mnemonicParsing="false" onAction="#onClick_leave_button_main_page" prefHeight="51.0" prefWidth="92.0" text="LEAVE" BorderPane.alignment="CENTER" />
+                  <Button fx:id="leave_button_main_page" mnemonicParsing="false" onAction="#onClick_leave_button_main_page" prefHeight="51.0" prefWidth="92.0" styleClass="leave_button" text="LEAVE" textFill="#ddd9d9" BorderPane.alignment="CENTER" />
                </center>
             </BorderPane>
          </left>
          <right>
             <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                <center>
-                  <Button fx:id="account_button_main_page" mnemonicParsing="false" onAction="#onClick_account_button_main_page" prefHeight="51.0" prefWidth="92.0" text="ACCOUNT" BorderPane.alignment="CENTER" />
+                  <Button fx:id="account_button_main_page" mnemonicParsing="false" onAction="#onClick_account_button_main_page" prefHeight="51.0" prefWidth="92.0" text="ACCOUNT" textFill="#e1d6d6" BorderPane.alignment="CENTER" />
                </center>
             </BorderPane>
          </right>
@@ -50,12 +49,12 @@
                <right>
                   <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                      <center>
-                        <Button fx:id="friends_button_main_page" mnemonicParsing="false" onAction="#onClick_friends_button_main_page" prefHeight="51.0" prefWidth="92.0" text="FRIENDS" BorderPane.alignment="CENTER" />
+                        <Button fx:id="friends_button_main_page" mnemonicParsing="false" onAction="#onClick_friends_button_main_page" prefHeight="51.0" prefWidth="92.0" text="FRIENDS" textFill="WHITE" BorderPane.alignment="CENTER" />
                      </center>
                   </BorderPane>
                </right>
                <center>
-                  <Button fx:id="shop_button_main_page" mnemonicParsing="false" onAction="#onClick_shop_button_main_page" prefHeight="51.0" prefWidth="92.0" text="SHOP" BorderPane.alignment="CENTER" />
+                  <Button fx:id="shop_button_main_page" mnemonicParsing="false" onAction="#onClick_shop_button_main_page" prefHeight="51.0" prefWidth="92.0" text="SHOP" textFill="#ebdede" BorderPane.alignment="CENTER" />
                </center>
             </BorderPane>
          </center>

@@ -58,11 +58,11 @@ public class LoginController {
     	soccerstar_label.setFont(Font.loadFont(getClass().getResourceAsStream("/application/view/fonts/AzeretMono-Italic-VariableFont_wght.ttf"), 42));
     	password_label.setFont(Font.loadFont(getClass().getResourceAsStream("/application/view/fonts/AzeretMono-Italic-VariableFont_wght.ttf"), 15));
     	
-    	sign_in_button_login.setOnMouseEntered(new HoverCommonButton());
-    	sign_in_button_login.setOnMouseExited(new HoverCommonButton());
+    	sign_in_button_login.setOnMouseEntered(new HoverButton());
+    	sign_in_button_login.setOnMouseExited(new HoverButton());
     	
-    	sign_up_button_login.setOnMouseEntered(new HoverCommonButton());
-    	sign_up_button_login.setOnMouseExited(new HoverCommonButton());
+    	sign_up_button_login.setOnMouseEntered(new HoverButton());
+    	sign_up_button_login.setOnMouseExited(new HoverButton());
     	
     	
     }

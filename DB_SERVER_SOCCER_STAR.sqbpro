@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?><sqlb_project><db path="DB_SERVER_SOCCER_STAR.db" readonly="0" foreign_keys="1" case_sensitive_like="0" temp_store="0" wal_autocheckpoint="1000" synchronous="2"/><attached/><window><main_tabs open="structure browser pragmas query" current="0"/></window><tab_structure><column_width id="0" width="300"/><column_width id="1" width="0"/><column_width id="2" width="100"/><column_width id="3" width="2405"/><column_width id="4" width="0"/><expanded_item id="0" parent="1"/><expanded_item id="1" parent="1"/><expanded_item id="2" parent="1"/><expanded_item id="3" parent="1"/></tab_structure><tab_browse><table title="Account" custom_title="0" dock_id="1" table="4,7:mainAccount"/><dock_state state="000000ff00000000fd00000001000000020000037f00000263fc0100000001fb000000160064006f0063006b00420072006f007700730065003101000000000000037f0000011000ffffff000002a60000000000000004000000040000000800000008fc00000000"/><default_encoding codec=""/><browse_table_settings><table schema="main" name="Account" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_" freeze_columns="0"><sort/><column_widths><column index="1" value="71"/><column index="2" value="300"/><column index="3" value="40"/><column index="4" value="228"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="Friends" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_" freeze_columns="0"><sort/><column_widths><column index="1" value="58"/><column index="2" value="45"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table></browse_table_settings></tab_browse><tab_sql><sql name="SQL 1">
+create table Account(
+	username varchar(18) ,
+	password char(100) not null,
+	coins integer default 400,
+	email varchar(60) not null,
+	color_my_balls char(7) default '#16004d',
+	color_ball_to_play char(7) default '#ffcc00' ,
+	lineup integer default 1 ,
+	primary key(username)
+);
+
+create table Field(
+	name varchar(20),
+	price integer not null,
+	reward integer not null,
+	image_field blob not null,
+	cover_image blob not null,
+	primary key(name)
+);
+
+create table Match(
+	id integer auto_increment,
+	date_match date not null,
+	time_match time not null,
+	result char(3) not null,
+	field varchar(20) not null,
+	home varchar(18) not null,
+	guest varchar(18) not null,
+	primary key(id),
+	foreign key(field) references Field(name),
+	foreign key(home) references Account(username),
+	foreign key(guest) references Account(username)
+);
+
+create table Type_of_skin(
+	id integer auto_increment,
+	name varchar(20) not null,
+	base boolean default 0,
+	primary key(id)
+);
+
+create table Skin(
+	name varchar(18) not null,
+	price integer not null,
+	color char(7)  not null,
+	type_of_skin integer not null,
+	primary key(name),
+	foreign key(type_of_skin) references Type_of_skin(id)	
+);
+
+create table Friends(
+	account varchar(18) not null,
+	friend varchar(18) not null,
+	primary key(account,friend),
+	foreign key(account) references Account(username),
+	foreign key(friend) references Account(username)	
+);
+
+
+create table Inventary(
+	account varchar(18) not null,
+	skin varchar(18) not null,
+	primary key(account,skin),
+	foreign key(account) references Account(username),
+	foreign key(skin) references Skin(name)	 
+);
+</sql><current_tab id="0"/></tab_sql></sqlb_project>

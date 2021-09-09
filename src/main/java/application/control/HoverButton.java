@@ -7,13 +7,35 @@ import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 
-public class HoverCommonButton implements EventHandler<MouseEvent>{
+public class HoverButton implements EventHandler<MouseEvent>{
 
     private static final String GREEN_BUTTON_HOVER = "#009a00" ;
-    private static final int TIMETRANSACTION = 10 ;
+    private static final String RED_BUTTON_HOVER = "#ff0000" ;
     
-    private static final int STEPTRANSATION = 5 ;
+    private static final int TIMETRANSACTION = 10 ;
+    private static final int STEPTRANSATION = 10 ;
 	
+    private String colorHover = GREEN_BUTTON_HOVER ;
+    
+    public static final int COMMONBUTTON = 0 ;
+    public static final int LEAVEBUTTON = 1 ;
+    
+    public HoverButton() {}
+    
+    public HoverButton(int typeOfButton) {
+    	switch (typeOfButton) {
+		case COMMONBUTTON:
+			colorHover = GREEN_BUTTON_HOVER ;
+			break;
+		case LEAVEBUTTON:
+			colorHover = RED_BUTTON_HOVER ;
+			break;
+		default:
+			colorHover = GREEN_BUTTON_HOVER ;
+			break;
+		}
+    }
+    
 	@Override
 	public void handle(MouseEvent event) {
 		
@@ -25,7 +47,7 @@ public class HoverCommonButton implements EventHandler<MouseEvent>{
 		if(event.getEventType().equals(MouseEvent.MOUSE_ENTERED)){
 			
 			opacity = 1 ;
-			factor = 0.1 ;
+			factor = 0.05 ;
 			
 	    	for(int i = 0 ; i < STEPTRANSATION ;++i)
 	    	{
@@ -36,7 +58,7 @@ public class HoverCommonButton implements EventHandler<MouseEvent>{
 					e.printStackTrace();
 				}
 	    		button.setStyle("{"
-	    				+ "-fx-background-color: #009a00;"
+	    				+ "-fx-background-color: "+colorHover+";"
 	    				+ "-fx-opacity: "+opacity+";"
 	    				+ "}");
 	    		
@@ -58,7 +80,7 @@ public class HoverCommonButton implements EventHandler<MouseEvent>{
 					e.printStackTrace();
 				}
 	    		button.setStyle("{"
-	    				+ "-fx-background-color: #009a00;"
+	    				+ "-fx-background-color: "+colorHover+";"
 	    				+ "-fx-opacity: "+opacity+";"
 	    				+ "}");
 	    		
