@@ -47,7 +47,7 @@ public class Updater extends AnimationTimer{
 		
 		if(firstTime)
 		{
-			SceneHandler.getInstance().loadScene("MatchView", false );
+			SceneHandler.getInstance().loadScene("MatchView", false , false);
 			firstTime = false ;
 		}
 		long time = now - previousTime;

@@ -9,7 +9,6 @@
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 
-
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="466.0" prefWidth="880.0" styleClass="main_page" stylesheets="@css/stylesheet1.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.control.MainPageController">
    <center>
       <BorderPane prefHeight="200.0" prefWidth="200.0" styleClass="pane" stylesheets="@css/stylesheet1.css" BorderPane.alignment="CENTER">
@@ -65,7 +64,10 @@
             <BorderPane prefHeight="46.0" prefWidth="880.0" BorderPane.alignment="CENTER" />
          </top>
          <bottom>
-            <BorderPane prefHeight="39.0" prefWidth="880.0" BorderPane.alignment="CENTER" />
+            <BorderPane prefHeight="50.0" prefWidth="880.0" BorderPane.alignment="CENTER">
+               <center>
+                  <HBox fx:id="container_cancel_button" alignment="CENTER" prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+               </center></BorderPane>
          </bottom>
       </BorderPane>
    </center>
@@ -81,7 +83,16 @@
          <right>
             <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                <center>
-                  <Button fx:id="account_button_main_page" mnemonicParsing="false" onAction="#onClick_account_button_main_page" prefHeight="51.0" prefWidth="92.0" text="ACCOUNT" textFill="#e1d6d6" BorderPane.alignment="CENTER" />
+                  <HBox alignment="CENTER" prefHeight="95.0" prefWidth="272.0" BorderPane.alignment="CENTER">
+                     <children>
+                        <Label alignment="CENTER" prefHeight="95.0" prefWidth="107.0" text="400" textFill="#d1d71d">
+                           <font>
+                              <Font size="31.0" />
+                           </font>
+                        </Label>
+                        <Circle fill="#d6ff1f" radius="19.0" stroke="BLACK" strokeType="INSIDE" />
+                     </children>
+                  </HBox>
                </center>
             </BorderPane>
          </right>
@@ -92,16 +103,7 @@
          <left>
             <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                <center>
-                  <HBox prefHeight="95.0" prefWidth="272.0" BorderPane.alignment="CENTER">
-                     <children>
-                        <Label alignment="TOP_RIGHT" prefHeight="95.0" prefWidth="122.0" text="400 " textFill="#d1d71d">
-                           <font>
-                              <Font size="31.0" />
-                           </font>
-                        </Label>
-                        <Circle fill="#d6ff1f" radius="18.0" stroke="BLACK" strokeType="INSIDE" />
-                     </children>
-                  </HBox>
+                  <Button fx:id="account_button_main_page" mnemonicParsing="false" onAction="#onClick_account_button_main_page" prefHeight="51.0" prefWidth="92.0" text="ACCOUNT" textFill="#e1d6d6" BorderPane.alignment="CENTER" />
                </center>
             </BorderPane>
          </left>

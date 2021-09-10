@@ -3,6 +3,7 @@ package application.control;
 import application.SceneHandler;
 import application.model.game.entity.Message;
 import application.net.client.Client;
+import application.net.client.MatchClient;
 import application.net.common.Protocol;
 import application.view.Dialog;
 import javafx.concurrent.WorkerStateEvent;
@@ -18,7 +19,7 @@ public class ClientSucceedController implements EventHandler<WorkerStateEvent>{
 		
 		if(message.getProtocol().equals(Protocol.REGISTRATIONCOMPLETED)) {
 			
-			SceneHandler.getInstance().loadScene("MainPage", true);
+			SceneHandler.getInstance().loadScene("MainPage", true , true);
 			
 		}else if(message.getProtocol().equals(Protocol.REGISTRATIONFAILED) || message.getProtocol().equals(Protocol.ALREADYEXISTS)){
 			
@@ -27,7 +28,7 @@ public class ClientSucceedController implements EventHandler<WorkerStateEvent>{
 			
 		}else if(message.getProtocol().equals(Protocol.LOGINCOMPLETED)) {
 			
-			SceneHandler.getInstance().loadScene("MainPage", true);
+			SceneHandler.getInstance().loadScene("MainPage", true , true);
 			
 		}else if(message.getProtocol().equals(Protocol.LOGINFAILED) || message.getProtocol().equals(Protocol.ALREADYONLINE)){
 			
@@ -51,7 +52,11 @@ public class ClientSucceedController implements EventHandler<WorkerStateEvent>{
 			
 			Dialog.getInstance().showInformationDialog(Dialog.ERROR_WINDOW,message.getProtocol());
 			System.exit(0);
-		}else if(message.getProtocol().equals(Protocol.PREPARINGMATCH)) {/*JUST TO CONCLUDE THE READ OF THE CLIENT */}
+		}else if(message.getProtocol().equals(Protocol.PREPARINGMATCH)) {
+			MatchClient match = new MatchClient(Client.getInstance());
+			Client.getInstance().setCurrentMatch(match);
+			match.setOnSucceeded(new MatchSucceedController());
+		}
 		
 		
 		Client.getInstance().restart();

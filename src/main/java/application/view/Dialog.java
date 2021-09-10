@@ -22,6 +22,7 @@ public class Dialog {
 	
 	public static final String ERROR_WINDOW = "Error";
 	public static final String INFORMATION_WINDOW = "An information";
+	public static final String ATTENTION = "Attention";
 	public static final int OK = 0;
 	public static final int NO = 1;
 	public static final int YES = 2;

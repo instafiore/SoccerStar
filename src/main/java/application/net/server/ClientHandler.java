@@ -131,50 +131,91 @@ public class ClientHandler implements Runnable {
 			if (message.equals(Protocol.NEWGAMEREQUESTFIELD1)) {
 
 				RequestMatchHandler.getInstace().addPlayerField1(this);
-				try {
+				
+				message = read();
 
-					synchronized (this) {
-						this.wait();
+				if (message == null)
+					return;
+				
+				if(message.equals(Protocol.GAMESTARTED)) {
+					try {
+						synchronized (this) {
+							wait();
+						}	
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
 					}
-
-				} catch (InterruptedException e) {
+				}else if(message.equals(Protocol.REQUESTCANCELED)){
+					RequestMatchHandler.getInstace().removePlayer(this);
+				}else if(message.equals(Protocol.CONNECTION_LOST)) {
+					return ;
+				}else {
 					sendMessage(Protocol.GENERALERROR);
 					printConnectionLost();
-					e.printStackTrace();
+					return;
 				}
-
+				
 			} else if (message.equals(Protocol.NEWGAMEREQUESTFIELD2)) {
 
 				RequestMatchHandler.getInstace().addPlayerField2(this);
-				try {
+				
+				
+				message = read();
 
-					synchronized (this) {
-						this.wait();
+				if (message == null)
+					return;
+				
+				if(message.equals(Protocol.GAMESTARTED)) {
+					try {
+						synchronized (this) {
+							wait();
+						}	
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
 					}
-
-				} catch (InterruptedException e) {
+				}else if(message.equals(Protocol.REQUESTCANCELED)){
+					RequestMatchHandler.getInstace().removePlayer(this);
+				}else if(message.equals(Protocol.CONNECTION_LOST)) {
+					return ;
+				}else {
 					sendMessage(Protocol.GENERALERROR);
 					printConnectionLost();
-					e.printStackTrace();
+					return;
 				}
-
 			} else if (message.equals(Protocol.NEWGAMEREQUESTFIELD3)) {
 
 				RequestMatchHandler.getInstace().addPlayerField3(this);
-				try {
+		
+				
+				message = read();
 
-					synchronized (this) {
-						this.wait();
+				if (message == null)
+					return;
+				
+				if(message.equals(Protocol.GAMESTARTED)) {
+					try {
+						synchronized (this) {
+							wait();
+						}	
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
 					}
-
-				} catch (InterruptedException e) {
+				}else if(message.equals(Protocol.REQUESTCANCELED)){
+					RequestMatchHandler.getInstace().removePlayer(this);
+				}else if(message.equals(Protocol.CONNECTION_LOST)) {
+					return ;
+				}else {
 					sendMessage(Protocol.GENERALERROR);
 					printConnectionLost();
-					e.printStackTrace();
+					return;
 				}
-
 			}else if(message.equals(Protocol.LOGOUT)) {
 				logout();
+				return ;
+			}else if(message.equals(Protocol.CONNECTION_LOST)) {
 				return ;
 			}
 			else{
@@ -196,6 +237,7 @@ public class ClientHandler implements Runnable {
 
 	}
 
+
 	public void notifyEndMatch() {
 		synchronized (this) {
 			throwMessagesMatch = true;
@@ -206,6 +248,9 @@ public class ClientHandler implements Runnable {
 	private void logout() {
 		System.out.println("[CLIENTHANDLER] "+Protocol.LOGUTDONE+username);
 		Server.getInstance().removeUserOnline(username);
+		RequestMatchHandler.getInstace().removePlayerField1(this);
+		RequestMatchHandler.getInstace().removePlayerField2(this);
+		RequestMatchHandler.getInstace().removePlayerField3(this);
 		username = null ;
 		Thread t = new Thread(this);
 		t.start();
@@ -237,7 +282,7 @@ public class ClientHandler implements Runnable {
 
 	public String read() {
 
-		String message = null;
+ 		String message = null;
 		try {
 
 			do {
@@ -255,9 +300,8 @@ public class ClientHandler implements Runnable {
 				}
 
 				if (Protocol.protocolMatch().contains(message) && !throwMessagesMatch) {
-					// TODO
 					// ERROR
-					System.out.println("[CLIENTHANDLER] " + Protocol.GENERALERROR);
+					System.out.println("[CLIENTHANDLER] Received a unexpected: " + Protocol.GENERALERROR+message);
 					printConnectionLost();
 					return null;
 				}

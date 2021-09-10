@@ -42,22 +42,19 @@ public class SceneHandler {
 		
 	}
 	
-	// Using sceneBuilder
-	public void loadPane(String namePane ) {
+	public void loadScene(String namePane , boolean resizable , boolean usingSceneBuilder) {
 		
-		FXMLLoader fxmlLoader = new FXMLLoader(this.getClass().getResource(File.separator+"application"+File.separator+"view"+File.separator+namePane+".fxml"));
+		Pane pane = null ;
 		
-		try {
-			Pane pane = (Pane) fxmlLoader.load();
-			panes.put(namePane, pane);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	public void loadScene(String namePane , boolean resizable ) {
-		
-		Pane pane = panes.get(namePane);
+		if(!usingSceneBuilder)
+			pane = panes.get(namePane);
+		else
+			try {
+				pane = (Pane) (new FXMLLoader(this.getClass().getResource(File.separator+"application"+File.separator+"view"+File.separator+namePane+".fxml"))).load();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		
 		if(pane == null)
 		{

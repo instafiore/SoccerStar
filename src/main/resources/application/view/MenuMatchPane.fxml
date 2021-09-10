@@ -4,10 +4,9 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.layout.BorderPane?>
 
-
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="1080.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.control.MenuMatchPaneController">
    <left>
-      <Button fx:id="leave_button_match" mnemonicParsing="false" onAction="#OnClick_leave_button_match" prefHeight="63.0" prefWidth="152.0" text="LEAVE" BorderPane.alignment="CENTER">
+      <Button fx:id="leave_button_match" mnemonicParsing="false" onAction="#OnClick_leave_button_match" prefHeight="63.0" prefWidth="152.0" stylesheets="@css/stylesheet1.css" text="LEAVE" BorderPane.alignment="CENTER">
          <BorderPane.margin>
             <Insets />
          </BorderPane.margin>

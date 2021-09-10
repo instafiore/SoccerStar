@@ -79,7 +79,7 @@ public class LoginController {
     @FXML
     void onClick_sign_up_button_login(ActionEvent event) {
 
-    	SceneHandler.getInstance().loadScene("RegistrationPage", false);
+    	SceneHandler.getInstance().loadScene("RegistrationPage", false , true);
     	Client.getInstance().setCurrentState(Client.STEP_REGISTRATION);
     }
     

@@ -38,11 +38,18 @@ public class RequestMatchHandler {
 	}
 	
 	public void addPlayerField1(ClientHandler player) {
+		removePlayer(player);
 		field1Queue.add(player);
 		flushQueueField1();
 	}
 	
-	public void removePlayerField1(Socket player) {
+	public void removePlayer(ClientHandler player) {
+		removePlayerField1(player);
+		removePlayerField2(player);
+		removePlayerField3(player);
+	}
+	
+	public void removePlayerField1(ClientHandler player) {
 		field1Queue.remove(player);
 	}
 	
@@ -64,6 +71,7 @@ public class RequestMatchHandler {
 		field1Queue.poll();
 		
 		System.out.println("[SERVER] SENT GAME BY SERVER");
+		
 		MatchServer match = new MatchServer(player1, player2,field1);
 		executorService.submit(match);
 
@@ -71,11 +79,12 @@ public class RequestMatchHandler {
 	
 	
 	public void addPlayerField2(ClientHandler player) {
+		removePlayer(player);
 		field2Queue.add(player);
 		flushQueueField2();
 	}
 	
-	public void removePlayerField2(Socket player) {
+	public void removePlayerField2(ClientHandler player) {
 		field2Queue.remove(player);
 	}
 	
@@ -104,11 +113,12 @@ public class RequestMatchHandler {
 	
 	
 	public void addPlayerField3(ClientHandler player) {
+		removePlayer(player);
 		field3Queue.add(player);
 		flushQueueField3();
 	}
 	
-	public void removePlayerField3(Socket player) {
+	public void removePlayerField3(ClientHandler player) {
 		field3Queue.remove(player);
 	}
 	

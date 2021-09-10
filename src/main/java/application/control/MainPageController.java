@@ -3,6 +3,7 @@ package application.control;
 
 import application.Settings;
 import application.net.client.Client;
+import application.net.common.Protocol;
 import application.view.Dialog;
 import javafx.animation.FadeTransition;
 import javafx.event.ActionEvent;
@@ -11,6 +12,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
 
@@ -47,6 +50,12 @@ public class MainPageController {
     @FXML
     private Label data_field_mainpage;
     
+    private boolean cancel_attive = false ;
+    
+    @FXML
+    private HBox container_cancel_button;
+    
+    private Button cancel_button = new Button("CANCEL");
     
     @FXML
     public void initialize() {
@@ -57,7 +66,9 @@ public class MainPageController {
     	friends_button_main_page.setFont(Font.loadFont(getClass().getResourceAsStream("/application/view/fonts/AzeretMono-Italic-VariableFont_wght.ttf"), 15));
     	name_field_mainpage.setFont(Font.loadFont(getClass().getResourceAsStream("/application/view/fonts/AzeretMono-Italic-VariableFont_wght.ttf"), 26));
     	data_field_mainpage.setFont(Font.loadFont(getClass().getResourceAsStream("/application/view/fonts/AzeretMono-Italic-VariableFont_wght.ttf"), 11));
-    	
+    	cancel_button.setFont(Font.loadFont(getClass().getResourceAsStream("/application/view/fonts/AzeretMono-Italic-VariableFont_wght.ttf"), 16));
+    	cancel_button.setTextFill(Color.WHITE);
+    	cancel_button.getStyleClass().add("leave_button");
     	
     	field_button_main_page.setOnMouseEntered(new HoverButton());
     	field_button_main_page.setOnMouseExited(new HoverButton());
@@ -84,19 +95,56 @@ public class MainPageController {
     	right_triangle_button.setOnMouseEntered(new HoverButton());
     	right_triangle_button.setOnMouseExited(new HoverButton());
     	
+    	cancel_button.setOnMouseEntered(new HoverButton());
+    	cancel_button.setOnMouseExited(new HoverButton());
+    	
+    	cancel_button.setOnAction(ev ->{
+    		Client.getInstance().cancelRequest();
+    		FadeTransition trans = new FadeTransition(Duration.seconds(1.5),cancel_button );
+    		cancel_attive = false ;
+    	    trans.setFromValue(0.5);
+    	    trans.setToValue(0);
+    	    trans.play();
+    	    container_cancel_button.getChildren().remove(cancel_button);
+    	});
+    		
+    	
+    	changeBackgroundButtonField();
     	changeDataButtonField();
     }
 
     @FXML
     void onClick_account_button_main_page(ActionEvent event) {
-
+    	if(cancel_attive)
+    	{
+    		Dialog.getInstance().showInformationDialog(Dialog.ATTENTION, Protocol.LEAVEWITHOUTCANCEL);
+    		return;
+    	}
     }
 
+    
+    public void setCancel_attive(boolean cancel_attive) {
+		this.cancel_attive = cancel_attive;
+		container_cancel_button.getChildren().remove(cancel_button);
+	}
 
     @FXML
     void onClickButtonField(MouseEvent event) {
     	
-    	switch (Client.getInstance().getCurrentField()) {
+    	if(Client.getInstance().getCurrentState() != Client.IN_APP)
+    		return ;
+    	
+    	container_cancel_button.getChildren().add(cancel_button);
+    	cancel_attive = true ;
+    	
+    	
+    	FadeTransition trans = new FadeTransition(Duration.seconds(1.5),cancel_button );
+	
+	    trans.setFromValue(0.0);
+	    trans.setToValue(1);
+	    trans.play();
+
+        switch (Client.getInstance().getCurrentField()) {
 		case Client.FIELD1:
 			Client.getInstance().startMatchField1();
 			break;
@@ -114,11 +162,20 @@ public class MainPageController {
 
     @FXML
     void onClick_friends_button_main_page(ActionEvent event) {
-
+    	if(cancel_attive)
+    	{
+    		Dialog.getInstance().showInformationDialog(Dialog.ATTENTION, Protocol.LEAVEWITHOUTCANCEL);
+    		return;
+    	}
     }
 
     @FXML
     void onClick_leave_button_main_page(ActionEvent event) {
+    	if(cancel_attive)
+    	{
+    		Dialog.getInstance().showInformationDialog(Dialog.ATTENTION, Protocol.LEAVEWITHOUTCANCEL);
+    		return;
+    	}
     	if(Dialog.getInstance().showConfirmDialog(Dialog.CONFIRMLOGOUT) != Dialog.YES)
     		return ;
     	Client.getInstance().logout();
@@ -176,6 +233,11 @@ public class MainPageController {
     
     @FXML
     void onClickLeftTriangleButton(ActionEvent event) {
+    	if(cancel_attive)
+    	{
+    		Dialog.getInstance().showInformationDialog(Dialog.ATTENTION, Protocol.LEAVEWITHOUTCANCEL);
+    		return;
+    	}
     	Client.getInstance().clickButtonLeft();
     	changeBackgroundButtonField();
     	changeDataButtonField();
@@ -184,9 +246,16 @@ public class MainPageController {
 
     @FXML
     void onClickRightTriangleButton(ActionEvent event) {
+    	if(cancel_attive)
+    	{
+    		Dialog.getInstance().showInformationDialog(Dialog.ATTENTION, Protocol.LEAVEWITHOUTCANCEL);
+    		return;
+    	}
     	Client.getInstance().clickButtonRight();
     	changeBackgroundButtonField();
     	changeDataButtonField();
     }
+    
+ 
 
 }

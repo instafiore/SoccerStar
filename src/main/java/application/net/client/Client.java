@@ -38,7 +38,7 @@ public class Client extends Service<Message>{
 	public static final int FIELD3 = 3 ;
 	
 	
-	private int currentState = 1;
+	private int currentState = STEP_LOGIN;
 	private MatchClient currentMatch = null ;
 	private int currentField = FIELD1 ;
 		
@@ -164,7 +164,7 @@ public class Client extends Service<Message>{
 		
 		if(protocol.equals(Protocol.REGISTRATIONCOMPLETED))
 		{
-			setCurrentState(STEP_LOGIN);
+			setCurrentState(IN_APP);
 			username = in.readLine();
 			if(username == null)
 			{
@@ -199,6 +199,7 @@ public class Client extends Service<Message>{
 				return message ;
 			}
 			message = new Message(protocol, username);
+			setCurrentState(IN_APP);
 			
 		}else if(protocol.equals(Protocol.LOGINFAILED) || protocol.equals(Protocol.ALREADYONLINE)){
 			message = new Message();
@@ -214,7 +215,7 @@ public class Client extends Service<Message>{
 	
 	public void logout() {
 		sendMessage(Protocol.LOGOUT);
-		SceneHandler.getInstance().loadScene("LoginPage", false);
+		SceneHandler.getInstance().loadScene("LoginPage", false , true);
 		currentState =  STEP_LOGIN ;
 	}
 	
@@ -243,6 +244,11 @@ public class Client extends Service<Message>{
 		this.start();
 	}
 	
+	public void cancelRequest() {
+		setCurrentState(IN_APP);
+		sendMessage(Protocol.REQUESTCANCELED);
+	}
+	
 	public void startMatchField1() {
 		
 		
@@ -252,9 +258,6 @@ public class Client extends Service<Message>{
 		MatchController.getInstance().getMatchView().setField(MatchView.FIELD1);
 		setCurrentState(IN_GAME);
 		sendMessage(Protocol.NEWGAMEREQUESTFIELD1);
-		MatchClient match = new MatchClient(this);
-		setCurrentMatch(match);
-		match.setOnSucceeded(new MatchSucceedController());
 		
 	}
 	
@@ -265,10 +268,7 @@ public class Client extends Service<Message>{
 			MatchController.getInstance().getMatchView().setField(MatchView.FIELD2);
 			setCurrentState(IN_GAME);
 			sendMessage(Protocol.NEWGAMEREQUESTFIELD2);
-			MatchClient match = new MatchClient(this);
-			setCurrentMatch(match);
-			match.setOnSucceeded(new MatchSucceedController());
-			
+		
 		}
 	
 	public void startMatchField3() {
@@ -278,9 +278,6 @@ public class Client extends Service<Message>{
 		MatchController.getInstance().getMatchView().setField(MatchView.FIELD3);
 		setCurrentState(IN_GAME);
 		sendMessage(Protocol.NEWGAMEREQUESTFIELD3);
-		MatchClient match = new MatchClient(this);
-		setCurrentMatch(match);
-		match.setOnSucceeded(new MatchSucceedController());
 		
 	}
 

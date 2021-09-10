@@ -14,6 +14,7 @@ public class Protocol {
 	public static final String BADBEHAVIOROFCLIENT = "Bad client behavior ";
 	public static final String MATCHSUCCEED = "Match completed without errors";
 	public static final String MATCHFAILED = "Match completed with errors";
+	public static final String LEAVEWITHOUTCANCEL = "You must first cancel the match request" ;
 	
 	// Email
 	public static final String EMAILASSISTANCE = "fiorentinosalvatore65@gmail.com";
@@ -46,6 +47,7 @@ public class Protocol {
 	public static final String LEFTGAME = "The player left the game" ;
 	public static final String GAMEOVER = "The game is over" ;
 	public static final String GAMESTARTED = "The game has started" ;
+	public static final String REQUESTCANCELED = "Request canceled" ;
 	public static final String MYUSERNAMEIS = "Username is:";
 	public static final String USERNAMEGUEST = "The username guest is" ;
 	public static final String ITSTHETURNOF = "It's the turn of" ;
@@ -80,7 +82,6 @@ public class Protocol {
 		strings.add(SCORED);
 		strings.add(LEFTGAME);
 		strings.add(GAMEOVER);
-		strings.add(GAMESTARTED);
 		strings.add(MYUSERNAMEIS);
 		strings.add(USERNAMEGUEST);
 		strings.add(ITSTHETURNOF);

@@ -14,6 +14,12 @@ public class MenuMatchPaneController {
     private Button leave_button_match;
 
     @FXML
+    public void initialize() {
+    	leave_button_match.setOnMouseEntered(new HoverButton());
+    	leave_button_match.setOnMouseExited(new HoverButton());
+    }
+    
+    @FXML
     void OnClick_leave_button_match(ActionEvent event) {
     	
     	if(Dialog.getInstance().showConfirmDialog(Dialog.CONFIRMLEFT) != Dialog.YES)

@@ -94,10 +94,9 @@ public class MatchServer implements Runnable {
 	public void run() {
 		
 		
-		try {
-
+		try {			
 			sendMessageAll(Protocol.PREPARINGMATCH);
-			
+		
 			String message = null ;
 			
 			matchHandler.setTurn( new Random().nextBoolean() );

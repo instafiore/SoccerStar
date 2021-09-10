@@ -5,7 +5,7 @@ import application.net.common.Protocol;
 import javafx.event.EventHandler;
 import javafx.stage.WindowEvent;
 
-public class WindowMatchController implements EventHandler<WindowEvent>{
+public class WindowController implements EventHandler<WindowEvent>{
 
 	public void handle(WindowEvent event) {
 		

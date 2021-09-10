@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import application.SceneHandler;
 import application.Settings;
 import application.Updater;
+import application.control.MainPageController;
 import application.control.MatchController;
 import application.model.game.entity.Ball;
 import application.model.game.entity.Lineup;
@@ -51,6 +52,8 @@ public class MatchClient extends Task<String>{
 	public String initalSettings() throws IOException {
 		
 		String message = null ;
+		
+		client.sendMessage(Protocol.GAMESTARTED);
 		
 		client.sendMessage(Protocol.TYPEOFLINEUP);
 		client.sendMessage(""+lineup);
@@ -144,7 +147,6 @@ public class MatchClient extends Task<String>{
 		if(!message.equals(Protocol.GAMESTARTED))
 			return Protocol.ERRORMATCH;
 
-		
 		showView();
 		setMatch_activated(true);
 		
