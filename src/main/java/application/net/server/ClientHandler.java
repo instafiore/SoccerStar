@@ -149,6 +149,8 @@ public class ClientHandler implements Runnable {
 				}else if(message.equals(Protocol.REQUESTCANCELED)){
 					RequestMatchHandler.getInstace().removePlayer(this);
 				}else if(message.equals(Protocol.CONNECTION_LOST)) {
+					RequestMatchHandler.getInstace().removePlayer(this);
+					Server.getInstance().removeUserOnline(username);
 					return ;
 				}else {
 					sendMessage(Protocol.GENERALERROR);
@@ -178,6 +180,8 @@ public class ClientHandler implements Runnable {
 				}else if(message.equals(Protocol.REQUESTCANCELED)){
 					RequestMatchHandler.getInstace().removePlayer(this);
 				}else if(message.equals(Protocol.CONNECTION_LOST)) {
+					RequestMatchHandler.getInstace().removePlayer(this);
+					Server.getInstance().removeUserOnline(username);
 					return ;
 				}else {
 					sendMessage(Protocol.GENERALERROR);
@@ -206,6 +210,8 @@ public class ClientHandler implements Runnable {
 				}else if(message.equals(Protocol.REQUESTCANCELED)){
 					RequestMatchHandler.getInstace().removePlayer(this);
 				}else if(message.equals(Protocol.CONNECTION_LOST)) {
+					RequestMatchHandler.getInstace().removePlayer(this);
+					Server.getInstance().removeUserOnline(username);
 					return ;
 				}else {
 					sendMessage(Protocol.GENERALERROR);
@@ -248,9 +254,6 @@ public class ClientHandler implements Runnable {
 	private void logout() {
 		System.out.println("[CLIENTHANDLER] "+Protocol.LOGUTDONE+username);
 		Server.getInstance().removeUserOnline(username);
-		RequestMatchHandler.getInstace().removePlayerField1(this);
-		RequestMatchHandler.getInstace().removePlayerField2(this);
-		RequestMatchHandler.getInstace().removePlayerField3(this);
 		username = null ;
 		Thread t = new Thread(this);
 		t.start();

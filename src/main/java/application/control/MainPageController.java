@@ -10,7 +10,13 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundImage;
+import javafx.scene.layout.BackgroundPosition;
+import javafx.scene.layout.BackgroundRepeat;
+import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
@@ -22,6 +28,11 @@ public class MainPageController {
 	
 
     private static final double TIMETRANSACTION = 1.0 ;
+    
+
+    @FXML
+    private BorderPane root;
+
     
     @FXML
     private BorderPane field_button_main_page;
@@ -64,7 +75,7 @@ public class MainPageController {
     	account_button_main_page.setFont(Font.loadFont(getClass().getResourceAsStream("/application/view/fonts/AzeretMono-Italic-VariableFont_wght.ttf"), 15));
     	friends_button_main_page.setFont(Font.loadFont(getClass().getResourceAsStream("/application/view/fonts/AzeretMono-Italic-VariableFont_wght.ttf"), 15));
     	friends_button_main_page.setFont(Font.loadFont(getClass().getResourceAsStream("/application/view/fonts/AzeretMono-Italic-VariableFont_wght.ttf"), 15));
-    	name_field_mainpage.setFont(Font.loadFont(getClass().getResourceAsStream("/application/view/fonts/AzeretMono-Italic-VariableFont_wght.ttf"), 26));
+    	name_field_mainpage.setFont(Font.loadFont(getClass().getResourceAsStream("/application/view/fonts/AzeretMono-Italic-VariableFont_wght.ttf"), 20));
     	data_field_mainpage.setFont(Font.loadFont(getClass().getResourceAsStream("/application/view/fonts/AzeretMono-Italic-VariableFont_wght.ttf"), 11));
     	cancel_button.setFont(Font.loadFont(getClass().getResourceAsStream("/application/view/fonts/AzeretMono-Italic-VariableFont_wght.ttf"), 16));
     	cancel_button.setTextFill(Color.WHITE);
@@ -183,7 +194,11 @@ public class MainPageController {
 
     @FXML
     void onClick_shop_button_main_page(ActionEvent event) {
-    	
+    	if(cancel_attive)
+    	{
+    		Dialog.getInstance().showInformationDialog(Dialog.ATTENTION, Protocol.LEAVEWITHOUTCANCEL);
+    		return;
+    	}
     	
     }
     

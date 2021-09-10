@@ -38,7 +38,7 @@ public class RequestMatchHandler {
 	}
 	
 	public void addPlayerField1(ClientHandler player) {
-		removePlayer(player);
+		System.out.println("[REQUESTMATCH] Added player: "+player.getUsername()+" to field 1 queue");
 		field1Queue.add(player);
 		flushQueueField1();
 	}
@@ -50,7 +50,9 @@ public class RequestMatchHandler {
 	}
 	
 	public void removePlayerField1(ClientHandler player) {
-		field1Queue.remove(player);
+		if(field1Queue.remove(player))
+			System.out.println("[REQUESTMATCH] Removed player: "+player.getUsername()+" from field 1 queue");
+	
 	}
 	
 	private void flushQueueField1() {
@@ -79,13 +81,14 @@ public class RequestMatchHandler {
 	
 	
 	public void addPlayerField2(ClientHandler player) {
-		removePlayer(player);
+		System.out.println("[REQUESTMATCH] Added player: "+player.getUsername()+" to field 2 queue");
 		field2Queue.add(player);
 		flushQueueField2();
 	}
 	
 	public void removePlayerField2(ClientHandler player) {
-		field2Queue.remove(player);
+		if(field2Queue.remove(player))
+			System.out.println("[REQUESTMATCH] Removed player: "+player.getUsername()+" from field 2 queue");
 	}
 	
 	private void flushQueueField2() {
@@ -113,13 +116,14 @@ public class RequestMatchHandler {
 	
 	
 	public void addPlayerField3(ClientHandler player) {
-		removePlayer(player);
+		System.out.println("[REQUESTMATCH] Added player: "+player.getUsername()+" to field 3 queue");
 		field3Queue.add(player);
 		flushQueueField3();
 	}
 	
 	public void removePlayerField3(ClientHandler player) {
-		field3Queue.remove(player);
+		if(field3Queue.remove(player))
+			System.out.println("[REQUESTMATCH] Removed player: "+player.getUsername()+" from field 3 queue");
 	}
 	
 	private void flushQueueField3() {

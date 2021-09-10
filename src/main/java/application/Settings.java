@@ -3,7 +3,7 @@ package application;
 public class Settings {
 	
 	public static final int MATCHWIDTHFRAME = 1080 ;
-	public static final int MATCHHEIGHTFRAME = 637 ;
+	public static final int MATCHHEIGHTFRAME = 647 ;
 	public static final int FIELDWIDTHFRAME = 1080 ;
 	public static final int FIELDHEIGHTFRAME = 600 ;
 	public static final double DIMENSIONSTANDARDBALL = 20 ;
@@ -23,9 +23,9 @@ public class Settings {
 	public static final int WAITFORGOAL = 20 ;
 	
 	//FIELDS
-	public static final String FIELD1 = "FIELD 1";
-	public static final String FIELD2 = "FIELD 2";
-	public static final String FIELD3 = "FIELD 3";
+	public static final String FIELD1 = "Grass Field";
+	public static final String FIELD2 = "Land Field";
+	public static final String FIELD3 = "Ice Field";
 	public static final String COLORFIELD1 = "#009a00";
 	public static final String COLORFIELD2 = "#bf9b30";
 	public static final String COLORFIELD3 = "#334afe";

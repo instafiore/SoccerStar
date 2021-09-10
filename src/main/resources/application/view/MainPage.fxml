@@ -9,11 +9,11 @@
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="466.0" prefWidth="880.0" styleClass="main_page" stylesheets="@css/stylesheet1.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.control.MainPageController">
+<BorderPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="466.0" prefWidth="880.0" styleClass="main_page" stylesheets="@css/stylesheet1.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.control.MainPageController">
    <center>
       <BorderPane prefHeight="200.0" prefWidth="200.0" styleClass="pane" stylesheets="@css/stylesheet1.css" BorderPane.alignment="CENTER">
          <left>
-            <BorderPane prefHeight="208.0" prefWidth="298.0" BorderPane.alignment="CENTER">
+            <BorderPane prefHeight="208.0" prefWidth="298.0" styleClass="c" BorderPane.alignment="CENTER">
                <center>
                   <Button fx:id="left_triangle_button" mnemonicParsing="false" onAction="#onClickLeftTriangleButton" prefHeight="89.0" prefWidth="71.0" BorderPane.alignment="CENTER">
                      <styleClass>
@@ -39,7 +39,7 @@
          <center>
             <BorderPane fx:id="field_button_main_page" onMouseReleased="#onClickButtonField" prefHeight="34.0" prefWidth="222.0" BorderPane.alignment="CENTER">
                <center>
-                  <Label fx:id="name_field_mainpage" alignment="CENTER" depthTest="DISABLE" maxHeight="91.0" maxWidth="119.0" prefHeight="91.0" prefWidth="119.0" text="FIELD1" textFill="#f5f5f5" BorderPane.alignment="CENTER">
+                  <Label fx:id="name_field_mainpage" alignment="CENTER" depthTest="DISABLE" maxHeight="94.0" maxWidth="297.0" prefHeight="94.0" prefWidth="297.0" text="FIELD1" textFill="#f5f5f5" BorderPane.alignment="CENTER">
                      <font>
                         <Font size="31.0" />
                      </font>
