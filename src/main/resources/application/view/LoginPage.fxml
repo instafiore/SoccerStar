@@ -5,34 +5,42 @@
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="410.0" prefWidth="601.0" styleClass="pane" stylesheets="@css/stylesheet1.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.control.LoginController">
+<StackPane fx:id="stackPane" alignment="TOP_LEFT" focusTraversable="true" maxHeight="410.0" maxWidth="601.0" minHeight="410.0" minWidth="601.0" prefHeight="410.0" prefWidth="601.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.control.LoginController">
    <children>
-      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#2197ff00" height="403.0" stroke="#fcf2f2" strokeType="INSIDE" strokeWidth="5.0" styleClass="label" width="601.0" />
-      <Circle fill="#1f93ff0d" layoutX="300.0" layoutY="191.0" radius="71.0" stroke="#eee9e9" strokeType="INSIDE" />
-      <Line endX="305.0" endY="400.0000305175781" startX="300.0" stroke="#eeecec" />
-      <Button fx:id="sign_in_button_login" layoutX="201.0" layoutY="271.0" mnemonicParsing="false" onAction="#onClick_sign_in_button_login" prefHeight="42.0" prefWidth="184.0" styleClass="initial_button" text="Sign-in" textFill="#fffefe" />
-      <Label fx:id="username_label" layoutX="142.0" layoutY="98.0" text="Username" textFill="WHITE">
-         <font>
-            <Font size="15.0" />
-         </font></Label>
-      <TextField fx:id="username_field_login" layoutX="140.0" layoutY="125.0" prefHeight="36.0" prefWidth="320.0" styleClass="input_field" />
-      <Label fx:id="password_label" layoutX="145.0" layoutY="172.0" text="Password" textFill="WHITE">
-         <font>
-            <Font size="15.0" />
-         </font></Label>
-      <PasswordField fx:id="password_field_login" layoutX="140.0" layoutY="196.0" prefHeight="36.0" prefWidth="320.0" styleClass="input_field" />
-      <Label fx:id="soccerstar_label" layoutX="141.0" layoutY="20.0" prefHeight="68.0" prefWidth="304.0" text="Soccer star" textFill="#ebe8e8">
-         <font>
-            <Font name="KacstPoster" size="52.0" />
-         </font>
-      </Label>
-      <Label fx:id="password_forgot_button" layoutX="237.0" layoutY="239.0" onMouseClicked="#onClick_password_forgot_button" text="Password forgot?" />
-      <Label layoutX="286.0" layoutY="323.0" text="or" textFill="#f2eaea" />
-      <Button fx:id="sign_up_button_login" layoutX="220.0" layoutY="350.0" mnemonicParsing="false" onAction="#onClick_sign_up_button_login" prefHeight="36.0" prefWidth="146.0" styleClass="initial_button" text="Sign-up" textFill="#f5eded" />
+      <AnchorPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="410.0" prefWidth="601.0" styleClass="pane" stylesheets="@css/stylesheet1.css">
+         <children>
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#2197ff00" height="403.0" stroke="#fcf2f2" strokeType="INSIDE" strokeWidth="5.0" styleClass="label" width="601.0" />
+            <Circle fill="#1f93ff0d" layoutX="300.0" layoutY="191.0" radius="71.0" stroke="#eee9e9" strokeType="INSIDE" />
+            <Line endX="305.0" endY="400.0000305175781" startX="300.0" stroke="#eeecec" />
+            <Button fx:id="sign_in_button_login" layoutX="201.0" layoutY="271.0" mnemonicParsing="false" onAction="#onClick_sign_in_button_login" prefHeight="42.0" prefWidth="184.0" styleClass="initial_button" text="Sign-in" textFill="#fffefe" />
+            <Label fx:id="username_label" layoutX="142.0" layoutY="98.0" text="Username" textFill="WHITE">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </Label>
+            <TextField fx:id="username_field_login" layoutX="140.0" layoutY="125.0" prefHeight="36.0" prefWidth="320.0" styleClass="input_field" />
+            <Label fx:id="password_label" layoutX="145.0" layoutY="172.0" text="Password" textFill="WHITE">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </Label>
+            <PasswordField fx:id="password_field_login" layoutX="140.0" layoutY="196.0" prefHeight="36.0" prefWidth="320.0" styleClass="input_field" />
+            <Label fx:id="soccerstar_label" layoutX="141.0" layoutY="7.0" prefHeight="68.0" prefWidth="304.0" text="Soccer star" textFill="#ebe8e8">
+               <font>
+                  <Font name="KacstPoster" size="52.0" />
+               </font>
+            </Label>
+            <Label fx:id="password_forgot_button" layoutX="237.0" layoutY="239.0" onMouseClicked="#onClick_password_forgot_button" text="Password forgot?" />
+            <Label layoutX="286.0" layoutY="323.0" text="or" textFill="#f2eaea" />
+            <Button fx:id="sign_up_button_login" layoutX="220.0" layoutY="350.0" mnemonicParsing="false" onAction="#onClick_sign_up_button_login" prefHeight="36.0" prefWidth="146.0" styleClass="initial_button" text="Sign-up" textFill="#f5eded" />
+            <Label fx:id="information_label" alignment="CENTER" layoutX="142.0" layoutY="58.0" prefHeight="48.0" prefWidth="320.0" textAlignment="CENTER" wrapText="true" />
+         </children>
+      </AnchorPane>
    </children>
-</AnchorPane>
+</StackPane>

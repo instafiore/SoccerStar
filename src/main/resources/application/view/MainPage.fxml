@@ -96,6 +96,9 @@
                </center>
             </BorderPane>
          </right>
+         <center>
+            <Label fx:id="information_label" alignment="CENTER" prefHeight="110.0" prefWidth="444.0" textAlignment="CENTER" wrapText="true" BorderPane.alignment="CENTER" />
+         </center>
       </BorderPane>
    </top>
    <bottom>

@@ -153,8 +153,7 @@ public class Database {
 	
 	public String checkLogin(LoginClient user) {
 		
-		if(Server.getInstance().isOnline(user.getUsername()))
-			return Protocol.ALREADYONLINE ;
+		
 		
 		try {
 			search_client_query.setString(1, user.getUsername());
@@ -162,16 +161,22 @@ public class Database {
 			
 			if(!resultSet.next())
 				return Protocol.LOGINFAILED;
+		
+			if(Server.getInstance().isOnline(user.getUsername()))
+				return Protocol.ALREADYONLINE ;
 			
 			String password_crypted = resultSet.getString("password");
 			
 			if(BCrypt.checkpw(user.getPassword(), password_crypted))
 				return Protocol.LOGINCOMPLETED;
+			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			
 		}
+		
+		
 		return Protocol.LOGINFAILED;
 	}
 	

@@ -159,7 +159,7 @@ public class Client extends Service<Message>{
 	}
 	
 	public Message readRegistation(String protocol) throws IOException {
-		
+		System.out.println("HERE");
 		Message message = null ;
 		
 		if(protocol.equals(Protocol.REGISTRATIONCOMPLETED))

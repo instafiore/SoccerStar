@@ -17,9 +17,11 @@ public class SceneHandler {
 	private Stage stage = null;
 
 	private HashMap<String, Pane> panes ;
+	private HashMap<String, FXMLLoader> loaders ;
 	
 	private SceneHandler() {
 		panes = new HashMap<String, Pane>();
+		loaders = new HashMap<String ,FXMLLoader>();
 	}
 	
 	public static SceneHandler instance = null ;
@@ -42,19 +44,27 @@ public class SceneHandler {
 		
 	}
 	
+	public FXMLLoader getLoader(String name) {
+		return loaders.get(name);
+	}
+	
 	public void loadScene(String namePane , boolean resizable , boolean usingSceneBuilder) {
 		
 		Pane pane = null ;
 		
 		if(!usingSceneBuilder)
 			pane = panes.get(namePane);
-		else
+		else {
+			FXMLLoader loader = new FXMLLoader(this.getClass().getResource(File.separator+"application"+File.separator+"view"+File.separator+namePane+".fxml")) ;
+			loaders.put(namePane, loader);
 			try {
-				pane = (Pane) (new FXMLLoader(this.getClass().getResource(File.separator+"application"+File.separator+"view"+File.separator+namePane+".fxml"))).load();
+				pane = (Pane) loader.load();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+		}
+			
 		
 		if(pane == null)
 		{

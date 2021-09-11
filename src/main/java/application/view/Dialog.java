@@ -1,10 +1,21 @@
 package application.view;
 
+import java.io.InputStream;
+
+import com.sun.scenario.effect.Effect;
+
 import application.control.HoverButton;
+import javafx.animation.FadeTransition;
+import javafx.concurrent.Task;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.effect.ColorAdjust;
+import javafx.scene.effect.Glow;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -12,6 +23,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 public class Dialog {
 
@@ -22,7 +34,7 @@ public class Dialog {
 	
 	public static final String ERROR_WINDOW = "Error";
 	public static final String INFORMATION_WINDOW = "An information";
-	public static final String ATTENTION = "Attention";
+	public static final String ATTENTION_WINDOW = "Attention";
 	public static final int OK = 0;
 	public static final int NO = 1;
 	public static final int YES = 2;
@@ -32,12 +44,12 @@ public class Dialog {
 	private static final String OK_BUTTON = "OK";
 	private static final String YES_BUTTON = "YES";
 
-	
 	private static Dialog instance = null;
 	private Stage stage = null;
 	private Scene scene = null;
 	private VBox root = null;
 	private int res = - 1 ;
+	private InputStream inputStreamFont = null ;
 	
 	public static Dialog getInstance() {
 		if (instance == null)
@@ -50,6 +62,7 @@ public class Dialog {
 		root.getStyleClass().add("pane");
 		stage = new Stage();
 		scene = new Scene(root);
+		inputStreamFont =  this.getClass().getResourceAsStream("/application/view/fonts/AzeretMono-Italic-VariableFont_wght.ttf") ;
 		scene.getStylesheets().add(getClass().getResource("/application/view/css/stylesheet1.css").toExternalForm());
 		stage.setResizable(false);
 		stage.initModality(Modality.APPLICATION_MODAL);
@@ -112,6 +125,8 @@ public class Dialog {
 	
 	public int showInformationDialog(String title ,String text_message) {
 		
+		stage.close();
+		
 		res = -1;
 		root.getChildren().clear();
 		stage.setTitle(title);
@@ -144,5 +159,46 @@ public class Dialog {
 		stage.showAndWait();
 		
 		return res;
+	}
+	
+	
+	
+	public void drawText(AnchorPane glassPane , String text,double x,double y , String type , int font_size) {
+	
+//		x -= font_size / 3 * text.length()  ;
+//	
+//		String color = "" ;
+//		
+//		if(type.equals(ERROR_WINDOW)) {
+//			color = "#ff1313" ;
+//		}else if(type.equals(INFORMATION_WINDOW)) {
+//			color = "#ffffff" ;
+//		}else if(type.equals(ATTENTION_WINDOW)) {
+//			color = "#ff5e28" ;
+//		}
+//		
+//		
+//		canvas.getGraphicsContext2D().setFont(Font.loadFont(inputStreamFont,font_size));
+//		canvas.getGraphicsContext2D().clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+//		canvas.getGraphicsContext2D().setFill(Color.web(color, 0.8));
+//		canvas.getGraphicsContext2D().fillText(text, x, y);
+		
+		Label label = new Label(text);
+		label.setFont(Font.loadFont(inputStreamFont, font_size));
+		
+		glassPane.getChildren().add(label);
+		
+		label.setLayoutX(x);
+		label.setLayoutY(y);
+		
+		FadeTransition trans = new FadeTransition(Duration.seconds(1),label);
+		
+		trans.setFromValue(2.0);
+        trans.setToValue(0);
+        trans.play();
+        
+        glassPane.getChildren().remove(label);
+        
+  
 	}
 }

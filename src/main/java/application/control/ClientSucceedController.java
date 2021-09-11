@@ -21,19 +21,22 @@ public class ClientSucceedController implements EventHandler<WorkerStateEvent>{
 			
 			SceneHandler.getInstance().loadScene("MainPage", true , true);
 			
-		}else if(message.getProtocol().equals(Protocol.REGISTRATIONFAILED) || message.getProtocol().equals(Protocol.ALREADYEXISTS)){
+		}else if(message.getProtocol().equals(Protocol.REGISTRATIONFAILED)){
+			Dialog.getInstance().showInformationDialog(Dialog.ERROR_WINDOW,message.getProtocol()) ;
+			System.exit(0);
+		}
+		else if(message.getProtocol().equals(Protocol.ALREADYEXISTS)){
 			
-			if(Dialog.getInstance().showInformationDialog(Dialog.ERROR_WINDOW,message.getProtocol()) != Dialog.OK)
-				System.exit(0);	
-			
+			RegistrationController registrationController =  SceneHandler.getInstance().getLoader("RegistrationPage").getController();
+			registrationController.showError(message.getProtocol(), 15);
 		}else if(message.getProtocol().equals(Protocol.LOGINCOMPLETED)) {
 			
 			SceneHandler.getInstance().loadScene("MainPage", true , true);
 			
 		}else if(message.getProtocol().equals(Protocol.LOGINFAILED) || message.getProtocol().equals(Protocol.ALREADYONLINE)){
 			
-			if(Dialog.getInstance().showInformationDialog(Dialog.ERROR_WINDOW,message.getProtocol()) != Dialog.OK)
-				System.exit(0);	
+			LoginController loginController = SceneHandler.getInstance().getLoader("LoginPage").getController() ;
+			loginController.showError(message.getProtocol(), 13);
 		}
 		else if(message.getProtocol().equals(Protocol.GENERALERROR)) {
 			

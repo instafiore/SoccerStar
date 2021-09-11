@@ -15,7 +15,7 @@
       <Line endX="608.2929077148438" endY="7.0" layoutY="242.0" startY="7.0" stroke="#fcf6f6" />
       <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff06" height="466.0" stroke="#eee9e9" strokeType="INSIDE" strokeWidth="5.0" width="600.0" />
       <Circle fill="#1f93ff0b" layoutX="304.0" layoutY="250.0" radius="100.0" stroke="#fff9f9" strokeType="INSIDE" />
-      <Label fx:id="soccerstart_label" layoutX="174.0" layoutY="39.0" prefHeight="52.0" prefWidth="368.0" text="Soccer star" textFill="#f2f2f2">
+      <Label fx:id="soccerstart_label" layoutX="170.0" layoutY="21.0" prefHeight="52.0" prefWidth="368.0" text="Soccer star" textFill="#f2f2f2">
          <font>
             <Font size="43.0" />
          </font>
@@ -30,5 +30,11 @@
       <TextField fx:id="email_field_registration" layoutX="151.0" layoutY="352.0" prefHeight="36.0" prefWidth="320.0" styleClass="input_field" />
       <Button fx:id="sign_up_button_registration" layoutX="227.0" layoutY="411.0" mnemonicParsing="false" onAction="#onClick_sign_up_button_registration" prefHeight="36.0" prefWidth="146.0" styleClass="initial_button" text="Sign-up" textFill="#f5f2f2" />
       <Button fx:id="back_button_registration" layoutX="21.0" layoutY="21.0" mnemonicParsing="false" onAction="#onClick_back_button_registration" prefHeight="36.0" prefWidth="107.0" styleClass="leave_button" text="Back" textFill="#eeeaea" />
+      <Label fx:id="information_label" alignment="CENTER" layoutX="153.0" layoutY="71.0" prefHeight="42.0" prefWidth="314.0" textAlignment="CENTER" wrapText="true" />
+      <Button fx:id="information_password_rule" layoutX="489.0" layoutY="210.0" mnemonicParsing="false" onAction="#onClickInformation_password_rule" prefHeight="26.0" prefWidth="33.0" styleClass="initial_button" text="i">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Button>
    </children>
 </AnchorPane>

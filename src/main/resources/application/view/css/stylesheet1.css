@@ -7,7 +7,18 @@
 .input_field{
     -fx-background-color : #004d00;
     -fx-text-fill: white;
-;}
+    -fx-opacity: 1;
+}
+
+.input_field_red{
+    -fx-background-color : #ff0000;
+    -fx-opacity: 0.5;
+}
+
+.input_field_green{
+    -fx-background-color : #009a00 ;
+    -fx-opacity: 0.5;
+}
 
 .button{
     -fx-background-color: #198c19;

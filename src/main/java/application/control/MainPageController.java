@@ -61,12 +61,17 @@ public class MainPageController {
     @FXML
     private Label data_field_mainpage;
     
+    @FXML
+    private Label information_label;
+    
     private boolean cancel_attive = false ;
     
     @FXML
     private HBox container_cancel_button;
     
     private Button cancel_button = new Button("CANCEL");
+    
+    private static final String WELCOME  = "Welcome ";
     
     @FXML
     public void initialize() {
@@ -122,13 +127,38 @@ public class MainPageController {
     	
     	changeBackgroundButtonField();
     	changeDataButtonField();
+    	
+    	showText(WELCOME+" "+Client.getInstance().getUsername(), 30, Dialog.INFORMATION_WINDOW,5);
+    }
+    
+    public void showText(String text,int fontSize,String type,double duration) {
+    	
+    	String color = "" ;
+		
+		if(type.equals(Dialog.ERROR_WINDOW)) {
+			color = "#ff1313" ;
+		}else if(type.equals(Dialog.INFORMATION_WINDOW)) {
+			color = "#ffffff" ;
+		}else if(type.equals(Dialog.ATTENTION_WINDOW)) {
+			color = "#ff5e28" ;
+		}
+    	
+    	information_label.setFont(Font.loadFont(getClass().getResourceAsStream("/application/view/fonts/AzeretMono-Italic-VariableFont_wght.ttf"), fontSize));
+    	information_label.setText(text);
+    	information_label.setTextFill(Color.web(color, 1));
+    
+    	FadeTransition trans = new FadeTransition(Duration.seconds(duration),information_label);
+		
+		trans.setFromValue(1.0);
+        trans.setToValue(0.0);
+        trans.play();
     }
 
     @FXML
     void onClick_account_button_main_page(ActionEvent event) {
     	if(cancel_attive)
     	{
-    		Dialog.getInstance().showInformationDialog(Dialog.ATTENTION, Protocol.LEAVEWITHOUTCANCEL);
+    		showText(Protocol.LEAVEWITHOUTCANCEL, 20, Dialog.ERROR_WINDOW,2);
     		return;
     	}
     }
@@ -175,7 +205,7 @@ public class MainPageController {
     void onClick_friends_button_main_page(ActionEvent event) {
     	if(cancel_attive)
     	{
-    		Dialog.getInstance().showInformationDialog(Dialog.ATTENTION, Protocol.LEAVEWITHOUTCANCEL);
+    		showText(Protocol.LEAVEWITHOUTCANCEL, 20, Dialog.ERROR_WINDOW,2);
     		return;
     	}
     }
@@ -184,7 +214,7 @@ public class MainPageController {
     void onClick_leave_button_main_page(ActionEvent event) {
     	if(cancel_attive)
     	{
-    		Dialog.getInstance().showInformationDialog(Dialog.ATTENTION, Protocol.LEAVEWITHOUTCANCEL);
+    		showText(Protocol.LEAVEWITHOUTCANCEL, 20, Dialog.ERROR_WINDOW,2);
     		return;
     	}
     	if(Dialog.getInstance().showConfirmDialog(Dialog.CONFIRMLOGOUT) != Dialog.YES)
@@ -196,7 +226,7 @@ public class MainPageController {
     void onClick_shop_button_main_page(ActionEvent event) {
     	if(cancel_attive)
     	{
-    		Dialog.getInstance().showInformationDialog(Dialog.ATTENTION, Protocol.LEAVEWITHOUTCANCEL);
+    		showText(Protocol.LEAVEWITHOUTCANCEL, 20, Dialog.ERROR_WINDOW,2);
     		return;
     	}
     	
@@ -250,7 +280,7 @@ public class MainPageController {
     void onClickLeftTriangleButton(ActionEvent event) {
     	if(cancel_attive)
     	{
-    		Dialog.getInstance().showInformationDialog(Dialog.ATTENTION, Protocol.LEAVEWITHOUTCANCEL);
+    		showText(Protocol.LEAVEWITHOUTCANCEL, 20, Dialog.ERROR_WINDOW,2);
     		return;
     	}
     	Client.getInstance().clickButtonLeft();
@@ -263,7 +293,7 @@ public class MainPageController {
     void onClickRightTriangleButton(ActionEvent event) {
     	if(cancel_attive)
     	{
-    		Dialog.getInstance().showInformationDialog(Dialog.ATTENTION, Protocol.LEAVEWITHOUTCANCEL);
+    		showText(Protocol.LEAVEWITHOUTCANCEL, 20, Dialog.ERROR_WINDOW,2);
     		return;
     	}
     	Client.getInstance().clickButtonRight();

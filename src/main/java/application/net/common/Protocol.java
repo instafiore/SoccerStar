@@ -15,6 +15,7 @@ public class Protocol {
 	public static final String MATCHSUCCEED = "Match completed without errors";
 	public static final String MATCHFAILED = "Match completed with errors";
 	public static final String LEAVEWITHOUTCANCEL = "You must first cancel the match request" ;
+	public static final String FIELDEMPTY = "Some field is empty!";
 	
 	// Email
 	public static final String EMAILASSISTANCE = "fiorentinosalvatore65@gmail.com";
@@ -23,20 +24,34 @@ public class Protocol {
 	
 	// Login
 	public static final String LOGINREQUEST = "New login request" ;
-	public static final String DELIMITERLOGIN = "-" ;
+	public static final String DELIMITERLOGIN = "&" ;
 	public static final String LOGINCOMPLETED = "Login completed!" ;
 	public static final String ALREADYONLINE = "You are already logged" ;
 	public static final String LOGINFAILED = "Your username or password aren't correct";
 	public static final String LOGOUT = "I want to do logout" ;
 	public static final String LOGUTDONE ="Logout done for ";
+
 	
 	// Registration
+	public static final String RULESREGISTRATION = "Username: \n"
+			+ "\t At least 6 characters \n"
+			+ "\t Cannot have caracters -> \n"
+			+ "\t '&' , '%' , '$' , '!' , '£' \n"
+			+ "\t -> '  , ' \" ' \n"
+			+ "\t Must to start with a letter \n"
+			+ "Passoword: \n"
+			+ "\t At least 6 characters \n"
+			+ "\t Maximum 16 characters \n"
+			+ "\t Cannot have caracters -> \n"
+			+ "\t '&' , '%' , '$' , '!' , '£' \n" 
+			+ "\t -> '  , ' \" ' \n" ;
+	public static final String RULESDIDTRESPECTED = "The validity rules are not respected";
 	public static final String REGISTRATIONREQUEST = "New registration request" ;
-	public static final String DELIMITERREGISTRATION = "-" ;
+	public static final String DELIMITERREGISTRATION = "&" ;
 	public static final String REGISTRATIONCOMPLETED = "Registration completed!";
-	public static final String ALREADYEXISTS = "Your username alreadyExists" ;
+	public static final String ALREADYEXISTS = "Your username already exists" ;
 	public static final String REGISTRATIONFAILED = "We had a problem with your registration , please try again or contact email: " + EMAILASSISTANCE;
-	
+	public static final String ERRORNOTSAMEPASSWORD = "The password fields aren't the same";
 	// Match
 	public static final String PREPARINGMATCH = "Let's prepare the match" ;
 	public static final String NEWGAMEREQUESTFIELD1 = "A new game request on field 1" ;
