@@ -21,6 +21,7 @@ public class MatchSucceedController implements EventHandler<WorkerStateEvent>{
 			Updater.getInstance().setFirstTime(true);
 			if(!res.equals(Protocol.NOERRORMATCH))
 				Dialog.getInstance().showInformationDialog(Dialog.INFORMATION_WINDOW,res);
+			Client.getInstance().setCurrentState(Client.MAINPAGE);
 			SceneHandler.getInstance().loadScene("MainPage",true , true);
 		}else {
 			//TODO

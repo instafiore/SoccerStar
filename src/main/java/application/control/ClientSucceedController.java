@@ -1,6 +1,7 @@
 package application.control;
 
 import application.SceneHandler;
+import application.model.game.entity.Account;
 import application.model.game.entity.Message;
 import application.net.client.Client;
 import application.net.client.MatchClient;
@@ -37,6 +38,21 @@ public class ClientSucceedController implements EventHandler<WorkerStateEvent>{
 			
 			LoginController loginController = SceneHandler.getInstance().getLoader("LoginPage").getController() ;
 			loginController.showError(message.getProtocol(), 15);
+		}else if(message.getProtocol().equals(Protocol.COINS)) {
+			
+			MainPageController mainPageController =  SceneHandler.getInstance().getLoader("MainPage").getController() ;
+			mainPageController.setCoins_main_page_label(message.getMessage());
+		}else if(message.getProtocol().equals(Protocol.INFORMATIONACCOUNT)) {
+			
+			AccountController accountController =  SceneHandler.getInstance().getLoader("AccountPage").getController() ;
+			Account account = new Account();
+			account.loadAccount(message.getMessage());
+			
+			accountController.setCard_field_account("NOT INSERED");
+			accountController.setUsername_field_account(account.getUsername());
+			accountController.setEmail_field_account(account.getEmail());
+			accountController.changeColorBall(account.getColor_my_balls());
+			accountController.setCoins_label_account(""+account.getCoins());
 		}
 		else if(message.getProtocol().equals(Protocol.GENERALERROR)) {
 			

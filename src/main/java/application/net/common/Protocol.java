@@ -17,10 +17,15 @@ public class Protocol {
 	public static final String LEAVEWITHOUTCANCEL = "You must first cancel the match request" ;
 	public static final String FIELDEMPTY = "Some field is empty!";
 	
+	//Main Page
+	public static final String COINS = "Your coins amount";
+	
 	// Email
-	public static final String EMAILASSISTANCE = "fiorentinosalvatore65@gmail.com";
+	public static final String EMAILASSISTANCE = "soccerstartsf@gmail.com";
 	
-	
+	//Account
+	public static final String INFORMATIONACCOUNT = "An information account message";
+	public static final String DELIMITERINFORMATIONACCOUNT = "&";
 	
 	// Login
 	public static final String LOGINREQUEST = "New login request" ;
@@ -52,6 +57,7 @@ public class Protocol {
 	public static final String ALREADYEXISTS = "Your username already exists" ;
 	public static final String REGISTRATIONFAILED = "We had a problem with your registration , please try again or contact email: " + EMAILASSISTANCE;
 	public static final String ERRORNOTSAMEPASSWORD = "The password fields aren't the same";
+	
 	// Match
 	public static final String PREPARINGMATCH = "Let's prepare the match" ;
 	public static final String NEWGAMEREQUESTFIELD1 = "A new game request on field 1" ;
@@ -68,7 +74,6 @@ public class Protocol {
 	public static final String ITSTHETURNOF = "It's the turn of" ;
 	public static final String ITSYOURTURN = "It's your turn" ;
 	public static final String ITSNOTYOURTURN = "It's not your turn" ;
-	public static final String TYPEOFLINEUP = "Type of lineup" ;
 	public static final String NOBALLTOOK = "You didn't take a ball" ;
 	public static final String NOTYOURBALL = "That is not your ball" ;
 	public static final String NOTALLARESTOPPED = "Every ball is not stopped yet" ;
@@ -102,7 +107,6 @@ public class Protocol {
 		strings.add(ITSTHETURNOF);
 		strings.add(ITSYOURTURN);
 		strings.add(ITSNOTYOURTURN);
-		strings.add(TYPEOFLINEUP);
 		
 		return strings ;
 	}

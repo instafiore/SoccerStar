@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.security.MessageDigestSpi;
+import java.sql.SQLException;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -102,109 +103,20 @@ public class MatchServer implements Runnable {
 			matchHandler.setTurn( new Random().nextBoolean() );
 	
 			
+			try {
+				typeOfLineup[0] = Database.getInstance().getAccount(username1).getLineup() ;
+				typeOfLineup[1] = Database.getInstance().getAccount(username2).getLineup() ;
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
 			sendMessage(Protocol.USERNAMEGUEST, PLAYER1);
 			sendMessage(username1, PLAYER1);
 			
 			
 			sendMessage(Protocol.USERNAMEGUEST, PLAYER2);
 			sendMessage(username2, PLAYER2);
-			
-			
-			message = read1(); 
-			if(message == null)
-			{
-				sendMessage(Protocol.CONNECTION_LOST, PLAYER1);
-				notifyClients(DISCONNECTEDPLAYER1);
-				dataMatch.forfeitOnTheBooks(PLAYER1);
-				Database.getInstance().insertMatch(dataMatch);
-				return ;
-			
-			}
-			
-			if(!message.equals(Protocol.TYPEOFLINEUP)) {
-				
-				sendMessage(Protocol.CONNECTION_LOST, PLAYER1);
-				sendMessage(Protocol.GENERALERROR, PLAYER2);
-				notifyClients(DISCONNECTEDPLAYER1);
-				dataMatch.forfeitOnTheBooks(PLAYER1);
-				Database.getInstance().insertMatch(dataMatch);
-				return;
-			}
-		
-			message = read1();
-			if(message == null)
-			{
-				sendMessage(Protocol.CONNECTION_LOST, PLAYER1);
-				sendMessage(Protocol.GENERALERROR, PLAYER2);
-				notifyClients(DISCONNECTEDPLAYER1);
-				dataMatch.forfeitOnTheBooks(PLAYER1);
-				Database.getInstance().insertMatch(dataMatch);
-				return ;
-			}
-			
-			try {
-				typeOfLineup[0] = Integer.parseInt(message);
-			} catch (Exception e) {
-				
-				System.out.println("[MATCHSERVER] Type of lineup1 is not a number ");
-			
-				sendMessage(Protocol.CONNECTION_LOST, PLAYER1);
-				sendMessage(Protocol.GENERALERROR, PLAYER2);
-				notifyClients(DISCONNECTEDPLAYER1);
-				dataMatch.forfeitOnTheBooks(PLAYER1);
-				Database.getInstance().insertMatch(dataMatch);
-				return ;
-			}
-			
-
-			
-			message = read2();
-			
-			if(message == null)
-			{
-				sendMessage(Protocol.CONNECTION_LOST, PLAYER2);
-				sendMessage(Protocol.GENERALERROR, PLAYER1);
-				notifyClients(DISCONNECTEDPLAYER2);
-				dataMatch.forfeitOnTheBooks(PLAYER2);
-				Database.getInstance().insertMatch(dataMatch);
-				return ;
-			
-			}
-			
-			if(!message.equals(Protocol.TYPEOFLINEUP)) {
-				sendMessage(Protocol.CONNECTION_LOST, PLAYER2);
-				sendMessage(Protocol.GENERALERROR, PLAYER1);
-				notifyClients(DISCONNECTEDPLAYER2);
-				return;
-			}
-	
-			message = read2();
-			
-			if(message == null)
-			{
-				sendMessage(Protocol.CONNECTION_LOST, PLAYER2);
-				sendMessage(Protocol.GENERALERROR, PLAYER1);
-				notifyClients(DISCONNECTEDPLAYER2);
-				dataMatch.forfeitOnTheBooks(PLAYER2);
-				Database.getInstance().insertMatch(dataMatch);
-				return ;
-			
-			}
-			
-			try {
-				typeOfLineup[1] = Integer.parseInt(message);
-			} catch (Exception e) {
-				
-				System.out.println("[MATCHSERVER] Type of lineup2 is not a number ");
-				
-				sendMessage(Protocol.CONNECTION_LOST, PLAYER2);
-				sendMessage(Protocol.GENERALERROR, PLAYER1);
-				notifyClients(DISCONNECTEDPLAYER2);
-				dataMatch.forfeitOnTheBooks(PLAYER2);
-				Database.getInstance().insertMatch(dataMatch);
-				return ;
-
-			}
 			
 			matchHandler.addBalls(Lineup.getInstace().getLineup(typeOfLineup[0]));
 			matchHandler.addBalls(Lineup.getInstace().getLineupMirrored(typeOfLineup[1]));
@@ -482,28 +394,6 @@ public class MatchServer implements Runnable {
 					}
 					
 					return ; 
-				}else if(p.getKey().equals(Protocol.TYPEOFLINEUP)) {
-					
-					i = p.getValue();
-					
-					if(i == PLAYER1) {
-						
-						sendMessage(Protocol.CONNECTION_LOST, PLAYER1);
-						sendMessage(Protocol.GENERALERROR, PLAYER2);
-						notifyClients(DISCONNECTEDPLAYER1);
-						dataMatch.forfeitOnTheBooks(PLAYER1);
-						Database.getInstance().insertMatch(dataMatch);
-						return ;
-						
-					}else {
-						sendMessage(Protocol.CONNECTION_LOST, PLAYER2);
-						sendMessage(Protocol.GENERALERROR, PLAYER1);
-						notifyClients(DISCONNECTEDPLAYER2);
-						dataMatch.forfeitOnTheBooks(PLAYER2);
-						Database.getInstance().insertMatch(dataMatch);
-						return ;
-					}
-					
 				}
 				
 

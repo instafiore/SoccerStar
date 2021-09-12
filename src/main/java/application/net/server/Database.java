@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import application.SceneHandler;
+import application.model.game.entity.Account;
 import application.model.game.entity.DataMatch;
 import application.model.game.entity.LoginClient;
 import application.model.game.entity.RegistrationClient;
@@ -65,6 +66,24 @@ public class Database {
 			connection.close();
 		
 		connection = null ;
+	}
+	
+	public Account getAccount(String username) throws SQLException {
+		Account account = new Account();
+		search_client_query.setString(1,username);
+		search_client_query.execute();
+		
+		ResultSet result = search_client_query.executeQuery();
+		
+		account.setUsername(username);
+		account.setPassword(result.getString("password"));
+		account.setCoins(result.getInt("coins"));
+		account.setLineup(result.getInt("lineup"));
+		account.setColor_my_balls(result.getString("color_my_balls"));
+		account.setColor_ball_to_play(result.getString("color_ball_to_play"));
+		account.setEmail(result.getString("email"));
+		
+		return account ;
 	}
 	
 	public String insertUser(RegistrationClient user) {
@@ -186,4 +205,6 @@ public class Database {
 		return BCrypt.hashpw(originalPassoword, BCrypt.gensalt(12));
     
 	}
+	
+	
 }

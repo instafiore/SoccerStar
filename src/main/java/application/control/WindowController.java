@@ -10,7 +10,7 @@ public class WindowController implements EventHandler<WindowEvent>{
 	public void handle(WindowEvent event) {
 		
 		switch (Client.getInstance().getCurrentState()) {
-		case Client.IN_APP:
+		case Client.MAINPAGE:
 
 			break;
 		case Client.IN_GAME:

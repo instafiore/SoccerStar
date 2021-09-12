@@ -31,7 +31,8 @@ public class Client extends Service<Message>{
 	public static final int STEP_REGISTRATION = 0 ;
 	public static final int STEP_LOGIN = 1 ;
 	public static final int IN_GAME = 2 ;
-	public static final int IN_APP = 3 ;
+	public static final int MAINPAGE = 3 ;
+	public static final int ACCOUNT = 4 ;
 	
 	public static final int FIELD1 = 1 ;
 	public static final int FIELD2 = 2 ;
@@ -142,8 +143,10 @@ public class Client extends Service<Message>{
 			return readLogin(message);
 		case IN_GAME:
 			return readIN_GAME(message);
-		case IN_APP:
-			return readIN_APP(message);
+		case MAINPAGE:
+			return readMainPage(message);
+		case ACCOUNT:
+			return readAccount(message);
 		default:
 			return new Message(Protocol.GENERALERROR);
 		}
@@ -159,12 +162,12 @@ public class Client extends Service<Message>{
 	}
 	
 	public Message readRegistation(String protocol) throws IOException {
-		System.out.println("HERE");
+
 		Message message = null ;
 		
 		if(protocol.equals(Protocol.REGISTRATIONCOMPLETED))
 		{
-			setCurrentState(IN_APP);
+			setCurrentState(MAINPAGE);
 			username = in.readLine();
 			if(username == null)
 			{
@@ -199,7 +202,7 @@ public class Client extends Service<Message>{
 				return message ;
 			}
 			message = new Message(protocol, username);
-			setCurrentState(IN_APP);
+			setCurrentState(MAINPAGE);
 			
 		}else if(protocol.equals(Protocol.LOGINFAILED) || protocol.equals(Protocol.ALREADYONLINE)){
 			message = new Message();
@@ -213,19 +216,51 @@ public class Client extends Service<Message>{
 		return message;
 	}
 	
+	public Message readMainPage(String protocol) throws IOException {
+		Message message = null ;
+		String mess = null ;
+		if(protocol.equals(Protocol.COINS)) {
+			mess = in.readLine();
+			if(mess == null )
+			{
+				closeStreams();
+				message = new Message(Protocol.GENERALERROR);
+				return message ;
+			}
+			message = new Message(protocol,mess);
+		}else {
+			message = new Message();
+			message.setProtocol(Protocol.GENERALERROR);
+		}
+		
+		return message ;
+	}
+	
+	public Message readAccount(String protocol) throws IOException {
+		Message message = null ;
+		String mess = null ;
+		
+		if(protocol.equals(Protocol.INFORMATIONACCOUNT)) {
+			mess = in.readLine();
+			if(mess == null )
+			{
+				closeStreams();
+				message = new Message(Protocol.GENERALERROR);
+				return message ;
+			}
+			message = new Message(protocol,mess);
+		}else {
+			message = new Message();
+			message.setProtocol(Protocol.GENERALERROR);
+		}
+		
+		return message ;
+	}
+	
 	public void logout() {
 		sendMessage(Protocol.LOGOUT);
 		SceneHandler.getInstance().loadScene("LoginPage", false , true);
 		currentState =  STEP_LOGIN ;
-	}
-	
-	public Message readIN_APP(String protocol) throws IOException {
-		Message message = null ;
-		//TODO
-		String mess = in.readLine();
-		
-		message = new Message(protocol);
-		return message ;
 	}
 	
 	public void connectToServer() {
@@ -245,7 +280,7 @@ public class Client extends Service<Message>{
 	}
 	
 	public void cancelRequest() {
-		setCurrentState(IN_APP);
+		setCurrentState(MAINPAGE);
 		sendMessage(Protocol.REQUESTCANCELED);
 	}
 	
@@ -301,7 +336,7 @@ public class Client extends Service<Message>{
 	}
 
 	public void matchEnded() {
-		currentState = IN_APP;
+		currentState = MAINPAGE;
 		restart();
 	}
 	

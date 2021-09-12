@@ -1,6 +1,7 @@
 package application.control;
 
 
+import application.SceneHandler;
 import application.Settings;
 import application.net.client.Client;
 import application.net.common.Protocol;
@@ -74,6 +75,9 @@ public class MainPageController {
     private static final String WELCOME  = "Welcome ";
     
     @FXML
+    private Label coins_main_page_label;
+    
+    @FXML
     public void initialize() {
     	
     	leave_button_main_page.setFont(Font.loadFont(getClass().getResourceAsStream("/application/view/fonts/AzeretMono-Italic-VariableFont_wght.ttf"), 15));
@@ -83,6 +87,8 @@ public class MainPageController {
     	name_field_mainpage.setFont(Font.loadFont(getClass().getResourceAsStream("/application/view/fonts/AzeretMono-Italic-VariableFont_wght.ttf"), 20));
     	data_field_mainpage.setFont(Font.loadFont(getClass().getResourceAsStream("/application/view/fonts/AzeretMono-Italic-VariableFont_wght.ttf"), 11));
     	cancel_button.setFont(Font.loadFont(getClass().getResourceAsStream("/application/view/fonts/AzeretMono-Italic-VariableFont_wght.ttf"), 16));
+    	coins_main_page_label.setFont(Font.loadFont(getClass().getResourceAsStream("/application/view/fonts/AzeretMono-Italic-VariableFont_wght.ttf"), 31));
+    	
     	cancel_button.setTextFill(Color.WHITE);
     	cancel_button.getStyleClass().add("leave_button");
     	
@@ -129,7 +135,13 @@ public class MainPageController {
     	changeDataButtonField();
     	
     	showText(WELCOME+" "+Client.getInstance().getUsername(), 30, Dialog.INFORMATION_WINDOW,5);
+    	
+    	Client.getInstance().sendMessage(Protocol.COINS);
     }
+    
+    public void setCoins_main_page_label(String coins) {
+		this.coins_main_page_label.setText(coins);
+	}
     
     public void showText(String text,int fontSize,String type,double duration) {
     	
@@ -161,6 +173,8 @@ public class MainPageController {
     		showText(Protocol.LEAVEWITHOUTCANCEL, 20, Dialog.ERROR_WINDOW,2);
     		return;
     	}
+    	Client.getInstance().setCurrentState(Client.ACCOUNT);
+    	SceneHandler.getInstance().loadScene("AccountPage", true, true);
     }
 
     
@@ -172,7 +186,7 @@ public class MainPageController {
     @FXML
     void onClickButtonField(MouseEvent event) {
     	
-    	if(Client.getInstance().getCurrentState() != Client.IN_APP)
+    	if(Client.getInstance().getCurrentState() != Client.MAINPAGE)
     		return ;
     	
     	container_cancel_button.getChildren().add(cancel_button);

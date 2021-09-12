@@ -55,9 +55,6 @@ public class MatchClient extends Task<String>{
 		
 		client.sendMessage(Protocol.GAMESTARTED);
 		
-		client.sendMessage(Protocol.TYPEOFLINEUP);
-		client.sendMessage(""+lineup);
-		
 		
 		message = read() ;
 		

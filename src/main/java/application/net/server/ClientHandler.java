@@ -6,8 +6,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.sql.SQLException;
 
 import application.Settings;
+import application.model.game.entity.Account;
 import application.model.game.entity.LoginClient;
 import application.model.game.entity.RegistrationClient;
 import application.net.common.Protocol;
@@ -218,7 +220,35 @@ public class ClientHandler implements Runnable {
 					printConnectionLost();
 					return;
 				}
-			}else if(message.equals(Protocol.LOGOUT)) {
+			}else if(message.equals(Protocol.INFORMATIONACCOUNT)) {
+				Account account;
+				try {
+					account = Database.getInstance().getAccount(username);
+				} catch (SQLException e) {
+					sendMessage(Protocol.GENERALERROR);
+					printConnectionLost();
+					return;
+				}
+				String string = account.getUsername() + Protocol.DELIMITERINFORMATIONACCOUNT + account.getPassword() + Protocol.DELIMITERINFORMATIONACCOUNT +
+						account.getCoins() + Protocol.DELIMITERINFORMATIONACCOUNT + account.getColor_ball_to_play() + Protocol.DELIMITERINFORMATIONACCOUNT +
+						account.getColor_my_balls() + Protocol.DELIMITERINFORMATIONACCOUNT + account.getEmail() + Protocol.DELIMITERINFORMATIONACCOUNT+
+						account.getLineup() ;
+				sendMessage(Protocol.INFORMATIONACCOUNT);
+				sendMessage(string);
+			}else if(message.equals(Protocol.COINS)) {
+				
+				String coins = "";
+				try {
+					coins = "" + Database.getInstance().getAccount(username).getCoins();
+				} catch (SQLException e) {
+					sendMessage(Protocol.GENERALERROR);
+					printConnectionLost();
+					return;
+				}
+				sendMessage(Protocol.COINS);
+				sendMessage(coins);
+				
+			}else  if(message.equals(Protocol.LOGOUT)) {
 				logout();
 				return ;
 			}else if(message.equals(Protocol.CONNECTION_LOST)) {
