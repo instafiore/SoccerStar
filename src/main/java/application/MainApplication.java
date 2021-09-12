@@ -5,6 +5,7 @@ import application.control.ClientSucceedController;
 import application.control.MatchController;
 import application.control.WindowController;
 import application.net.client.Client;
+import application.net.server.Mail;
 import application.view.MatchView;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -53,6 +54,8 @@ public class MainApplication extends Application{
 		Client.getInstance().connectToServer();
 		Client.getInstance().setCurrentState(Client.STEP_LOGIN);
 		Client.getInstance().setOnSucceeded(new ClientSucceedController());
+		
+		
 		
 	}
 

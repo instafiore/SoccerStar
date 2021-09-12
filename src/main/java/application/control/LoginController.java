@@ -112,10 +112,10 @@ public class LoginController {
     		return ;
     	}
     	
-    	if(!rulesRespected()) {
-    		showError(Protocol.LOGINFAILED, 13);
-    		return ;
-    	}
+//    	if(!rulesRespected()) {
+//    		showError(Protocol.LOGINFAILED, 15);
+//    		return ;
+//    	}
     	
     	String stringa = username_field_login.getText() + Protocol.DELIMITERLOGIN + password_field_login.getText() ;
     	

@@ -36,7 +36,7 @@ public class ClientSucceedController implements EventHandler<WorkerStateEvent>{
 		}else if(message.getProtocol().equals(Protocol.LOGINFAILED) || message.getProtocol().equals(Protocol.ALREADYONLINE)){
 			
 			LoginController loginController = SceneHandler.getInstance().getLoader("LoginPage").getController() ;
-			loginController.showError(message.getProtocol(), 13);
+			loginController.showError(message.getProtocol(), 15);
 		}
 		else if(message.getProtocol().equals(Protocol.GENERALERROR)) {
 			
