@@ -20,8 +20,9 @@ public class Database {
 	
 	private static final String QUERY_INSERT_REGISTRATIONCLIENT = "insert into Account(username,password,email) values(?,?,?);";
 	private static final String SEARCH_CLIENT = "select * from Account where username = ? ;";
-	private static final String CHECK_LOGIN = "select * from Account where username = ? and password = ? ";
+	private static final String CHECK_LOGIN = "select * from Account where username = ? and password = ? ;";
 	private static final String INSERT_MATCH = "insert into Match(date_match,result,field,home,guest,time_match) values(?,?,?,?,?,?);" ;
+	private static final String CHANGEPASSWORD= "update Account set password = ? where username = ? ;";
 	
 	private Connection connection;
 	private static Database instance = null;
@@ -30,6 +31,7 @@ public class Database {
 	private PreparedStatement search_client_query;
 	private PreparedStatement check_login_query;
 	private PreparedStatement insert_match_query;
+	private PreparedStatement change_password_query ;
 	
 	private Database() {
 		
@@ -58,6 +60,7 @@ public class Database {
 		search_client_query = connection.prepareStatement(SEARCH_CLIENT);
 		check_login_query = connection.prepareStatement(CHECK_LOGIN);
 		insert_match_query = connection.prepareStatement(INSERT_MATCH);
+		change_password_query = connection.prepareStatement(CHANGEPASSWORD);
 	}
 	
 	public void closeConnection() throws SQLException {
@@ -144,6 +147,25 @@ public class Database {
 		return true;
 	}
 	
+	
+	public void changePassword(String username ,String password) {
+		String crypto_password = cryptoPassword(password);
+		
+		try {
+			change_password_query.setString(1, crypto_password);
+			change_password_query.setString(2, username);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		try {
+			change_password_query.executeUpdate();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	
 	public boolean checkUser(String user) {
 		

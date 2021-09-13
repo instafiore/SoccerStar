@@ -1,6 +1,9 @@
 package application.control;
 
+import java.io.InputStream;
+
 import application.SceneHandler;
+import application.Utilities;
 import application.net.client.Client;
 import application.net.common.Protocol;
 import javafx.event.ActionEvent;
@@ -23,7 +26,7 @@ public class AccountController {
     private Button history_button_account;
 
     @FXML
-    private Button shop_button_account;
+    private Button inventory_button_account;
 
     @FXML
     private Button buy_coins_button_account;
@@ -55,21 +58,26 @@ public class AccountController {
     @FXML
     private Label coins_label_account;
     
+    
     @FXML
     public void initialize() {
-    	back_button_account.setFont(Font.loadFont(getClass().getResourceAsStream("/application/view/fonts/AzeretMono-Italic-VariableFont_wght.ttf"), 20));
-    	information_label.setFont(Font.loadFont(getClass().getResourceAsStream("/application/view/fonts/AzeretMono-Italic-VariableFont_wght.ttf"), 25));
-    	history_button_account.setFont(Font.loadFont(getClass().getResourceAsStream("/application/view/fonts/AzeretMono-Italic-VariableFont_wght.ttf"), 17));
-    	shop_button_account.setFont(Font.loadFont(getClass().getResourceAsStream("/application/view/fonts/AzeretMono-Italic-VariableFont_wght.ttf"), 17));
-    	buy_coins_button_account.setFont(Font.loadFont(getClass().getResourceAsStream("/application/view/fonts/AzeretMono-Italic-VariableFont_wght.ttf"), 17));
-    	friends_button_account.setFont(Font.loadFont(getClass().getResourceAsStream("/application/view/fonts/AzeretMono-Italic-VariableFont_wght.ttf"), 17));
-    	username_field_account.setFont(Font.loadFont(getClass().getResourceAsStream("/application/view/fonts/AzeretMono-Italic-VariableFont_wght.ttf"), 15));
-    	email_label_account.setFont(Font.loadFont(getClass().getResourceAsStream("/application/view/fonts/AzeretMono-Italic-VariableFont_wght.ttf"), 15));
-    	card_label_account.setFont(Font.loadFont(getClass().getResourceAsStream("/application/view/fonts/AzeretMono-Italic-VariableFont_wght.ttf"), 15));
-    	card_field_account.setFont(Font.loadFont(getClass().getResourceAsStream("/application/view/fonts/AzeretMono-Italic-VariableFont_wght.ttf"), 15));
-    	add_payment_method_button.setFont(Font.loadFont(getClass().getResourceAsStream("/application/view/fonts/AzeretMono-Italic-VariableFont_wght.ttf"), 12));
-    	coins_label_account.setFont(Font.loadFont(getClass().getResourceAsStream("/application/view/fonts/AzeretMono-Italic-VariableFont_wght.ttf"), 31));
-    	email_field_account.setFont(Font.loadFont(getClass().getResourceAsStream("/application/view/fonts/AzeretMono-Italic-VariableFont_wght.ttf"), 13));
+    	Client.getInstance().setCurrentState(Client.ACCOUNT);
+    	
+    	
+    	
+    	back_button_account.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 20));
+    	information_label.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 25));
+    	history_button_account.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 17));
+    	inventory_button_account.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 17));
+    	buy_coins_button_account.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 17));
+    	friends_button_account.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 17));
+    	username_field_account.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 15));
+    	email_label_account.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 15));
+    	card_label_account.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 15));
+    	card_field_account.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 15));
+    	add_payment_method_button.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 12));
+    	coins_label_account.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 31));
+    	email_field_account.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 13));
     	
     	
     	back_button_account.setOnMouseEntered(new HoverButton());
@@ -84,8 +92,8 @@ public class AccountController {
     	friends_button_account.setOnMouseEntered(new HoverButton());
     	friends_button_account.setOnMouseExited(new HoverButton());
     	
-    	shop_button_account.setOnMouseEntered(new HoverButton());
-    	shop_button_account.setOnMouseExited(new HoverButton());
+    	inventory_button_account.setOnMouseEntered(new HoverButton());
+    	inventory_button_account.setOnMouseExited(new HoverButton());
     	
     	add_payment_method_button.setOnMouseEntered(new HoverButton());
     	add_payment_method_button.setOnMouseExited(new HoverButton());
@@ -140,10 +148,11 @@ public class AccountController {
     void onClickHistory_button_account(ActionEvent event) {
 
     }
-
+    
     @FXML
-    void onClickShop_button_account(ActionEvent event) {
+    void onClickInventory_button_account(ActionEvent event) {
 
     }
+
 
 }

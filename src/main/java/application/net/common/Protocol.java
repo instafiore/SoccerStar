@@ -6,7 +6,7 @@ public class Protocol {
 
 	
 	// ERRORS
-	public static final String GENERALERROR = "General error , app will reloading...";
+	public static final String GENERALERROR = "General error , app will be shutted down...";
 	public static final String INPUT_STREAM_NULL = "Input stream is null";
 	public static final String OUTPUT_STREAM_NULL = "Output stream is null";
 	public static final String CONNECTION_LOST ="Connection lost";
@@ -15,7 +15,20 @@ public class Protocol {
 	public static final String MATCHSUCCEED = "Match completed without errors";
 	public static final String MATCHFAILED = "Match completed with errors";
 	public static final String LEAVEWITHOUTCANCEL = "You must first cancel the match request" ;
-	public static final String FIELDEMPTY = "Some field is empty!";
+	public static final String FIELDEMPTY = "Some fields are empty!";
+	
+	// Password recovery
+	public static final String RECORYPASSOWRD = "That's username for recovering password";
+	public static final String USERNAMEDOESNTEXIST = "Your username doesn't exist" ;
+	public static final String EMAILSENT = "Email sent" ;
+	public static final String CODEPASSWORD = "That are my code and password" ;
+	public static final String DELIMITERCODEPASSOWRD = "&" ;
+	public static final String CANCELPASSWORDRECOVERY = "Cancel operation password recovery" ;
+	public static final String PASSWORDCHANGED = "Your password has changed" ;
+	public static final String CODENOTVALID = "Your code isn't valid" ;
+	
+	//Card
+	public static final String NOTINSERTED = "Not inserted yet";
 	
 	//Main Page
 	public static final String COINS = "Your coins amount";
@@ -38,21 +51,19 @@ public class Protocol {
 
 	
 	// Registration
+	public static final String DELIMITERREGISTRATION = "&" ;
 	public static final String RULESREGISTRATION = "Username: \n"
 			+ "\t At least 6 characters \n"
-			+ "\t Cannot have caracters -> \n"
-			+ "\t '&' , '%' , '$' , '!' , '£' \n"
-			+ "\t -> '  , ' \" ' \n"
+			+ "\t Cannot have caracter -> ' "+DELIMITERREGISTRATION+" '\n"
 			+ "\t Must to start with a letter \n"
 			+ "Passoword: \n"
 			+ "\t At least 6 characters \n"
-			+ "\t Maximum 16 characters \n"
-			+ "\t Cannot have caracters -> \n"
-			+ "\t '&' , '%' , '$' , '!' , '£' \n" 
-			+ "\t -> '  , ' \" ' \n" ;
-	public static final String RULESDIDTRESPECTED = "The validity rules are not respected";
+			+ "\t Maximum 20 characters \n"
+			+ "\t Cannot have caracters -> ' & '\n"
+			+ "\t It must contain at least one number, lowercase, uppercase ,no spaces\n"
+			+ "\t and this special characters -> :\n"
+			+ "\t  @ , . , ? , # , $ , %, ^ , + , = , ! , _ " ;
 	public static final String REGISTRATIONREQUEST = "New registration request" ;
-	public static final String DELIMITERREGISTRATION = "&" ;
 	public static final String REGISTRATIONCOMPLETED = "Registration completed!";
 	public static final String ALREADYEXISTS = "Your username already exists" ;
 	public static final String REGISTRATIONFAILED = "We had a problem with your registration , please try again or contact email: " + EMAILASSISTANCE;
@@ -92,6 +103,7 @@ public class Protocol {
 	public static final String ERRORMATCH = "Error during the match" ;
 	public static final String NOERRORMATCH = "Match completed whitout errors" ;
 	public static final String NOERRORBUTLEFTMATCH = "Your opponent left the match , you won!" ;
+
 	
 	public static ArrayList<String> protocolMatch(){
 		

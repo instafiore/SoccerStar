@@ -3,6 +3,7 @@ package application.control;
 
 import application.SceneHandler;
 import application.Settings;
+import application.Utilities;
 import application.net.client.Client;
 import application.net.common.Protocol;
 import application.view.Dialog;
@@ -80,14 +81,16 @@ public class MainPageController {
     @FXML
     public void initialize() {
     	
-    	leave_button_main_page.setFont(Font.loadFont(getClass().getResourceAsStream("/application/view/fonts/AzeretMono-Italic-VariableFont_wght.ttf"), 15));
-    	account_button_main_page.setFont(Font.loadFont(getClass().getResourceAsStream("/application/view/fonts/AzeretMono-Italic-VariableFont_wght.ttf"), 15));
-    	friends_button_main_page.setFont(Font.loadFont(getClass().getResourceAsStream("/application/view/fonts/AzeretMono-Italic-VariableFont_wght.ttf"), 15));
-    	friends_button_main_page.setFont(Font.loadFont(getClass().getResourceAsStream("/application/view/fonts/AzeretMono-Italic-VariableFont_wght.ttf"), 15));
-    	name_field_mainpage.setFont(Font.loadFont(getClass().getResourceAsStream("/application/view/fonts/AzeretMono-Italic-VariableFont_wght.ttf"), 20));
-    	data_field_mainpage.setFont(Font.loadFont(getClass().getResourceAsStream("/application/view/fonts/AzeretMono-Italic-VariableFont_wght.ttf"), 11));
-    	cancel_button.setFont(Font.loadFont(getClass().getResourceAsStream("/application/view/fonts/AzeretMono-Italic-VariableFont_wght.ttf"), 16));
-    	coins_main_page_label.setFont(Font.loadFont(getClass().getResourceAsStream("/application/view/fonts/AzeretMono-Italic-VariableFont_wght.ttf"), 31));
+    	Client.getInstance().setCurrentState(Client.MAINPAGE);
+    	
+    	leave_button_main_page.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 15));
+    	account_button_main_page.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 15));
+    	friends_button_main_page.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 15));
+    	friends_button_main_page.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 15));
+    	name_field_mainpage.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 20));
+    	data_field_mainpage.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 11));
+    	cancel_button.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 16));
+    	coins_main_page_label.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 31));
     	
     	cancel_button.setTextFill(Color.WHITE);
     	cancel_button.getStyleClass().add("leave_button");

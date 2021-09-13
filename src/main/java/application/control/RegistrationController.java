@@ -5,6 +5,7 @@ import java.util.regex.Pattern;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import application.SceneHandler;
+import application.Utilities;
 import application.net.client.Client;
 import application.net.common.Protocol;
 import application.net.server.Database;
@@ -27,11 +28,7 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 public class RegistrationController {
 
 
-	private static final String INFORMATIONPASSWORDRULES = "" ;
-	
-	private final String REGEXUSERNAME = "([a-zA-Z][^&%$£!]){6,}" ; 
-	private final String REGEXPASSWORD = "[^&%$£!]{6,16}" ; 
-	private final String REGEXEMAIL = ".+@gmail\\.com" ; 
+	private static final String INFORMATIONRULES = "" ;
 	
     @FXML
     private Label soccerstart_label;
@@ -72,29 +69,30 @@ public class RegistrationController {
     @FXML
     private Button information_password_rule;
 
-    private Pattern pattern1 = Pattern.compile(REGEXUSERNAME);
-    private Pattern pattern2 = Pattern.compile(REGEXPASSWORD);
-    private Pattern pattern3 = Pattern.compile(REGEXEMAIL);
+
     
     @FXML
     void onClickInformation_password_rule(ActionEvent event) {
-    	Dialog.getInstance().showInformationDialog(INFORMATIONPASSWORDRULES, Protocol.RULESREGISTRATION);
+    	Dialog.getInstance().showInformationDialog(INFORMATIONRULES, Protocol.RULESREGISTRATION);
     }
 
     @FXML
     public void initialize() {
-    	soccerstart_label.setFont(Font.loadFont(getClass().getResourceAsStream("/application/view/fonts/AzeretMono-Italic-VariableFont_wght.ttf"), 43));
-    	username_label.setFont(Font.loadFont(getClass().getResourceAsStream("/application/view/fonts/AzeretMono-Italic-VariableFont_wght.ttf"), 15));
-    	username_field_registration.setFont(Font.loadFont(getClass().getResourceAsStream("/application/view/fonts/AzeretMono-Italic-VariableFont_wght.ttf"), 15));
-    	password_label.setFont(Font.loadFont(getClass().getResourceAsStream("/application/view/fonts/AzeretMono-Italic-VariableFont_wght.ttf"), 15));
-    	password_field_registration.setFont(Font.loadFont(getClass().getResourceAsStream("/application/view/fonts/AzeretMono-Italic-VariableFont_wght.ttf"), 15));
-    	repeat_password_field_registration.setFont(Font.loadFont(getClass().getResourceAsStream("/application/view/fonts/AzeretMono-Italic-VariableFont_wght.ttf"), 15));
-    	email_label.setFont(Font.loadFont(getClass().getResourceAsStream("/application/view/fonts/AzeretMono-Italic-VariableFont_wght.ttf"), 15));
-    	email_field_registration.setFont(Font.loadFont(getClass().getResourceAsStream("/application/view/fonts/AzeretMono-Italic-VariableFont_wght.ttf"), 15));
-    	username_label.setFont(Font.loadFont(getClass().getResourceAsStream("/application/view/fonts/AzeretMono-Italic-VariableFont_wght.ttf"), 15));
-    	sign_up_button_registration.setFont(Font.loadFont(getClass().getResourceAsStream("/application/view/fonts/AzeretMono-Italic-VariableFont_wght.ttf"), 15));
-    	back_button_registration.setFont(Font.loadFont(getClass().getResourceAsStream("/application/view/fonts/AzeretMono-Italic-VariableFont_wght.ttf"), 15));
-    	repeatpassword_label.setFont(Font.loadFont(getClass().getResourceAsStream("/application/view/fonts/AzeretMono-Italic-VariableFont_wght.ttf"), 15));
+    	
+    	Client.getInstance().setCurrentState(Client.STEP_REGISTRATION);
+    	
+    	soccerstart_label.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 43));
+    	username_label.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 15));
+    	username_field_registration.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 15));
+    	password_label.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 15));
+    	password_field_registration.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 15));
+    	repeat_password_field_registration.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 15));
+    	email_label.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 15));
+    	email_field_registration.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 15));
+    	username_label.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 15));
+    	sign_up_button_registration.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 15));
+    	back_button_registration.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 15));
+    	repeatpassword_label.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 15));
    
     	information_password_rule.setOnMouseEntered(new HoverButton());
     	information_password_rule.setOnMouseExited(new HoverButton());
@@ -141,8 +139,8 @@ public class RegistrationController {
     		return ;
     	}
     	
-    	if(!rulesRespected()) {
-    		showError(Protocol.RULESDIDTRESPECTED, 15);
+    	if(!Utilities.rulesRespected(username_field_registration.getText(),password_field_registration.getText(),email_field_registration.getText())) {
+    		showError(Utilities.RULESDIDTRESPECTED, 15);
     		return ;
     	}
     	
@@ -153,105 +151,15 @@ public class RegistrationController {
     	Client.getInstance().sendMessage(Protocol.REGISTRATIONREQUEST);
     	Client.getInstance().sendMessage(stringa);
     }
-    
-    public boolean rulesRespected() {
-    	return pattern1.matcher(username_field_registration.getText()).matches() && pattern2.matcher(password_field_registration.getText()).matches() && pattern3.matcher(email_field_registration.getText()).matches() ;
-    }
+
 
     
     private void settingOnKeyReleased() {
-    	username_field_registration.setOnKeyReleased(new EventHandler<Event>() {
-
-			@Override
-			public void handle(Event event) {
-				
-				
-				
-				if(username_field_registration.getText().equals("")) {
-					username_field_registration.getStyleClass().remove("input_field_red");
-					username_field_registration.getStyleClass().remove("input_field_green");
-					
-				}
-				else if(!pattern1.matcher(username_field_registration.getText()).matches())
-				{
-					username_field_registration.getStyleClass().remove("input_field_red");
-					username_field_registration.getStyleClass().remove("input_field_green");
-					username_field_registration.getStyleClass().add("input_field_red");
-				}
-				else
-				{
-					username_field_registration.getStyleClass().remove("input_field_red");
-					username_field_registration.getStyleClass().remove("input_field_green");
-					username_field_registration.getStyleClass().add("input_field_green");
-				}
-			}
-		});
     	
-    	password_field_registration.setOnKeyReleased(new EventHandler<Event>() {
-
-			@Override
-			public void handle(Event event) {
-				
-				if(password_field_registration.getText().equals("")) {
-					password_field_registration.getStyleClass().remove("input_field_red");
-					password_field_registration.getStyleClass().remove("input_field_green");
-				}
-				else if(!pattern2.matcher(password_field_registration.getText()).matches())
-				{
-					password_field_registration.getStyleClass().remove("input_field_red");
-					password_field_registration.getStyleClass().remove("input_field_green");
-					password_field_registration.getStyleClass().add("input_field_red");
-
-				}
-				else
-				{
-					password_field_registration.getStyleClass().remove("input_field_red");
-					password_field_registration.getStyleClass().remove("input_field_green");
-					password_field_registration.getStyleClass().add("input_field_green");
-				}
-			}
-		});
-    	
-    	
-    	repeat_password_field_registration.setOnKeyReleased(new EventHandler<Event>() {
-
-			@Override
-			public void handle(Event event) {
-				if(repeat_password_field_registration.getText().equals("")) {
-					repeat_password_field_registration.getStyleClass().remove("input_field_red");
-					repeat_password_field_registration.getStyleClass().remove("input_field_green");
-				}
-				else 
-				{
-					repeat_password_field_registration.getStyleClass().remove("input_field_green");
-					repeat_password_field_registration.getStyleClass().add("input_field_green");
-				}
-				
-			}
-		});
-    	email_field_registration.setOnKeyReleased(new EventHandler<Event>() {
-
-			@Override
-			public void handle(Event event) {
-				if(email_field_registration.getText().equals("")) {
-					email_field_registration.getStyleClass().remove("input_field_red");
-					email_field_registration.getStyleClass().remove("input_field_green");
-				}
-				else if(!pattern3.matcher(email_field_registration.getText()).matches()) {
-					email_field_registration.getStyleClass().remove("input_field_red");
-					email_field_registration.getStyleClass().remove("input_field_green");
-					email_field_registration.getStyleClass().add("input_field_red");
-				}
-				else
-				{
-					email_field_registration.getStyleClass().remove("input_field_red");
-					email_field_registration.getStyleClass().remove("input_field_green");
-					email_field_registration.getStyleClass().add("input_field_green");
-				}
-				
-				
-			}
-		});
+    	username_field_registration.setOnKeyReleased(new InputFieldController(InputFieldController.USERNAME));
+    	password_field_registration.setOnKeyReleased(new InputFieldController(InputFieldController.PASSWORD));
+    	repeat_password_field_registration.setOnKeyReleased(new InputFieldController(InputFieldController.NOCONTROL));	
+    	email_field_registration.setOnKeyReleased(new InputFieldController(InputFieldController.EMAIL));
     }
 
 }

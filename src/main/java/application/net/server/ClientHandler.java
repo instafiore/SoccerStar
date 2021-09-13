@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.sql.SQLException;
+import java.util.StringTokenizer;
 
 import application.Settings;
 import application.model.game.entity.Account;
@@ -109,7 +110,79 @@ public class ClientHandler implements Runnable {
 					username = null;
 				}
 
-			} else {
+			}else if(message.equals(Protocol.RECORYPASSOWRD)) {
+				
+				String usernamerecory = read() ;
+				
+				if (usernamerecory == null)
+					return;
+				
+				if(!Database.getInstance().checkUser(usernamerecory))
+				{
+					sendMessage(Protocol.USERNAMEDOESNTEXIST);
+					
+				}else{
+					
+					Mail.getInstance().send(usernamerecory);
+					StringBuilder emailCovered = null;
+					try {
+						emailCovered = new StringBuilder(Database.getInstance().getAccount(usernamerecory).getEmail()) ;
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+					
+					for(int i = 0 ; i < emailCovered.length() - 18 ; ++i)
+						emailCovered.setCharAt(i, 'x');
+					
+					String text = "Email sent to "+emailCovered+" , please insert code here and reset your password";
+					
+					sendMessage(Protocol.EMAILSENT);
+					sendMessage(text);
+					
+					boolean f = true ;
+					do {
+
+						message  = read() ;
+						
+						if (message == null)
+							return;
+						
+						if(message.equals(Protocol.CODEPASSWORD)) {
+							
+							message = read() ;
+							
+							if (message == null)
+								return;
+							
+							StringTokenizer stringTokenizer = new StringTokenizer(message,Protocol.DELIMITERCODEPASSOWRD) ;
+							
+							String code = stringTokenizer.nextToken() ;
+							String password = stringTokenizer.nextToken() ;
+							
+							if(Mail.getInstance().checkCode(usernamerecory, code))
+							{
+								Database.getInstance().changePassword(usernamerecory, password);
+								sendMessage(Protocol.PASSWORDCHANGED);
+								f = false ;
+							}else
+							{
+								f = true ;
+								sendMessage(Protocol.CODENOTVALID);
+							}
+						
+						}else if(!message.equals(Protocol.CANCELPASSWORDRECOVERY)) {
+							// ERROR
+							sendMessage(Protocol.GENERALERROR);
+							username = null;
+							printConnectionLost();
+							return;
+						}else
+							f = false ;
+					}while(f);
+					
+				}
+				
+			}else {
 
 				// ERROR
 				sendMessage(Protocol.GENERALERROR);
@@ -327,7 +400,7 @@ public class ClientHandler implements Runnable {
 
 				message = in.readLine();
 
-				if (message == null) {
+				if (message == null || message.equals(Protocol.CONNECTION_LOST)) {
 					printConnectionLost();
 					return null;
 				}

@@ -1,9 +1,11 @@
 package application.control;
 
 import java.beans.beancontext.BeanContextServiceAvailableEvent;
+import java.io.InputStream;
 import java.util.regex.Pattern;
 
 import application.SceneHandler;
+import application.Utilities;
 import application.net.client.Client;
 import application.net.common.Protocol;
 import application.view.Dialog;
@@ -29,7 +31,7 @@ import javafx.scene.text.Font;
 import javafx.util.Duration;
 
 public class LoginController {
-	
+	InputStream inputStream = getClass().getResourceAsStream("/application/view/fonts/AzeretMono-Italic-VariableFont_wght.ttf") ;
 	
     @FXML
     private StackPane stackPane;
@@ -65,30 +67,24 @@ public class LoginController {
     private Label information_label;
     @FXML
     void onClick_password_forgot_button(MouseEvent event) {
-    	// TODO
+    	SceneHandler.getInstance().loadScene("Step1PSW", false, true);
     }
-    
-    private final String REGEXUSERNAME = "([a-zA-Z][^&%$£!]){6,}" ; 
-	private final String REGEXPASSWORD = "[^&%$£!]{6,16}" ; 
-	
-	
-	private Pattern pattern1 = Pattern.compile(REGEXUSERNAME);
-	private Pattern pattern2 = Pattern.compile(REGEXPASSWORD);
+ 
     @FXML
     public void initialize() {
     	
+    	Client.getInstance().setCurrentState(Client.STEP_LOGIN);
+   
     	
-    
-    	sign_in_button_login.setFont(Font.loadFont(getClass().getResourceAsStream("/application/view/fonts/AzeretMono-Italic-VariableFont_wght.ttf"), 14));
-    	username_field_login.setFont(Font.loadFont(getClass().getResourceAsStream("/application/view/fonts/AzeretMono-Italic-VariableFont_wght.ttf"), 14));
-    	password_field_login.setFont(Font.loadFont(getClass().getResourceAsStream("/application/view/fonts/AzeretMono-Italic-VariableFont_wght.ttf"), 14));
-    	password_forgot_button.setFont(Font.loadFont(getClass().getResourceAsStream("/application/view/fonts/AzeretMono-Italic-VariableFont_wght.ttf"), 13));
-    	sign_up_button_login.setFont(Font.loadFont(getClass().getResourceAsStream("/application/view/fonts/AzeretMono-Italic-VariableFont_wght.ttf"), 14));
-    	username_label.setFont(Font.loadFont(getClass().getResourceAsStream("/application/view/fonts/AzeretMono-Italic-VariableFont_wght.ttf"), 15));
-    	soccerstar_label.setFont(Font.loadFont(getClass().getResourceAsStream("/application/view/fonts/AzeretMono-Italic-VariableFont_wght.ttf"), 42));
-    	password_label.setFont(Font.loadFont(getClass().getResourceAsStream("/application/view/fonts/AzeretMono-Italic-VariableFont_wght.ttf"), 15));
-    	
-
+    	sign_in_button_login.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 14));
+    	username_field_login.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 14));
+    	password_field_login.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 14));
+    	password_forgot_button.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 13));
+    	sign_up_button_login.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 14));
+    	username_label.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 15));
+    	soccerstar_label.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 42));
+    	password_label.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 15));
+ 
     	
     	sign_in_button_login.setOnMouseEntered(new HoverButton());
     	sign_in_button_login.setOnMouseExited(new HoverButton());
@@ -108,11 +104,11 @@ public class LoginController {
 
     	if(username_field_login.getText().equals("") || password_field_login.equals(""))
     	{
-    		showError(Protocol.FIELDEMPTY,20);
+    		showText(Protocol.FIELDEMPTY,20,Dialog.ERROR_WINDOW,4);
     		return ;
     	}
     	
-//    	if(!rulesRespected()) {
+//    	if(!Utilities.rulesRespected()) {
 //    		showError(Protocol.LOGINFAILED, 15);
 //    		return ;
 //    	}
@@ -123,12 +119,23 @@ public class LoginController {
     	Client.getInstance().sendMessage(stringa);
     }
     
-    public void showError(String text,int fontSize) {
+    public void showText(String text,int fontSize,String type,double duration) {
+    	
+    	String color = "" ;
+		
+		if(type.equals(Dialog.ERROR_WINDOW)) {
+			color = "#ff1313" ;
+		}else if(type.equals(Dialog.INFORMATION_WINDOW)) {
+			color = "#ffffff" ;
+		}else if(type.equals(Dialog.ATTENTION_WINDOW)) {
+			color = "#ff5e28" ;
+		}
     	
     	information_label.setFont(Font.loadFont(getClass().getResourceAsStream("/application/view/fonts/AzeretMono-Italic-VariableFont_wght.ttf"), fontSize));
     	information_label.setText(text);
-    	information_label.setTextFill(Color.web("#ff1313", 1));
-    	FadeTransition trans = new FadeTransition(Duration.seconds(4),information_label);
+    	information_label.setTextFill(Color.web(color, 1));
+    
+    	FadeTransition trans = new FadeTransition(Duration.seconds(duration),information_label);
 		
 		trans.setFromValue(1.0);
         trans.setToValue(0.0);
@@ -142,44 +149,12 @@ public class LoginController {
     	Client.getInstance().setCurrentState(Client.STEP_REGISTRATION);
     }
     
-    
-    public boolean rulesRespected() {
-    	return pattern1.matcher(username_field_login.getText()).matches() && pattern2.matcher(password_field_login.getText()).matches();
-    }
+
     
     private void settingOnKeyReleased() {
     	
-    	username_field_login.setOnKeyReleased(new EventHandler<Event>() {
-
-			@Override
-			public void handle(Event event) {
-				if(username_field_login.getText().equals("")) {
-					username_field_login.getStyleClass().remove("input_field_red");
-					username_field_login.getStyleClass().remove("input_field_green");
-				}
-				else 
-				{
-					username_field_login.getStyleClass().remove("input_field_green");
-					username_field_login.getStyleClass().add("input_field_green");
-				}
-				
-			}
-		});
-    	password_field_login.setOnKeyReleased(new EventHandler<Event>() {
-
-			@Override
-			public void handle(Event event) {
-				if(password_field_login.getText().equals("")) {
-					password_field_login.getStyleClass().remove("input_field_red");
-					password_field_login.getStyleClass().remove("input_field_green");
-				}
-				else 
-				{
-					password_field_login.getStyleClass().remove("input_field_green");
-					password_field_login.getStyleClass().add("input_field_green");
-				}
-				
-			}
-		});
+    	username_field_login.setOnKeyReleased(new InputFieldController(InputFieldController.USERNAME));
+    	password_field_login.setOnKeyReleased(new InputFieldController(InputFieldController.PASSWORD));
+    
     }
 }

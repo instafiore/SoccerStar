@@ -33,6 +33,8 @@ public class Client extends Service<Message>{
 	public static final int IN_GAME = 2 ;
 	public static final int MAINPAGE = 3 ;
 	public static final int ACCOUNT = 4 ;
+	public static final int STEP1PSW = 5 ;
+	public static final int STEP2PSW = 6 ;
 	
 	public static final int FIELD1 = 1 ;
 	public static final int FIELD2 = 2 ;
@@ -147,6 +149,10 @@ public class Client extends Service<Message>{
 			return readMainPage(message);
 		case ACCOUNT:
 			return readAccount(message);
+		case STEP1PSW:
+			return readStep1PSW(message);
+		case STEP2PSW:
+			return readStep2PSW(message);
 		default:
 			return new Message(Protocol.GENERALERROR);
 		}
@@ -249,6 +255,60 @@ public class Client extends Service<Message>{
 				return message ;
 			}
 			message = new Message(protocol,mess);
+		}else {
+			message = new Message();
+			message.setProtocol(Protocol.GENERALERROR);
+		}
+		
+		return message ;
+	}
+	
+	public Message readStep1PSW(String protocol) throws IOException {
+		Message message = null ;
+		String mess = null ;
+		
+		if(protocol.equals(Protocol.USERNAMEDOESNTEXIST) ) {
+			
+			message = new Message(protocol);
+			
+		}else if (protocol.equals(Protocol.EMAILSENT) ){
+			
+			mess = in.readLine();
+			if(mess == null )
+			{
+				closeStreams();
+				message = new Message(Protocol.GENERALERROR);
+				return message ;
+			}
+			message = new Message(protocol,mess);
+			
+		}else {
+			message = new Message();
+			message.setProtocol(Protocol.GENERALERROR);
+		}
+		
+		return message ;
+	}
+	
+	public Message readStep2PSW(String protocol) throws IOException {
+		Message message = null ;
+		String mess = null ;
+		
+		if(protocol.equals(Protocol.PASSWORDCHANGED) || protocol.equals(Protocol.CODENOTVALID) ) {
+			
+			message = new Message(protocol);
+			
+		}else if (protocol.equals(Protocol.EMAILSENT) ){
+			
+			mess = in.readLine();
+			if(mess == null )
+			{
+				closeStreams();
+				message = new Message(Protocol.GENERALERROR);
+				return message ;
+			}
+			message = new Message(protocol,mess);
+			
 		}else {
 			message = new Message();
 			message.setProtocol(Protocol.GENERALERROR);

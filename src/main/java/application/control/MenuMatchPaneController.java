@@ -1,12 +1,14 @@
 package application.control;
 
 import application.SceneHandler;
+import application.Utilities;
 import application.net.client.Client;
 import application.net.common.Protocol;
 import application.view.Dialog;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.text.Font;
 
 public class MenuMatchPaneController {
 
@@ -15,6 +17,7 @@ public class MenuMatchPaneController {
 
     @FXML
     public void initialize() {
+    	leave_button_match.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 15));
     	leave_button_match.setOnMouseEntered(new HoverButton());
     	leave_button_match.setOnMouseExited(new HoverButton());
     }

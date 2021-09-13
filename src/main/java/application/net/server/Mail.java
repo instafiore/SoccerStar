@@ -1,7 +1,10 @@
 package application.net.server;
 
 
+import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.Properties;
+import java.util.Random;
 
 import javax.mail.Authenticator;
 import javax.mail.Message;
@@ -20,6 +23,9 @@ public class Mail {
 	private static final String PASSWORD = "L6wlpfe287752_";
 	private static final String MESSAGESENT = "Message sent to -> ";
 	private static Mail instance = null ;
+	private static final int LENGTHCODE = 6 ;
+	
+	private HashMap<String, String> codes ;
 	
 	public static Mail getInstance() {
 		if(instance == null)
@@ -28,11 +34,13 @@ public class Mail {
 	}
 	
 	private Mail() {
-		
+		codes = new HashMap<String,String>();
 	}
 	
-	public void send(String receiver ,String subject , String text) {
+	public void send(String receiver) {
 		
+		String subject = "Recovery password Soccer Star";
+		String text ;
 		Properties properties = new Properties();
 		
 		properties.put("mail.smtp.auth", "true");
@@ -48,14 +56,31 @@ public class Mail {
 			}
 		});
 		
+		String code = generateCode() ;
 		
-		Message message = prepareMessage(session,subject ,receiver,text);
+		text = "Hey "+receiver+"\n"
+				+ "Code: "+ code + "\n"
+				+ "This is the authentication code, entering this code you can reset your password!\n"
+				+ "Best regards , Soccer Star.";
+		
+		String emailReceiver = "" ;
+		try {
+			emailReceiver = Database.getInstance().getAccount(receiver).getEmail() ;
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		Message message = prepareMessage(session,subject ,emailReceiver,text);
 		
 		try {
 			Transport.send(message);
 		} catch (MessagingException e) {
 			e.printStackTrace();
 		}
+		
+		codes.put(receiver, code);
+		
 		System.out.println("[MAIL] "+MESSAGESENT+receiver);
 	}
 
@@ -74,4 +99,17 @@ public class Mail {
 		return null;
 	}
 	
+	
+	private String generateCode() {
+		Random random = new Random() ;
+		String code = "" ;
+		for(int i = 0 ; i < LENGTHCODE ; ++i)
+			code += ""+ random.nextInt(10);
+		
+		return code ;
+	}
+	
+	public boolean checkCode(String username,String code) {
+		return code.equals(codes.get(username));
+	}
 }

@@ -85,7 +85,7 @@
                <center>
                   <HBox alignment="CENTER" prefHeight="95.0" prefWidth="272.0" BorderPane.alignment="CENTER">
                      <children>
-                        <Label alignment="CENTER" prefHeight="95.0" prefWidth="107.0" text="400" textFill="#d1d71d">
+                        <Label fx:id="coins_main_page_label" alignment="CENTER" prefHeight="95.0" prefWidth="107.0" textFill="#d1d71d">
                            <font>
                               <Font size="31.0" />
                            </font>
