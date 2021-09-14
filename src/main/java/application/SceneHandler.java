@@ -48,6 +48,17 @@ public class SceneHandler {
 		return loaders.get(name);
 	}
 	
+	public Pane loadPane(String namePane) {
+		FXMLLoader loader = new FXMLLoader(this.getClass().getResource(File.separator+"application"+File.separator+"view"+File.separator+namePane+".fxml")) ;
+		Pane pane = null ;
+		try {
+			pane = (Pane) loader.load(); 
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return pane ;
+	}
 	public void loadScene(String namePane , boolean resizable , boolean usingSceneBuilder) {
 		
 		Pane pane = null ;

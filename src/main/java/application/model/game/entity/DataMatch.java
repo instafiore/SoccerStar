@@ -1,9 +1,17 @@
 package application.model.game.entity;
 
+import java.util.ArrayList;
+import java.util.StringTokenizer;
+
 import application.net.common.Protocol;
 import application.net.server.MatchServer;
 
-public class DataMatch {
+public class DataMatch implements Comparable<DataMatch>{
+	
+	/*
+	 * Devo inviare i dati del color della home della guest e del campo (SERVER)
+	 * 
+	 */
 	
 	private String date = null ;
 	private String time = null ;
@@ -12,6 +20,10 @@ public class DataMatch {
 	private String field = null ;
 	private String home = null ;
 	private String guest = null ;
+	private String resultMatch = "" ;
+	private String colorHome = "";
+	private String colorGuest = "" ;
+	private String colorField = "" ;
 	
 	public static final int NOONE = 3;
 	public static final int HOME = Ball.BLUE;
@@ -23,6 +35,10 @@ public class DataMatch {
 		this.field = field;
 		this.home = home;
 		this.guest = guest;
+	}
+	
+	public void setResultMatch(String resultMatch) {
+		this.resultMatch = resultMatch;
 	}
 	
 	public void setTime(String time) {
@@ -57,6 +73,37 @@ public class DataMatch {
 		
 	}
 	
+	
+	public void loadMatch(String string) {
+		
+		StringTokenizer stringTokenizer1 = new StringTokenizer(string,Protocol.DELIMITERINFORMATIONDATAMATCH);
+		
+		setHome(stringTokenizer1.nextToken());
+		setGuest(stringTokenizer1.nextToken());
+		setField(stringTokenizer1.nextToken());
+		setResultMatch(stringTokenizer1.nextToken());
+		setDate(stringTokenizer1.nextToken());
+		setTime(stringTokenizer1.nextToken());
+		setColorField(stringTokenizer1.nextToken());
+		setColorHome(stringTokenizer1.nextToken());
+		setColorField(stringTokenizer1.nextToken());
+		
+	}
+	
+	public static ArrayList<DataMatch> getMatches(String string){
+		
+		ArrayList<DataMatch> dataMatches = new ArrayList<DataMatch>();
+		StringTokenizer stringTokenizer = new StringTokenizer(string,Protocol.DELIMITERDATAMATCH);
+		
+		while(stringTokenizer.hasMoreTokens()) {
+			DataMatch dataMatch = new DataMatch() ;
+			dataMatch.loadMatch(stringTokenizer.nextToken());
+			dataMatches.add(dataMatch);
+		}
+		
+		return dataMatches ;
+	}
+	
 	public DataMatch() {}
 
 	public String getDate() {
@@ -68,8 +115,9 @@ public class DataMatch {
 	}
 
 	public String getResult() {
-		String result = goalHome+Protocol.DELIMITERGOALMATCH+goalGuest;
-		return result;
+		if(resultMatch == "")
+			return goalHome+Protocol.DELIMITERGOALMATCH+goalGuest;
+		return resultMatch ;
 	}
 
 	public void incHome() {
@@ -134,5 +182,34 @@ public class DataMatch {
 			return HOME ;
 		return GUEST ;
 	}
+
+	@Override
+	public int compareTo(DataMatch match) {
+		return this.date.compareTo(match.date) * -1;
+	}
 	
+	
+	public void setColorHome(String colorHome) {
+		this.colorHome = colorHome;
+	}
+	
+	public void setColorField(String colorField) {
+		this.colorField = colorField;
+	}
+	
+	public void setColorGuest(String colorGuest) {
+		this.colorGuest = colorGuest;
+	}
+	
+	public String getColorField() {
+		return colorField;
+	}
+	
+	public String getColorGuest() {
+		return colorGuest;
+	}
+	
+	public String getColorHome() {
+		return colorHome;
+	}
 }

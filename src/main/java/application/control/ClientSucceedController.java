@@ -53,6 +53,11 @@ public class ClientSucceedController implements EventHandler<WorkerStateEvent>{
 			accountController.changeColorBall(account.getColor_my_balls());
 			accountController.setCoins_label_account(""+account.getCoins());
 			
+		}else if(message.getProtocol().equals(Protocol.INFORMATIONHISTORY)) {
+			
+			HistoryController historyController =  SceneHandler.getInstance().getLoader("HistoryPage").getController() ;
+
+			
 		}else if(message.getProtocol().equals(Protocol.USERNAMEDOESNTEXIST)) {
 			
 			Step1PSW step1psw = SceneHandler.getInstance().getLoader("Step1PSW").getController();

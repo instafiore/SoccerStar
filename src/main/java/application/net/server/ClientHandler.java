@@ -7,10 +7,13 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.StringTokenizer;
 
 import application.Settings;
 import application.model.game.entity.Account;
+import application.model.game.entity.DataMatch;
 import application.model.game.entity.LoginClient;
 import application.model.game.entity.RegistrationClient;
 import application.net.common.Protocol;
@@ -307,6 +310,21 @@ public class ClientHandler implements Runnable {
 						account.getColor_my_balls() + Protocol.DELIMITERINFORMATIONACCOUNT + account.getEmail() + Protocol.DELIMITERINFORMATIONACCOUNT+
 						account.getLineup() ;
 				sendMessage(Protocol.INFORMATIONACCOUNT);
+				sendMessage(string);
+			}else if(message.equals(Protocol.INFORMATIONHISTORY)) {
+				List<DataMatch> dataMatches;
+				
+				dataMatches = Database.getInstance().getDataMatches(username);
+				
+				String string = "" ;
+				for(DataMatch dataMatch : dataMatches) {
+					string = dataMatch.getHome() + Protocol.DELIMITERDATAMATCH + dataMatch.getGuest()  + Protocol.DELIMITERDATAMATCH +
+							dataMatch.getField()  + Protocol.DELIMITERDATAMATCH + dataMatch.getResult()  + Protocol.DELIMITERDATAMATCH +
+							dataMatch.getDate()  + Protocol.DELIMITERDATAMATCH + dataMatch.getTime() ;
+					string +=  Protocol.DELIMITERINFORMATIONDATAMATCH ;
+				}
+
+				sendMessage(Protocol.INFORMATIONHISTORY);
 				sendMessage(string);
 			}else if(message.equals(Protocol.COINS)) {
 				

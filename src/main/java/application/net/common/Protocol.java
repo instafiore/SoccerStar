@@ -30,8 +30,11 @@ public class Protocol {
 	//Card
 	public static final String NOTINSERTED = "Not inserted yet";
 	
-	//Main Page
+	// Main Page
 	public static final String COINS = "Your coins amount";
+	
+	// History
+	public static final String INFORMATIONHISTORY = "Information history" ;
 	
 	// Email
 	public static final String EMAILASSISTANCE = "soccerstartsf@gmail.com";
@@ -54,6 +57,7 @@ public class Protocol {
 	public static final String DELIMITERREGISTRATION = "&" ;
 	public static final String RULESREGISTRATION = "Username: \n"
 			+ "\t At least 6 characters \n"
+			+ "\t Maximum 18 characters \n"
 			+ "\t Cannot have caracter -> ' "+DELIMITERREGISTRATION+" '\n"
 			+ "\t Must to start with a letter \n"
 			+ "Passoword: \n"
@@ -103,7 +107,8 @@ public class Protocol {
 	public static final String ERRORMATCH = "Error during the match" ;
 	public static final String NOERRORMATCH = "Match completed whitout errors" ;
 	public static final String NOERRORBUTLEFTMATCH = "Your opponent left the match , you won!" ;
-
+	public static final String DELIMITERINFORMATIONDATAMATCH = "&";
+	public static final String DELIMITERDATAMATCH = "!" ;
 	
 	public static ArrayList<String> protocolMatch(){
 		

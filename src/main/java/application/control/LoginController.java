@@ -153,8 +153,8 @@ public class LoginController {
     
     private void settingOnKeyReleased() {
     	
-    	username_field_login.setOnKeyReleased(new InputFieldController(InputFieldController.USERNAME));
-    	password_field_login.setOnKeyReleased(new InputFieldController(InputFieldController.PASSWORD));
+    	username_field_login.setOnKeyReleased(new InputFieldController(InputFieldController.NOCONTROL));
+    	password_field_login.setOnKeyReleased(new InputFieldController(InputFieldController.NOCONTROL));
     
     }
 }

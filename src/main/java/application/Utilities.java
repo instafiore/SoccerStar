@@ -71,7 +71,7 @@ public class Utilities {
     }
     
     public static boolean ruleUsernameRespected(String username) {
-    	if(username.length() < 6)
+    	if(username.length() < 6 && username.length() > 18)
     		return false ;
     	return patternUsername.matcher(username).matches();
     }

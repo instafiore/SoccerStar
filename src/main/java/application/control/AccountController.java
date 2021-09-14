@@ -6,6 +6,8 @@ import application.SceneHandler;
 import application.Utilities;
 import application.net.client.Client;
 import application.net.common.Protocol;
+import application.view.Dialog;
+import javafx.animation.FadeTransition;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -13,6 +15,7 @@ import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
+import javafx.util.Duration;
 
 public class AccountController {
 
@@ -58,7 +61,8 @@ public class AccountController {
     @FXML
     private Label coins_label_account;
     
-    
+    private static final String AccountTitle = "Account" ;
+   
     @FXML
     public void initialize() {
     	Client.getInstance().setCurrentState(Client.ACCOUNT);
@@ -99,6 +103,7 @@ public class AccountController {
     	add_payment_method_button.setOnMouseExited(new HoverButton());
     	
     	Client.getInstance().sendMessage(Protocol.INFORMATIONACCOUNT);
+    	showText(AccountTitle, 26, Dialog.INFORMATION_WINDOW, 6);
     }
     
     public void changeColorBall(String color) {
@@ -130,7 +135,6 @@ public class AccountController {
 
     @FXML
     void onClickBack_button_account(ActionEvent event) {
-    	Client.getInstance().setCurrentState(Client.MAINPAGE);
     	SceneHandler.getInstance().loadScene("MainPage", true, true);
     }
 
@@ -146,12 +150,35 @@ public class AccountController {
 
     @FXML
     void onClickHistory_button_account(ActionEvent event) {
-
+    	SceneHandler.getInstance().loadScene("HistoryPage", true, true);
     }
     
     @FXML
     void onClickInventory_button_account(ActionEvent event) {
 
+    }
+    
+    public void showText(String text,int fontSize,String type,double duration) {
+    	
+    	String color = "" ;
+		
+		if(type.equals(Dialog.ERROR_WINDOW)) {
+			color = "#ff1313" ;
+		}else if(type.equals(Dialog.INFORMATION_WINDOW)) {
+			color = "#ffffff" ;
+		}else if(type.equals(Dialog.ATTENTION_WINDOW)) {
+			color = "#ff5e28" ;
+		}
+    	
+    	information_label.setFont(Font.loadFont(getClass().getResourceAsStream("/application/view/fonts/AzeretMono-Italic-VariableFont_wght.ttf"), fontSize));
+    	information_label.setText(text);
+    	information_label.setTextFill(Color.web(color, 1));
+    
+    	FadeTransition trans = new FadeTransition(Duration.seconds(duration),information_label);
+		
+		trans.setFromValue(1.0);
+        trans.setToValue(0.0);
+        trans.play();
     }
 
 

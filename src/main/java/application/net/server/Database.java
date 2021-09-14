@@ -5,6 +5,8 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
@@ -22,7 +24,8 @@ public class Database {
 	private static final String SEARCH_CLIENT = "select * from Account where username = ? ;";
 	private static final String CHECK_LOGIN = "select * from Account where username = ? and password = ? ;";
 	private static final String INSERT_MATCH = "insert into Match(date_match,result,field,home,guest,time_match) values(?,?,?,?,?,?);" ;
-	private static final String CHANGEPASSWORD= "update Account set password = ? where username = ? ;";
+	private static final String CHANGEPASSWORD = "update Account set password = ? where username = ? ;";
+	private static final String GETMATCHESUSER = "select * from Match where home = ? or guest = ? order by date_match desc , time_match desc;" ;
 	
 	private Connection connection;
 	private static Database instance = null;
@@ -32,6 +35,7 @@ public class Database {
 	private PreparedStatement check_login_query;
 	private PreparedStatement insert_match_query;
 	private PreparedStatement change_password_query ;
+	private PreparedStatement get_matches_user_query ;
 	
 	private Database() {
 		
@@ -61,6 +65,40 @@ public class Database {
 		check_login_query = connection.prepareStatement(CHECK_LOGIN);
 		insert_match_query = connection.prepareStatement(INSERT_MATCH);
 		change_password_query = connection.prepareStatement(CHANGEPASSWORD);
+		get_matches_user_query = connection.prepareStatement(GETMATCHESUSER);
+	}
+	
+	public List<DataMatch> getDataMatches(String username){
+		
+		ArrayList<DataMatch> dataMatches = new ArrayList<DataMatch>();
+		
+		try {
+			get_matches_user_query.setString(1, username);
+			get_matches_user_query.setString(2, username);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		try {
+			ResultSet result = get_matches_user_query.executeQuery();
+			DataMatch dataMatch = new DataMatch();
+			while(result.next()) {
+				dataMatch.setDate(result.getString("date_match"));
+				dataMatch.setHome(result.getString("home"));
+				dataMatch.setGuest(result.getString("guest"));
+				dataMatch.setField(result.getString("field"));
+				dataMatch.setTime(result.getString("time_match"));
+				dataMatch.setResultMatch(result.getString("result"));
+				
+				dataMatches.add(dataMatch);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return dataMatches ;
 	}
 	
 	public void closeConnection() throws SQLException {
@@ -193,9 +231,7 @@ public class Database {
 	}
 	
 	public String checkLogin(LoginClient user) {
-		
-		
-		
+	
 		try {
 			search_client_query.setString(1, user.getUsername());
 			ResultSet resultSet = search_client_query.executeQuery();

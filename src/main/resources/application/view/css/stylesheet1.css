@@ -1,67 +1,22 @@
-
-.pane {
-    -fx-background-color : #009a00 ;
-}
-
-
-.input_field{
-    -fx-background-color : #004d00;
-    -fx-text-fill: white;
-    -fx-opacity: 1;
-}
-
-.input_field_red{
-    -fx-background-color : #ff0000;
-    -fx-opacity: 0.7;
-}
-
-.input_field_green{
-    -fx-background-color : #009a00 ;
-}
-
-.button{
-    -fx-background-color: #198c19;
-    -fx-background-radius: 15px;
-    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.8), 10, 0, 0, 0);
-    -fx-cursor: hand;
-    -fx-text-fill: white;
-}
-.initial_button{
-    -fx-background-color: #009a00;
-}
-
-.leave_button{
-
-    -fx-background-color: #ff0000 ;
-
-}
-
-.triangle_button1{
-    -fx-shape :"M 600 450 L 350 300 L 600 150 Z";
-}
-
-.triangle_button2{
-    -fx-shape :"M 350 450 L 600 350 L 350 250 Z";
-
-}
-
-
-.fiedl1{
- -fx-background-color: #009a00 ;
-}
-
-.field2{
- -fx-background-color: #bf9b30 ;
-}
-
-.field3{
- -fx-background-color: #334afe ;
-}
-
-.text-area .content {
-    -fx-background-color: #009a00 ;
-    -fx-opacity : 0.9 ;
-}
-.text-area {
-    -fx-text-fill: white ;
-}
+.pane { -fx-background-color : #009a00 ; }
+.input_field{ -fx-background-color : #004d00; -fx-text-fill: white; -fx-opacity: 1;-fx-border-color: white ;  -fx-border-width: 1px ;  }
+.input_field_red{ -fx-background-color : #ff0000; -fx-opacity: 0.7; }
+.input_field_green{ -fx-background-color : #009a00 ; }
+.button{ -fx-background-color: #198c19;  -fx-background-radius: 15px; -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.8), 10, 0, 0, 0); -fx-cursor: hand; -fx-text-fill: white;}
+.initial_button{-fx-background-color: #009a00;}
+.leave_button{-fx-background-color: #ff0000 ;}
+.triangle_button1{-fx-shape :"M 600 450 L 350 300 L 600 150 Z";}
+.triangle_button2{-fx-shape :"M 350 450 L 600 350 L 350 250 Z";}
+.fiedl1{-fx-background-color: #009a00 ;}
+.field2{-fx-background-color: #bf9b30 ;}
+.field3{ -fx-background-color: #334afe ; }
+.text-area .content { -fx-background-color: #009a00 ; -fx-opacity : 0.9 ; }
+.color1{ -fx-background-color: #009a00 ;  }
+.color2{ -fx-background-color: #009a00 ; }
+.color3{ -fx-background-color: #009a00 ; }
+.color4{ -fx-background-color: #009a00 ; }
+.color5{ -fx-background-color: #009a00 ; }
+.color6{ -fx-background-color: #009a00 ; }
+.text-area {-fx-text-fill: white ; }
+.text-area *.text {-fx-text-alignment: center;}
+.history_pane{ -fx-background-color : #c5fb9c ; }
