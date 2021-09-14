@@ -9,6 +9,7 @@ import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.stage.Window;
+import javafx.util.Pair;
 
 public class SceneHandler {
 
@@ -48,16 +49,18 @@ public class SceneHandler {
 		return loaders.get(name);
 	}
 	
-	public Pane loadPane(String namePane) {
+	public Pair<Pane, Object> loadPane(String namePane) {
 		FXMLLoader loader = new FXMLLoader(this.getClass().getResource(File.separator+"application"+File.separator+"view"+File.separator+namePane+".fxml")) ;
 		Pane pane = null ;
+		Object object = null ;
 		try {
 			pane = (Pane) loader.load(); 
+			object = loader.getController() ;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return pane ;
+		return new Pair<Pane, Object>(pane, object) ;
 	}
 	public void loadScene(String namePane , boolean resizable , boolean usingSceneBuilder) {
 		
@@ -94,7 +97,6 @@ public class SceneHandler {
 		else {
 			scene.setRoot(pane);
 		}
-		
 		
 		stage.setScene(scene);
 		stage.setResizable(resizable);

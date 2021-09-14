@@ -27,7 +27,7 @@ public class MatchChart extends BarChart<String, Number>{
 		this.yAxis = yAxis ;
 		this.aboutWho = aboutWho ;
 		this.dataMatches = dataMatches ;
-		this.setTitle(TITLE+"->"+aboutWho);
+		this.setTitle(TITLE+" "+aboutWho);
 		xAxis.setLabel("Date");
 		yAxis.setLabel("Match");
 		matchesWon = new XYChart.Series<String,Number>();

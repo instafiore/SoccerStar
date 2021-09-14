@@ -11,6 +11,7 @@ import java.util.List;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import application.SceneHandler;
+import application.Settings;
 import application.model.game.entity.Account;
 import application.model.game.entity.DataMatch;
 import application.model.game.entity.LoginClient;
@@ -25,7 +26,7 @@ public class Database {
 	private static final String CHECK_LOGIN = "select * from Account where username = ? and password = ? ;";
 	private static final String INSERT_MATCH = "insert into Match(date_match,result,field,home,guest,time_match) values(?,?,?,?,?,?);" ;
 	private static final String CHANGEPASSWORD = "update Account set password = ? where username = ? ;";
-	private static final String GETMATCHESUSER = "select * from Match where home = ? or guest = ? order by date_match desc , time_match desc;" ;
+	private static final String GETMATCHESUSER = "select date_match  , time_match , result , home , guest , field , A1.color_my_balls as colorHome , A2.color_my_balls as colorGuest from Match , Account as A1 , Account as A2 where home = A1.username and guest = A2.username and (home = ? or guest = ? ) order by date_match desc , time_match desc ;" ;
 	
 	private Connection connection;
 	private static Database instance = null;
@@ -82,17 +83,30 @@ public class Database {
 		
 		try {
 			ResultSet result = get_matches_user_query.executeQuery();
-			DataMatch dataMatch = new DataMatch();
 			while(result.next()) {
+				DataMatch dataMatch = new DataMatch();
+				String field = "" ;
 				dataMatch.setDate(result.getString("date_match"));
 				dataMatch.setHome(result.getString("home"));
 				dataMatch.setGuest(result.getString("guest"));
-				dataMatch.setField(result.getString("field"));
+				field = result.getString("field") ;
+				dataMatch.setField(field);
 				dataMatch.setTime(result.getString("time_match"));
 				dataMatch.setResultMatch(result.getString("result"));
+				dataMatch.setColorHome(result.getString("colorHome"));
+				dataMatch.setColorGuest(result.getString("colorGuest"));
 				
+				String colorField = "" ;
+				if(field.equals(Settings.FIELD1))
+					colorField = Settings.COLORFIELD1 ;
+				else if(field.equals(Settings.FIELD2))
+					colorField = Settings.COLORFIELD2 ;
+				else 
+					colorField = Settings.COLORFIELD3 ;
+				dataMatch.setColorField(colorField);
 				dataMatches.add(dataMatch);
 			}
+			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -5,21 +5,28 @@ import java.util.List;
 import application.SceneHandler;
 import application.Utilities;
 import application.model.game.entity.DataMatch;
+import application.model.game.entity.MatchChart;
 import application.net.client.Client;
 import application.net.common.Protocol;
 import application.view.Dialog;
 import javafx.animation.FadeTransition;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.chart.CategoryAxis;
+import javafx.scene.chart.NumberAxis;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
+import javafx.util.Pair;
 
 public class HistoryController {
 
@@ -36,7 +43,10 @@ public class HistoryController {
     private VBox box_history_match;
 
     @FXML
-    private HBox boxChartMatches;
+    private ScrollPane scroll_pane;
+    
+    @FXML
+    private BorderPane boxChartMatches;
     
     private static final String HistoryTitle = "History" ;
 
@@ -50,7 +60,10 @@ public class HistoryController {
     	back_button_history.setOnMouseEntered(new HoverButton());
     	back_button_history.setOnMouseExited(new HoverButton());
     	
-    	showText(HistoryTitle, 26, Dialog.INFORMATION_WINDOW, 6);
+    	scroll_pane.setFitToWidth(true);
+    	scroll_pane.setHbarPolicy(ScrollBarPolicy.NEVER);
+    	
+    	showText(HistoryTitle, 40, Dialog.INFORMATION_WINDOW, 180);
     	
     	Client.getInstance().sendMessage(Protocol.INFORMATIONHISTORY);
     }
@@ -58,6 +71,32 @@ public class HistoryController {
     
     public void init(List<DataMatch> dataMatches) {
     	
+    	for(DataMatch dataMatch : dataMatches) {
+    		Pair<Pane, Object> pair = SceneHandler.getInstance().loadPane("InformationMatchPane") ;
+    		Pane pane = pair.getKey();
+    		InformationMatchController informationMatchController = (InformationMatchController) pair.getValue() ;
+    		String home = dataMatch.getHome() ;
+    		String guest = dataMatch.getGuest() ;
+    		if(home.equals(Client.getInstance().getUsername()))
+    		{
+    			informationMatchController.setHome(home, InformationMatchController.getColorPlayer(dataMatch.getColorHome()));
+    			informationMatchController.setGuest(guest, InformationMatchController.getColorPlayer(dataMatch.getColorGuest()));
+    			informationMatchController.setResult(dataMatch.getResult(), InformationMatchController.getColorField(dataMatch.getColorField()));
+    			System.out.println(dataMatch.getColorField());
+    		}else {
+    			informationMatchController.setHome(guest, InformationMatchController.getColorPlayer(dataMatch.getColorGuest()));
+    			informationMatchController.setGuest(home, InformationMatchController.getColorPlayer(dataMatch.getColorHome()));
+    			informationMatchController.setResult(dataMatch.getResultReversed(), InformationMatchController.getColorField(dataMatch.getColorField()));
+    		}
+
+    		box_history_match.getChildren().add(pane);
+    	}
+    	
+    	CategoryAxis xAxis = new CategoryAxis();
+		NumberAxis yAxis = new NumberAxis();
+    	MatchChart matchChart = new MatchChart(Client.getInstance().getUsername(), xAxis, yAxis, dataMatches) ;
+    	
+    	boxChartMatches.setCenter(matchChart);
     }
     
     @FXML

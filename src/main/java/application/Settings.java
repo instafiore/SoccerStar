@@ -38,5 +38,10 @@ public class Settings {
 	public static final int REWARDFIELD2 = 300 ;
 	public static final int PRICEFIELD3 = 200 ;
 	public static final int REWARDFIELD3 = 400 ;
-	
+	public static final String COLOR1 = "#0000ff";
+	public static final String COLOR2 = "#000066";
+	public static final String COLOR3 = "#9999ff";
+	public static final String COLOR4 = "#ffa500";
+	public static final String COLOR5 = "#ffd27f";
+	public static final String COLOR6 = "#ffff66";	
 }

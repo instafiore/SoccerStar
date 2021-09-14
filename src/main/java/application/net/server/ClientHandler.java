@@ -315,13 +315,14 @@ public class ClientHandler implements Runnable {
 				List<DataMatch> dataMatches;
 				
 				dataMatches = Database.getInstance().getDataMatches(username);
-				
+
 				String string = "" ;
 				for(DataMatch dataMatch : dataMatches) {
-					string = dataMatch.getHome() + Protocol.DELIMITERDATAMATCH + dataMatch.getGuest()  + Protocol.DELIMITERDATAMATCH +
-							dataMatch.getField()  + Protocol.DELIMITERDATAMATCH + dataMatch.getResult()  + Protocol.DELIMITERDATAMATCH +
-							dataMatch.getDate()  + Protocol.DELIMITERDATAMATCH + dataMatch.getTime() ;
-					string +=  Protocol.DELIMITERINFORMATIONDATAMATCH ;
+					string += dataMatch.getHome() + Protocol.DELIMITERINFORMATIONDATAMATCH + dataMatch.getGuest()  + Protocol.DELIMITERINFORMATIONDATAMATCH +
+							dataMatch.getField()  + Protocol.DELIMITERINFORMATIONDATAMATCH + dataMatch.getResult()  + Protocol.DELIMITERINFORMATIONDATAMATCH +
+							dataMatch.getDate()  + Protocol.DELIMITERINFORMATIONDATAMATCH + dataMatch.getTime() + Protocol.DELIMITERINFORMATIONDATAMATCH  +
+							dataMatch.getColorField() + Protocol.DELIMITERINFORMATIONDATAMATCH + dataMatch.getColorHome() + Protocol.DELIMITERINFORMATIONDATAMATCH + dataMatch.getColorGuest();
+					string +=  Protocol.DELIMITERDATAMATCH ;
 				}
 
 				sendMessage(Protocol.INFORMATIONHISTORY);

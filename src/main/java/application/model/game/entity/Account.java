@@ -14,13 +14,6 @@ public class Account {
 	private String color_ball_to_play = "" ;
 	private int lineup ;
 	
-	public static final String COLOR1 = "#0000ff";
-	public static final String COLOR2 = "#000066";
-	public static final String COLOR3 = "#000019";
-	public static final String COLOR4 = "#7f7fff";
-	public static final String COLOR5 = "#ccccff";
-	public static final String COLOR6 = "#ffff00";
-	
 	public Account(String username, String password, int coins, String email, String color_balls,
 			String color_ball_to_play, int lineup) {
 		super();

@@ -86,7 +86,7 @@ public class DataMatch implements Comparable<DataMatch>{
 		setTime(stringTokenizer1.nextToken());
 		setColorField(stringTokenizer1.nextToken());
 		setColorHome(stringTokenizer1.nextToken());
-		setColorField(stringTokenizer1.nextToken());
+		setColorGuest(stringTokenizer1.nextToken());
 		
 	}
 	
@@ -118,6 +118,15 @@ public class DataMatch implements Comparable<DataMatch>{
 		if(resultMatch == "")
 			return goalHome+Protocol.DELIMITERGOALMATCH+goalGuest;
 		return resultMatch ;
+	}
+	
+	public String getResultReversed() {
+		StringTokenizer stringTokenizer = new StringTokenizer(getResult(), Protocol.DELIMITERGOALMATCH) ;
+		
+		String guest = stringTokenizer.nextToken() ;
+		String home = stringTokenizer.nextToken() ;
+		
+		return home+Protocol.DELIMITERGOALMATCH+guest ;
 	}
 
 	public void incHome() {

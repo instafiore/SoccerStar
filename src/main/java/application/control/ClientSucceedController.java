@@ -2,6 +2,7 @@ package application.control;
 
 import application.SceneHandler;
 import application.model.game.entity.Account;
+import application.model.game.entity.DataMatch;
 import application.model.game.entity.Message;
 import application.net.client.Client;
 import application.net.client.MatchClient;
@@ -56,7 +57,7 @@ public class ClientSucceedController implements EventHandler<WorkerStateEvent>{
 		}else if(message.getProtocol().equals(Protocol.INFORMATIONHISTORY)) {
 			
 			HistoryController historyController =  SceneHandler.getInstance().getLoader("HistoryPage").getController() ;
-
+			historyController.init(DataMatch.getMatches(message.getMessage()));
 			
 		}else if(message.getProtocol().equals(Protocol.USERNAMEDOESNTEXIST)) {
 			

@@ -7,16 +7,16 @@
 .leave_button{-fx-background-color: #ff0000 ;}
 .triangle_button1{-fx-shape :"M 600 450 L 350 300 L 600 150 Z";}
 .triangle_button2{-fx-shape :"M 350 450 L 600 350 L 350 250 Z";}
-.fiedl1{-fx-background-color: #009a00 ;}
-.field2{-fx-background-color: #bf9b30 ;}
-.field3{ -fx-background-color: #334afe ; }
+.field1{-fx-background-color: #009a00 ; -fx-text-fill: black ; -fx-background-radius: 15px;}
+.field2{-fx-background-color: #bf9b30 ; -fx-text-fill: black ; -fx-background-radius: 15px;}
+.field3{ -fx-background-color: #334afe ;-fx-text-fill: black ; -fx-background-radius: 15px;}
 .text-area .content { -fx-background-color: #009a00 ; -fx-opacity : 0.9 ; }
-.color1{ -fx-background-color: #009a00 ;  }
-.color2{ -fx-background-color: #009a00 ; }
-.color3{ -fx-background-color: #009a00 ; }
-.color4{ -fx-background-color: #009a00 ; }
-.color5{ -fx-background-color: #009a00 ; }
-.color6{ -fx-background-color: #009a00 ; }
+.color1{ -fx-background-color: #0000ff ;  -fx-text-fill: black ;-fx-background-radius: 15px;}
+.color2{ -fx-background-color: #000066 ; -fx-text-fill: black ;-fx-background-radius: 15px;}
+.color3{ -fx-background-color: #9999ff ; -fx-text-fill: black ;-fx-background-radius: 15px;}
+.color4{ -fx-background-color: #ffa500 ; -fx-text-fill: black ;-fx-background-radius: 15px;}
+.color5{ -fx-background-color: #ffd27f ; -fx-text-fill: black ;-fx-background-radius: 15px;}
+.color6{ -fx-background-color: #ffff66 ; -fx-text-fill: black ;-fx-background-radius: 15px;}
 .text-area {-fx-text-fill: white ; }
 .text-area *.text {-fx-text-alignment: center;}
 .history_pane{ -fx-background-color : #c5fb9c ; }

@@ -271,7 +271,14 @@ public class Client extends Service<Message>{
 		String mess = null ;
 		
 		if(protocol.equals(Protocol.INFORMATIONHISTORY)) {
-			message = new Message(protocol);
+			mess = in.readLine();
+			if(mess == null )
+			{
+				closeStreams();
+				message = new Message(Protocol.GENERALERROR);
+				return message ;
+			}
+			message = new Message(protocol,mess);
 		}else {
 			message = new Message();
 			message.setProtocol(Protocol.GENERALERROR);

@@ -1,7 +1,10 @@
 package application.control;
 
+import application.Settings;
+import application.Utilities;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
+import javafx.scene.text.Font;
 
 public class InformationMatchController {
 
@@ -24,6 +27,39 @@ public class InformationMatchController {
 
     @FXML
     private TextField guest;
+    
+    @FXML
+    public void initialize() {
+    	
+    	home.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 18));
+    	guest.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 18));
+    	result.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 26));
+    	
+    }
+    	
+    public static int getColorPlayer(String color) {
+    	
+    	if(color.equals(Settings.COLOR1))
+    		return COLOR1 ;
+    	if(color.equals(Settings.COLOR2))
+    		return COLOR2 ;
+    	if(color.equals(Settings.COLOR3))
+    		return COLOR3 ;
+    	if(color.equals(Settings.COLOR4))
+    		return COLOR4 ;
+    	if(color.equals(Settings.COLOR5))
+    		return COLOR5 ;
+    	
+    	return COLOR6 ;
+    }
+    
+    public static int getColorField(String color) {
+    	if(color.equals(Settings.COLORFIELD1))
+    		return FIELD1 ;
+    	if(color.equals(Settings.COLORFIELD2))
+    		return FIELD2;
+    	return FIELD3 ;
+    }
 
     
     public void setHome(String home,int color) {
