@@ -81,12 +81,12 @@ public class HistoryController {
     		{
     			informationMatchController.setHome(home, InformationMatchController.getColorPlayer(dataMatch.getColorHome()));
     			informationMatchController.setGuest(guest, InformationMatchController.getColorPlayer(dataMatch.getColorGuest()));
-    			informationMatchController.setResult(dataMatch.getResult(), InformationMatchController.getColorField(dataMatch.getColorField()));
+    			informationMatchController.setResult(dataMatch.getResult(),dataMatch.getDate(),dataMatch.getTime(),dataMatch.getField(), InformationMatchController.getColorField(dataMatch.getColorField()));
     			System.out.println(dataMatch.getColorField());
     		}else {
     			informationMatchController.setHome(guest, InformationMatchController.getColorPlayer(dataMatch.getColorGuest()));
     			informationMatchController.setGuest(home, InformationMatchController.getColorPlayer(dataMatch.getColorHome()));
-    			informationMatchController.setResult(dataMatch.getResultReversed(), InformationMatchController.getColorField(dataMatch.getColorField()));
+    			informationMatchController.setResult(dataMatch.getResultReversed(),dataMatch.getDate(),dataMatch.getTime(),dataMatch.getField(), InformationMatchController.getColorField(dataMatch.getColorField()));
     		}
 
     		box_history_match.getChildren().add(pane);

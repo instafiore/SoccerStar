@@ -3,7 +3,9 @@ package application.control;
 import application.Settings;
 import application.Utilities;
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Font;
 
 public class InformationMatchController {
@@ -19,21 +21,36 @@ public class InformationMatchController {
 	public static final int FIELD2 = 1 ;
 	public static final int FIELD3 = 2 ;
 	
-    @FXML
+	 @FXML
     private TextField home;
 
     @FXML
-    private TextField result;
+    private TextField guest;
 
     @FXML
-    private TextField guest;
-    
+    private BorderPane data_match;
+
+    @FXML
+    private Label name_field_label;
+
+    @FXML
+    private Label result_match_label;
+
+    @FXML
+    private Label date_label;
+
+    @FXML
+    private Label time_label;
+
     @FXML
     public void initialize() {
     	
     	home.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 18));
     	guest.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 18));
-    	result.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 26));
+    	result_match_label.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 24));
+    	date_label.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 9));
+    	name_field_label.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 12));
+    	time_label.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 9));
     	
     }
     	
@@ -112,17 +129,20 @@ public class InformationMatchController {
 		}
 	}
     
-    public void setResult(String result,int field) {
-		this.result.setText(result);
+    public void setResult(String result,String date,String time , String name_field ,int field) {
+		this.result_match_label.setText(result);
+		date_label.setText(date);
+		time_label.setText(time);
+		name_field_label.setText(name_field);
 		switch (field) {
 		case FIELD1:
-			this.result.getStyleClass().add("field1");
+			this.data_match.getStyleClass().add("field1");
 			break;
 		case FIELD2:
-			this.result.getStyleClass().add("field2");
+			this.data_match.getStyleClass().add("field2");
 			break;
 		case FIELD3:
-			this.result.getStyleClass().add("field3");
+			this.data_match.getStyleClass().add("field3");
 			break;
 		}
 	}
