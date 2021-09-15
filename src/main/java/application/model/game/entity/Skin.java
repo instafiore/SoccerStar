@@ -9,6 +9,7 @@ public class Skin {
 	private String name = "" ;
 	private String price = "" ;
 	private String color = "" ;
+	private boolean owned = false ;
 	
 	public Skin() {}
 
@@ -20,6 +21,14 @@ public class Skin {
 		this.color = color;
 	}
 
+	
+	public void setOwned(boolean owned) {
+		this.owned = owned;
+	}
+	
+	public boolean isOwned() {
+		return owned;
+	}
 
 
 	public String getName() {
@@ -48,5 +57,21 @@ public class Skin {
 		setName(stringTokenizer.nextToken());
 		setPrice(stringTokenizer.nextToken());
 		setColor(stringTokenizer.nextToken());
+	}
+
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(obj == null)
+			return false ;
+		if(this == obj)
+			return true ;
+		
+		if(!(obj instanceof Skin))
+			return false ;
+		
+		Skin s = (Skin) obj ;
+		
+		return s.getName().equals(name);
 	}
 }

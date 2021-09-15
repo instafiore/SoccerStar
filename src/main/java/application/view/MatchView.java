@@ -107,8 +107,10 @@ public class MatchView extends StackPane{
 		boolean turn = informationMatch.isTurn();
 		
 		for(Ball ball : balls) {
-			
-			switch (ball.getColor()) {
+//			canvas.getGraphicsContext2D().setFill(Color.BEIGE);
+//			canvas.getGraphicsContext2D().setLineWidth(10);
+//			canvas.getGraphicsContext2D().strokeOval((int)  Math.round(ball.getPosition().getX()), (int)  Math.round(ball.getPosition().getY()),(int)  Math.round(ball.getRadius()*2),(int)  Math.round(ball.getRadius()*2));
+		switch (ball.getColor()) {
 			case Ball.RED:
 				if(!turn)
 					canvas.getGraphicsContext2D().setFill(Color.web(COLORREDYOURTURN, 1.0));

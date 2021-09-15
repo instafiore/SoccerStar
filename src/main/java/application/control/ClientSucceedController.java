@@ -2,11 +2,13 @@ package application.control;
 
 import java.util.StringTokenizer;
 
+import com.sun.scenario.effect.Effect.AccelType;
+
 import application.SceneHandler;
 import application.model.game.entity.Account;
 import application.model.game.entity.DataMatch;
 import application.model.game.entity.Message;
-import application.model.game.entity.SkinHandler;
+import application.model.game.handler.SkinHandler;
 import application.net.client.Client;
 import application.net.client.MatchClient;
 import application.net.common.Protocol;
@@ -49,6 +51,7 @@ public class ClientSucceedController implements EventHandler<WorkerStateEvent>{
 			
 			mainPageController.setCoins_main_page_label(stringTokenizer.nextToken());
 			SkinHandler.getInstance().loadSkins(stringTokenizer.nextToken());
+			SkinHandler.getInstance().loadOwned(stringTokenizer.nextToken());
 			
 		}else if(message.getProtocol().equals(Protocol.INFORMATIONACCOUNT)) {
 			
@@ -65,6 +68,15 @@ public class ClientSucceedController implements EventHandler<WorkerStateEvent>{
 			
 			HistoryController historyController =  SceneHandler.getInstance().getLoader("HistoryPage").getController() ;
 			historyController.init(DataMatch.getMatches(message.getMessage()));
+			
+		}else if(message.getProtocol().equals(Protocol.PASSWORDCHANGED) || message.getProtocol().equals(Protocol.OLDPASSOWORDNOTCORRECT)) {
+			
+			AccountController accountController =  SceneHandler.getInstance().getLoader("AccountPage").getController() ;
+			
+			if(message.getProtocol().equals(Protocol.PASSWORDCHANGED))
+				accountController.showText(message.getProtocol(), 14, Dialog.INFORMATION_WINDOW, 3);
+			else
+				accountController.showText(message.getProtocol(), 14, Dialog.ERROR_WINDOW, 3);
 			
 		}else if(message.getProtocol().equals(Protocol.USERNAMEDOESNTEXIST)) {
 			

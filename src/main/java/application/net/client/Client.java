@@ -36,10 +36,12 @@ public class Client extends Service<Message>{
 	public static final int STEP1PSW = 5 ;
 	public static final int STEP2PSW = 6 ;
 	public static final int HISTORY = 7 ;
+	public static final int SHOP = 8;
 	
 	public static final int FIELD1 = 1 ;
 	public static final int FIELD2 = 2 ;
 	public static final int FIELD3 = 3 ;
+
 	
 	
 	private int currentState = STEP_LOGIN;
@@ -156,6 +158,8 @@ public class Client extends Service<Message>{
 			return readStep2PSW(message);
 		case HISTORY:
 			return readHistory(message);
+		case SHOP:
+			return readShop(message);
 		default:
 			return new Message(Protocol.GENERALERROR);
 		}
@@ -258,6 +262,10 @@ public class Client extends Service<Message>{
 				return message ;
 			}
 			message = new Message(protocol,mess);
+		}else if(protocol.equals(Protocol.PASSWORDCHANGED) || protocol.equals(Protocol.OLDPASSOWORDNOTCORRECT)) {
+			
+			message = new Message(protocol);
+			
 		}else {
 			message = new Message();
 			message.setProtocol(Protocol.GENERALERROR);
@@ -271,6 +279,7 @@ public class Client extends Service<Message>{
 		String mess = null ;
 		
 		if(protocol.equals(Protocol.INFORMATIONHISTORY)) {
+			
 			mess = in.readLine();
 			if(mess == null )
 			{
@@ -279,11 +288,20 @@ public class Client extends Service<Message>{
 				return message ;
 			}
 			message = new Message(protocol,mess);
+			
 		}else {
 			message = new Message();
 			message.setProtocol(Protocol.GENERALERROR);
 		}
 		return message ;
+	}
+	
+	public Message readShop(String protocol) {
+		
+		if(protocol.equals(Protocol.PREPARINGMATCH)) 
+			return new Message(Protocol.PREPARINGMATCH);
+		
+		return new Message(Protocol.GENERALERROR);
 	}
 	
 	public Message readStep1PSW(String protocol) throws IOException {

@@ -1,8 +1,9 @@
-package application.model.game.entity;
+package application.model.game.handler;
 
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
+import application.model.game.entity.Skin;
 import application.net.common.Protocol;
 
 public class SkinHandler {
@@ -28,6 +29,10 @@ public class SkinHandler {
 		skins.add(skin);
 	}
 	
+	public void clear() {
+		skins.clear();
+	}
+	
 	public void remove(Skin skin) {
 		skins.remove(skin);
 	}
@@ -36,11 +41,29 @@ public class SkinHandler {
 		return skins;
 	}
 	
+	public void setOwned(String name) {
+		
+		for(Skin skin : skins)
+			if(skin.getName().equals(name))
+			{
+				skin.setOwned(true);
+				return ;
+			}
+	}
+	
+	public void loadOwned(String string) {
+		StringTokenizer stringTokenizer = new StringTokenizer(string, Protocol.DELIMITERSKIN) ;
+		
+		while(stringTokenizer.hasMoreTokens()) {
+			String name = stringTokenizer.nextToken() ;
+			setOwned(name);
+		}
+	}
 	
 	public void loadSkins(String string) {
 		
 		StringTokenizer stringTokenizer = new StringTokenizer(string, Protocol.DELIMITERSKIN) ;
-		
+		clear();
 		while(stringTokenizer.hasMoreTokens()) {
 			Skin skin = new Skin() ;
 			skin.loadSkin(stringTokenizer.nextToken());

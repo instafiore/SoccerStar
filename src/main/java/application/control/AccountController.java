@@ -12,6 +12,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
@@ -64,14 +66,20 @@ public class AccountController {
     @FXML
     private Button change_password_button;
     
+
+    @FXML
+    private PasswordField old_password_field_account;
+
+    @FXML
+    private PasswordField new_password_field_account;
+
+    
     private static final String AccountTitle = "Account" ;
    
     @FXML
     public void initialize() {
     	Client.getInstance().setCurrentState(Client.ACCOUNT);
-    	
-    	
-    	
+    	 	
     	back_button_account.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 20));
     	information_label.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 25));
     	history_button_account.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 17));
@@ -86,7 +94,8 @@ public class AccountController {
     	coins_label_account.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 31));
     	email_field_account.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 13));
     	change_password_button.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 13));
-    	
+    	old_password_field_account.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 13));
+    	new_password_field_account.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 13));
     	
     	back_button_account.setOnMouseEntered(new HoverButton());
     	back_button_account.setOnMouseExited(new HoverButton());
@@ -109,9 +118,47 @@ public class AccountController {
     	change_password_button.setOnMouseEntered(new HoverButton());
     	change_password_button.setOnMouseExited(new HoverButton());
     	
+    	new_password_field_account.setOnKeyReleased(new InputFieldController(InputFieldController.PASSWORD));
+    	
+    	
     	Client.getInstance().sendMessage(Protocol.INFORMATIONACCOUNT);
     	showText(AccountTitle, 26, Dialog.INFORMATION_WINDOW, 6);
     }
+    
+    @FXML
+    void onClickChange_password_button(ActionEvent event) {
+    	
+    	if(old_password_field_account.getText().equals("") || new_password_field_account.getText().equals(""))
+    	{
+    		showText(Protocol.FIELDEMPTY, 18 , Dialog.ERROR_WINDOW, 3);
+    		return ;
+    	}
+    	
+    	if(old_password_field_account.getText().equals(new_password_field_account.getText())) {
+    		showText(Protocol.SAMEPASSWORD, 13 , Dialog.ERROR_WINDOW, 3);
+    		return ;
+    	}
+    	
+    	if(!Utilities.getInstance().rulePasswordRespected(old_password_field_account.getText()))
+    	{
+    		showText(Protocol.OLDPASSOWORDNOTCORRECT, 13 , Dialog.ERROR_WINDOW, 3);
+    		return ;
+    	}
+    	
+    	if(!Utilities.getInstance().rulePasswordRespected(new_password_field_account.getText()))
+    	{
+    		showText(Protocol.NEWPASSOWORDISNOTVALID, 15 , Dialog.ERROR_WINDOW, 3);
+    		return ;
+    	}
+    	
+    	Client.getInstance().sendMessage(Protocol.CHANGEPASSWORD);
+    	Client.getInstance().sendMessage(old_password_field_account.getText()+Protocol.DELIMITEROLDNEWPASSWORD+new_password_field_account.getText());
+    	old_password_field_account.getStyleClass().remove("input_field_green");
+    	old_password_field_account.getStyleClass().remove("input_field_red");
+    	old_password_field_account.setText("");
+    	new_password_field_account.setText("");
+    }
+
     
     public void changeColorBall(String color) {
     	ball_account.setFill(Color.web(color));

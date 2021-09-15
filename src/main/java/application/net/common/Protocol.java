@@ -15,16 +15,23 @@ public class Protocol {
 	public static final String LEAVEWITHOUTCANCEL = "You must first cancel the match request" ;
 	public static final String FIELDEMPTY = "Some fields are empty!";
 	
-	// Password recovery
-	public static final String RECORYPASSOWRD = "That's username for recovering password";
+	// Forgot password 
+	public static final String PASSOWRDFORGOT = "I forgot my password";
 	public static final String USERNAMEDOESNTEXIST = "Your username doesn't exist" ;
 	public static final String EMAILSENT = "Email sent" ;
 	public static final String CODEPASSWORD = "That are my code and password" ;
 	public static final String DELIMITERCODEPASSOWRD = "&" ;
 	public static final String CANCELPASSWORDRECOVERY = "Cancel operation password recovery" ;
-	public static final String PASSWORDCHANGED = "Your password has changed" ;
 	public static final String CODENOTVALID = "Your code isn't valid" ;
+	public static final String PASSWORDCHANGED = "Password changed successfully" ;
 	
+	// Change password
+	public static final String CHANGEPASSWORD = "That's a request for changing password" ;
+	public static final String DELIMITEROLDNEWPASSWORD = "&";
+	public static final String OLDPASSOWORDNOTCORRECT = "Your old password is incorrect";
+	public static final String NEWPASSOWORDISNOTVALID = "New password isn't valid";
+	public static final String SAMEPASSWORD = "You typed the same password ;) ";
+
 	//Card
 	public static final String NOTINSERTED = "Not inserted yet";
 	
@@ -33,6 +40,9 @@ public class Protocol {
 	public static final String DELIMITERINITIALINFORMATION = "&" ;
 	public static final String DELIMITERSKIN = "?";
 	public static final String DELIMITERINFORMATIONSKIN = "!";
+	
+	//Shop
+	public static final String BUYSKIN = "I want to buy a skin";
 	
 	// History
 	public static final String INFORMATIONHISTORY = "Information history" ;
@@ -43,7 +53,6 @@ public class Protocol {
 	// Account
 	public static final String INFORMATIONACCOUNT = "An information account message";
 	public static final String DELIMITERINFORMATIONACCOUNT = "&";
-	
 	
 	// Login
 	public static final String LOGINREQUEST = "New login request" ;
@@ -113,6 +122,7 @@ public class Protocol {
 	public static final String NOERRORBUTLEFTMATCH = "Your opponent left the match , you won!" ;
 	public static final String DELIMITERINFORMATIONDATAMATCH = "&";
 	public static final String DELIMITERDATAMATCH = "!" ;
+
 	
 	public static ArrayList<String> protocolMatch(){
 		

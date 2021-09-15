@@ -10,7 +10,7 @@ import java.util.List;
 
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
-import application.SceneHandler;
+
 import application.Settings;
 import application.model.game.entity.Account;
 import application.model.game.entity.DataMatch;
@@ -22,6 +22,7 @@ import application.net.common.Protocol;
 public class Database {
 	
 	
+	private static final String DEFAULTCOLOR = "color1";
 	private static final String QUERY_INSERT_REGISTRATIONCLIENT = "insert into Account(username,password,email) values(?,?,?);";
 	private static final String SEARCH_CLIENT = "select * from Account where username = ? ;";
 	private static final String CHECK_LOGIN = "select * from Account where username = ? and password = ? ;";
@@ -29,6 +30,9 @@ public class Database {
 	private static final String CHANGEPASSWORD = "update Account set password = ? where username = ? ;";
 	private static final String GETMATCHESUSER = "select date_match  , time_match , result , home , guest , field , A1.color_my_balls as colorHome , A2.color_my_balls as colorGuest from Match , Account as A1 , Account as A2 where home = A1.username and guest = A2.username and (home = ? or guest = ? ) order by date_match desc , time_match desc ;" ;
 	private static final String GETSKINS = "select * from Skin ;";
+	private static final String INSERT_DEFAULT_SKIN = "insert into Inventary(account,skin) values(?,?);";
+	private static final String GETOWNEDSKINS = "select skin from Inventary where account = ? ;";
+
 	
 	private Connection connection;
 	private static Database instance = null;
@@ -40,6 +44,9 @@ public class Database {
 	private PreparedStatement change_password_query ;
 	private PreparedStatement get_matches_user_query ;
 	private PreparedStatement get_skin_query ;
+	private PreparedStatement insert_default_skin_query ;
+	private PreparedStatement get_owned_skins_query ;
+	
 	
 	private Database() {
 		
@@ -71,7 +78,25 @@ public class Database {
 		change_password_query = connection.prepareStatement(CHANGEPASSWORD);
 		get_matches_user_query = connection.prepareStatement(GETMATCHESUSER);
 		get_skin_query = connection.prepareStatement(GETSKINS);
+		insert_default_skin_query = connection.prepareStatement(INSERT_DEFAULT_SKIN);
+		get_owned_skins_query = connection.prepareStatement(GETOWNEDSKINS);
 
+	}
+	
+	public String getOwnedSkins(String username) throws SQLException {
+		
+		get_owned_skins_query.setString(1,username);
+
+		ResultSet result = get_owned_skins_query.executeQuery();
+		
+		String text = "" ;
+		
+		while(result.next()) {
+			text+=result.getString("skin");
+			text+=Protocol.DELIMITERSKIN;
+		}
+		System.out.println(text);
+ 		return text ;
 	}
 	
 	public List<DataMatch> getDataMatches(String username){
@@ -189,7 +214,29 @@ public class Database {
 			return Protocol.REGISTRATIONFAILED;
 		}
 		
+		insertDefaultSkin(user.getUsername());
+		
 		return Protocol.REGISTRATIONCOMPLETED;
+	}
+	
+	private void insertDefaultSkin(String username) {
+		
+		try {
+			insert_default_skin_query.setString(1, username);
+			insert_default_skin_query.setString(2, DEFAULTCOLOR);
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		try {
+			insert_match_query.executeUpdate() ;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 	}
 	
 	public boolean insertMatch(DataMatch dataMatch) {
@@ -291,6 +338,28 @@ public class Database {
 		
 		
 		return Protocol.LOGINFAILED;
+	}
+	
+	public boolean checkPassword(String username ,String password) {
+		
+		try {
+			search_client_query.setString(1,username);
+			ResultSet resultSet = search_client_query.executeQuery();
+			
+			if(!resultSet.next())
+				return false;
+			
+			String password_crypted = resultSet.getString("password");
+			
+			return BCrypt.checkpw(password, password_crypted) ;
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			
+		}
+		
+		return false;
 	}
 	
 	

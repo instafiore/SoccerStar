@@ -98,7 +98,7 @@ public class Step1PSW {
 //    		showError(Utilities.RULEUSERNAMNOTRESPECTED, 15);
 //    		return ;
 //    	}
-    	Client.getInstance().sendMessage(Protocol.RECORYPASSOWRD);
+    	Client.getInstance().sendMessage(Protocol.PASSOWRDFORGOT);
     	Client.getInstance().sendMessage(username_field_step1psw.getText());
     }
     

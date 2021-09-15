@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import org.springframework.security.crypto.bcrypt.BCrypt;
+
 import com.sun.scenario.effect.impl.prism.PrTexture;
 
 import application.Settings;
@@ -116,7 +118,7 @@ public class ClientHandler implements Runnable {
 					username = null;
 				}
 
-			}else if(message.equals(Protocol.RECORYPASSOWRD)) {
+			}else if(message.equals(Protocol.PASSOWRDFORGOT)) {
 				
 				String usernamerecory = read() ;
 				
@@ -327,9 +329,29 @@ public class ClientHandler implements Runnable {
 							dataMatch.getColorField() + Protocol.DELIMITERINFORMATIONDATAMATCH + dataMatch.getColorHome() + Protocol.DELIMITERINFORMATIONDATAMATCH + dataMatch.getColorGuest();
 					string +=  Protocol.DELIMITERDATAMATCH ;
 				}
-
+			
 				sendMessage(Protocol.INFORMATIONHISTORY);
 				sendMessage(string);
+			}else if(message.equals(Protocol.CHANGEPASSWORD)) {
+				
+				message = read() ;
+				
+				if (message == null)
+					return;
+				
+				StringTokenizer stringTokenizer = new StringTokenizer(message, Protocol.DELIMITEROLDNEWPASSWORD);
+				String oldPassword = stringTokenizer.nextToken() ;
+				String newPassword = stringTokenizer.nextToken() ;
+			
+				if(!Database.getInstance().checkPassword(username, oldPassword))
+					sendMessage(Protocol.OLDPASSOWORDNOTCORRECT);
+				else
+				{
+					Database.getInstance().changePassword(username, newPassword);
+					sendMessage(Protocol.PASSWORDCHANGED);
+				}
+					
+				
 			}else if(message.equals(Protocol.INITIALINFORMATION)) {
 				
 				String text = "" ;
@@ -342,9 +364,7 @@ public class ClientHandler implements Runnable {
 					printConnectionLost();
 					return;
 				}
-				
-				
-				
+			
 				String skins = "" ;
 				
 				try {
@@ -357,8 +377,16 @@ public class ClientHandler implements Runnable {
 					printConnectionLost();
 					return;
 				}
+				String skin_owned  = ""; 
+				try {
+					skin_owned = Database.getInstance().getOwnedSkins(username);
+				} catch (SQLException e) {
+					sendMessage(Protocol.GENERALERROR);
+					printConnectionLost();
+					return;
+				}
 				
-				text = coins + Protocol.DELIMITERINITIALINFORMATION + skins ;
+				text = coins + Protocol.DELIMITERINITIALINFORMATION + skins + Protocol.DELIMITERINITIALINFORMATION + skin_owned ;
 				
 				sendMessage(Protocol.INITIALINFORMATION);
 				sendMessage(text);

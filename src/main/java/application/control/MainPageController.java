@@ -246,7 +246,7 @@ public class MainPageController {
     		showText(Protocol.LEAVEWITHOUTCANCEL, 20, Dialog.ERROR_WINDOW,2);
     		return;
     	}
-    	
+    	SceneHandler.getInstance().loadScene("ShopPage", true, true);
     }
     
     

@@ -19,6 +19,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
@@ -160,6 +161,11 @@ public class RegistrationController {
     	password_field_registration.setOnKeyReleased(new InputFieldController(InputFieldController.PASSWORD));
     	repeat_password_field_registration.setOnKeyReleased(new InputFieldController(InputFieldController.NOCONTROL));	
     	email_field_registration.setOnKeyReleased(new InputFieldController(InputFieldController.EMAIL));
+    }
+    
+    @FXML
+    void onKeyPressed(KeyEvent event) {
+
     }
 
 }

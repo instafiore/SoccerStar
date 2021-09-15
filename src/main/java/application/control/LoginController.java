@@ -1,5 +1,6 @@
 package application.control;
 
+
 import java.beans.beancontext.BeanContextServiceAvailableEvent;
 import java.io.InputStream;
 import java.util.regex.Pattern;
@@ -21,6 +22,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseDragEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -33,8 +35,7 @@ import javafx.util.Duration;
 public class LoginController {
 	InputStream inputStream = getClass().getResourceAsStream("/application/view/fonts/AzeretMono-Italic-VariableFont_wght.ttf") ;
 	
-    @FXML
-    private StackPane stackPane;
+
 
     @FXML
     private AnchorPane root;
@@ -165,5 +166,10 @@ public class LoginController {
     	username_field_login.setOnKeyReleased(new InputFieldController(InputFieldController.NOCONTROL));
     	password_field_login.setOnKeyReleased(new InputFieldController(InputFieldController.NOCONTROL));
     
+    }
+    
+    @FXML
+    void onKeyPressed(KeyEvent event) {
+
     }
 }

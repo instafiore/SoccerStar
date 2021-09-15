@@ -3,7 +3,7 @@ package application.control;
 import application.Settings;
 import application.Utilities;
 import application.model.game.entity.Skin;
-import application.model.game.entity.SkinHandler;
+import application.model.game.handler.SkinHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
