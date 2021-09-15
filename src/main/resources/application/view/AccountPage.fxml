@@ -11,7 +11,7 @@
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="410.0" prefWidth="601.0" styleClass="pane" stylesheets="@css/stylesheet1.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.control.AccountController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="501.0" prefWidth="634.0" styleClass="pane" stylesheets="@css/stylesheet1.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.control.AccountController">
    <top>
       <BorderPane prefHeight="80.0" prefWidth="601.0" BorderPane.alignment="CENTER">
          <opaqueInsets>
@@ -110,6 +110,11 @@
                   <Label fx:id="email_field_account" prefHeight="39.0" prefWidth="269.0" textFill="#f5f3f3" wrapText="true" />
                </children>
             </HBox>
+            <Button fx:id="change_password_button" mnemonicParsing="false" prefHeight="40.0" prefWidth="187.0" text="CHANGE PASSWORD">
+               <VBox.margin>
+                  <Insets bottom="20.0" left="100.0" top="20.0" />
+               </VBox.margin>
+            </Button>
             <Line endX="262.490234375" endY="-168.0" startX="-40.80265808105469" startY="-168.0" stroke="#fffefe" />
             <HBox alignment="CENTER_LEFT" prefHeight="65.0" prefWidth="352.0">
                <children>

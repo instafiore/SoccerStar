@@ -139,7 +139,7 @@ public class MainPageController {
     	
     	showText(WELCOME+" "+Client.getInstance().getUsername(), 30, Dialog.INFORMATION_WINDOW,5);
     	
-    	Client.getInstance().sendMessage(Protocol.COINS);
+    	Client.getInstance().sendMessage(Protocol.INITIALINFORMATION);
     }
     
     public void setCoins_main_page_label(String coins) {

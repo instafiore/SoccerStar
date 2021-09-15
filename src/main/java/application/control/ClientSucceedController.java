@@ -1,9 +1,12 @@
 package application.control;
 
+import java.util.StringTokenizer;
+
 import application.SceneHandler;
 import application.model.game.entity.Account;
 import application.model.game.entity.DataMatch;
 import application.model.game.entity.Message;
+import application.model.game.entity.SkinHandler;
 import application.net.client.Client;
 import application.net.client.MatchClient;
 import application.net.common.Protocol;
@@ -39,10 +42,14 @@ public class ClientSucceedController implements EventHandler<WorkerStateEvent>{
 			
 			LoginController loginController = SceneHandler.getInstance().getLoader("LoginPage").getController() ;
 			loginController.showText(message.getProtocol(),15,Dialog.ERROR_WINDOW,4);
-		}else if(message.getProtocol().equals(Protocol.COINS)) {
+		}else if(message.getProtocol().equals(Protocol.INITIALINFORMATION)) {
 			
 			MainPageController mainPageController =  SceneHandler.getInstance().getLoader("MainPage").getController() ;
-			mainPageController.setCoins_main_page_label(message.getMessage());
+			StringTokenizer stringTokenizer = new StringTokenizer(message.getMessage(), Protocol.DELIMITERINITIALINFORMATION);
+			
+			mainPageController.setCoins_main_page_label(stringTokenizer.nextToken());
+			SkinHandler.getInstance().loadSkins(stringTokenizer.nextToken());
+			
 		}else if(message.getProtocol().equals(Protocol.INFORMATIONACCOUNT)) {
 			
 			AccountController accountController =  SceneHandler.getInstance().getLoader("AccountPage").getController() ;
@@ -91,10 +98,6 @@ public class ClientSucceedController implements EventHandler<WorkerStateEvent>{
 		}else if(message.getProtocol().equals(Protocol.GENERALERROR)){
 			
 			// RELOADING APP
-			Dialog.getInstance().showInformationDialog(Dialog.ERROR_WINDOW,message.getProtocol());
-			System.exit(0);
-		}else if(message.getProtocol().equals(Protocol.INPUT_STREAM_NULL)) {
-			
 			Dialog.getInstance().showInformationDialog(Dialog.ERROR_WINDOW,message.getProtocol());
 			System.exit(0);
 		}else if(message.getProtocol().equals(Protocol.CONNECTION_LOST)) {

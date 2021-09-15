@@ -61,6 +61,9 @@ public class AccountController {
     @FXML
     private Label coins_label_account;
     
+    @FXML
+    private Button change_password_button;
+    
     private static final String AccountTitle = "Account" ;
    
     @FXML
@@ -82,6 +85,7 @@ public class AccountController {
     	add_payment_method_button.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 12));
     	coins_label_account.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 31));
     	email_field_account.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 13));
+    	change_password_button.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 13));
     	
     	
     	back_button_account.setOnMouseEntered(new HoverButton());
@@ -101,6 +105,9 @@ public class AccountController {
     	
     	add_payment_method_button.setOnMouseEntered(new HoverButton());
     	add_payment_method_button.setOnMouseExited(new HoverButton());
+    	
+    	change_password_button.setOnMouseEntered(new HoverButton());
+    	change_password_button.setOnMouseExited(new HoverButton());
     	
     	Client.getInstance().sendMessage(Protocol.INFORMATIONACCOUNT);
     	showText(AccountTitle, 26, Dialog.INFORMATION_WINDOW, 6);

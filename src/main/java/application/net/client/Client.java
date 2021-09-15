@@ -116,7 +116,7 @@ public class Client extends Service<Message>{
 	public Message read() throws IOException {
 		
 		if(in == null)
-			return new Message(Protocol.INPUT_STREAM_NULL);
+			return new Message(Protocol.CONNECTION_LOST);
 		
 		String message = in.readLine();
 		
@@ -228,7 +228,7 @@ public class Client extends Service<Message>{
 	public Message readMainPage(String protocol) throws IOException {
 		Message message = null ;
 		String mess = null ;
-		if(protocol.equals(Protocol.COINS)) {
+		if(protocol.equals(Protocol.INITIALINFORMATION)) {
 			mess = in.readLine();
 			if(mess == null )
 			{

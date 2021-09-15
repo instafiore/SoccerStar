@@ -11,11 +11,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import com.sun.scenario.effect.impl.prism.PrTexture;
+
 import application.Settings;
 import application.model.game.entity.Account;
 import application.model.game.entity.DataMatch;
 import application.model.game.entity.LoginClient;
 import application.model.game.entity.RegistrationClient;
+import application.model.game.entity.Skin;
 import application.net.common.Protocol;
 
 public class ClientHandler implements Runnable {
@@ -327,7 +330,9 @@ public class ClientHandler implements Runnable {
 
 				sendMessage(Protocol.INFORMATIONHISTORY);
 				sendMessage(string);
-			}else if(message.equals(Protocol.COINS)) {
+			}else if(message.equals(Protocol.INITIALINFORMATION)) {
+				
+				String text = "" ;
 				
 				String coins = "";
 				try {
@@ -337,8 +342,26 @@ public class ClientHandler implements Runnable {
 					printConnectionLost();
 					return;
 				}
-				sendMessage(Protocol.COINS);
-				sendMessage(coins);
+				
+				
+				
+				String skins = "" ;
+				
+				try {
+					for(Skin skin : Database.getInstance().getSkins()) {
+						skins += skin.getName() + Protocol.DELIMITERINFORMATIONSKIN + skin.getPrice() + Protocol.DELIMITERINFORMATIONSKIN + skin.getColor() ;
+						skins += Protocol.DELIMITERSKIN ;
+					}
+				} catch (SQLException e) {
+					sendMessage(Protocol.GENERALERROR);
+					printConnectionLost();
+					return;
+				}
+				
+				text = coins + Protocol.DELIMITERINITIALINFORMATION + skins ;
+				
+				sendMessage(Protocol.INITIALINFORMATION);
+				sendMessage(text);
 				
 			}else  if(message.equals(Protocol.LOGOUT)) {
 				logout();

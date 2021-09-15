@@ -8,6 +8,8 @@ import java.util.TreeSet;
 
 import javafx.scene.chart.Axis;
 import javafx.scene.chart.BarChart;
+import javafx.scene.chart.CategoryAxis;
+import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 
 public class MatchChart extends BarChart<String, Number>{
@@ -45,8 +47,6 @@ public class MatchChart extends BarChart<String, Number>{
 		for(DataMatch d : dataMatches)
 			days.add(d.getDate());
 		
-		
-		
 		for(String day : days) {
 			int won = 0 ;
 			int lost = 0 ;
@@ -59,10 +59,9 @@ public class MatchChart extends BarChart<String, Number>{
 					else 
 						++lost ;
 				}
-				matchesWon.getData().add(new XYChart.Data<String, Number>(day, won));
-				matchesLost.getData().add(new XYChart.Data<String, Number>(day, lost));
 			}
-			
+			matchesWon.getData().add(new XYChart.Data<String, Number>(day, won));
+			matchesLost.getData().add(new XYChart.Data<String, Number>(day, lost));
 		}
 		
 		this.getData().add(matchesWon);

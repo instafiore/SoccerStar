@@ -7,7 +7,7 @@ import javax.imageio.ImageIO;
 import application.Settings;
 import application.control.MatchController;
 import application.model.game.entity.Ball;
-import application.model.game.entity.InformationMatch;
+import application.model.game.entity.Frame;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.image.Image;
@@ -93,7 +93,7 @@ public class MatchView extends StackPane{
 		
 		drawField();
 		
-		InformationMatch informationMatch = null ;
+		Frame informationMatch = null ;
 		
 		if (matchController == null || matchController.getParseMatchInformation() == null)
 			return;

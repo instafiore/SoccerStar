@@ -2,6 +2,8 @@ package application.control;
 
 import application.Settings;
 import application.Utilities;
+import application.model.game.entity.Skin;
+import application.model.game.entity.SkinHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -55,18 +57,14 @@ public class InformationMatchController {
     }
     	
     public static int getColorPlayer(String color) {
-    	
-    	if(color.equals(Settings.COLOR1))
-    		return COLOR1 ;
-    	if(color.equals(Settings.COLOR2))
-    		return COLOR2 ;
-    	if(color.equals(Settings.COLOR3))
-    		return COLOR3 ;
-    	if(color.equals(Settings.COLOR4))
-    		return COLOR4 ;
-    	if(color.equals(Settings.COLOR5))
-    		return COLOR5 ;
-    	
+    		
+    	int i = 0 ;
+    	for(Skin skin : SkinHandler.getInstance().getSkins())
+    	{
+    		if(color.equals(skin.getColor()))
+    			return i ;
+    		++i ;
+    	}
     	return COLOR6 ;
     }
     

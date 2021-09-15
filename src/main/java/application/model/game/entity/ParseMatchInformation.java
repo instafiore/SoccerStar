@@ -13,12 +13,12 @@ import application.net.common.Protocol;
 public class ParseMatchInformation {
 
 
-	private ArrayList<InformationMatch> informationMatchQueue = null ;
-	private InformationMatch lastInformationMatch = null ;
+	private ArrayList<Frame> informationMatchQueue = null ;
+	private Frame lastInformationMatch = null ;
 	
 	
 	public ParseMatchInformation() {
-		informationMatchQueue = new ArrayList<InformationMatch>();
+		informationMatchQueue = new ArrayList<Frame>();
 	}
 	
 	public void addNewInformation(String string) {
@@ -56,7 +56,7 @@ public class ParseMatchInformation {
 			
 			turn = Boolean.parseBoolean(stringTokenizer1.nextToken());
 			
-			InformationMatch informationMatch = new InformationMatch(turn, balls);
+			Frame informationMatch = new Frame(turn, balls);
 
 			informationMatchQueue.add(informationMatch);
 		}
@@ -109,11 +109,11 @@ public class ParseMatchInformation {
 	}
 	
 	
-	public ArrayList<InformationMatch> getInformationMatchQueue() {
+	public ArrayList<Frame> getInformationMatchQueue() {
 		return informationMatchQueue;
 	}
 	
-	public InformationMatch getInformationMatch() {
+	public Frame getInformationMatch() {
 		if(informationMatchQueue == null)
 			return null ;
 		
@@ -125,7 +125,7 @@ public class ParseMatchInformation {
 		return lastInformationMatch;
 	}
 	
-	public InformationMatch getLastInformationMatch() {
+	public Frame getLastInformationMatch() {
 		if(lastInformationMatch == null && !informationMatchQueue.isEmpty())
 			lastInformationMatch = informationMatchQueue.get(0);
 		return lastInformationMatch;

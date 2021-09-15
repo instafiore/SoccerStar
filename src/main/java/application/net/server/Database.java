@@ -16,6 +16,7 @@ import application.model.game.entity.Account;
 import application.model.game.entity.DataMatch;
 import application.model.game.entity.LoginClient;
 import application.model.game.entity.RegistrationClient;
+import application.model.game.entity.Skin;
 import application.net.common.Protocol;
 
 public class Database {
@@ -27,6 +28,7 @@ public class Database {
 	private static final String INSERT_MATCH = "insert into Match(date_match,result,field,home,guest,time_match) values(?,?,?,?,?,?);" ;
 	private static final String CHANGEPASSWORD = "update Account set password = ? where username = ? ;";
 	private static final String GETMATCHESUSER = "select date_match  , time_match , result , home , guest , field , A1.color_my_balls as colorHome , A2.color_my_balls as colorGuest from Match , Account as A1 , Account as A2 where home = A1.username and guest = A2.username and (home = ? or guest = ? ) order by date_match desc , time_match desc ;" ;
+	private static final String GETSKINS = "select * from Skin ;";
 	
 	private Connection connection;
 	private static Database instance = null;
@@ -37,6 +39,7 @@ public class Database {
 	private PreparedStatement insert_match_query;
 	private PreparedStatement change_password_query ;
 	private PreparedStatement get_matches_user_query ;
+	private PreparedStatement get_skin_query ;
 	
 	private Database() {
 		
@@ -67,6 +70,8 @@ public class Database {
 		insert_match_query = connection.prepareStatement(INSERT_MATCH);
 		change_password_query = connection.prepareStatement(CHANGEPASSWORD);
 		get_matches_user_query = connection.prepareStatement(GETMATCHESUSER);
+		get_skin_query = connection.prepareStatement(GETSKINS);
+
 	}
 	
 	public List<DataMatch> getDataMatches(String username){
@@ -139,6 +144,23 @@ public class Database {
 		account.setEmail(result.getString("email"));
 		
 		return account ;
+	}
+	
+	public ArrayList<Skin> getSkins() throws SQLException {
+	
+		ArrayList<Skin> skins = new ArrayList<Skin>();
+		
+		ResultSet result = get_skin_query.executeQuery();
+	
+		while(result.next()) {
+			Skin skin = new Skin(); 
+			skin.setName(result.getString("name"));
+			skin.setPrice(result.getString("price"));
+			skin.setColor(result.getString("color"));
+			skins.add(skin);
+		}
+	
+		return skins ;
 	}
 	
 	public String insertUser(RegistrationClient user) {

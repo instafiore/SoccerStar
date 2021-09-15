@@ -79,7 +79,7 @@ public class LoginController {
     	sign_in_button_login.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 14));
     	username_field_login.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 14));
     	password_field_login.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 14));
-    	password_forgot_button.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 13));
+    	password_forgot_button.setFont(new Font(15));
     	sign_up_button_login.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 14));
     	username_label.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 15));
     	soccerstar_label.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 42));
@@ -108,10 +108,19 @@ public class LoginController {
     		return ;
     	}
     	
-//    	if(!Utilities.rulesRespected()) {
-//    		showError(Protocol.LOGINFAILED, 15);
-//    		return ;
-//    	}
+    	boolean f1 = Utilities.getInstance().rulePasswordRespected(password_field_login.getText()) ;
+    	boolean f2 = Utilities.getInstance().ruleUsernameRespected(username_field_login.getText()) ;
+    	if(!f1 || !f2 ) {
+    		
+    		if(!f1 && !f2)
+    			showText(Protocol.LOGINFAILED, 15, Dialog.ERROR_WINDOW, 2) ;
+    		else if (!f1 && f2)
+    			showText(Protocol.INCORRECTPASSWORD, 15, Dialog.ERROR_WINDOW, 2) ;
+    		else
+    			showText(Protocol.INCORRECTUSERNAME, 15, Dialog.ERROR_WINDOW, 2) ;
+    		
+    		return ;
+    	}
     	
     	String stringa = username_field_login.getText() + Protocol.DELIMITERLOGIN + password_field_login.getText() ;
     	

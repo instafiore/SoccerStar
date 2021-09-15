@@ -7,8 +7,6 @@ public class Protocol {
 	
 	// ERRORS
 	public static final String GENERALERROR = "General error , app will be shutted down...";
-	public static final String INPUT_STREAM_NULL = "Input stream is null";
-	public static final String OUTPUT_STREAM_NULL = "Output stream is null";
 	public static final String CONNECTION_LOST ="Connection lost";
 	public static final String SERVERDISCONNETED = "Server is disconnected";
 	public static final String BADBEHAVIOROFCLIENT = "Bad client behavior ";
@@ -30,8 +28,11 @@ public class Protocol {
 	//Card
 	public static final String NOTINSERTED = "Not inserted yet";
 	
-	// Main Page
-	public static final String COINS = "Your coins amount";
+	// INITIAL INFORMATION
+	public static final String INITIALINFORMATION = "Initial information";
+	public static final String DELIMITERINITIALINFORMATION = "&" ;
+	public static final String DELIMITERSKIN = "?";
+	public static final String DELIMITERINFORMATIONSKIN = "!";
 	
 	// History
 	public static final String INFORMATIONHISTORY = "Information history" ;
@@ -39,9 +40,10 @@ public class Protocol {
 	// Email
 	public static final String EMAILASSISTANCE = "soccerstartsf@gmail.com";
 	
-	//Account
+	// Account
 	public static final String INFORMATIONACCOUNT = "An information account message";
 	public static final String DELIMITERINFORMATIONACCOUNT = "&";
+	
 	
 	// Login
 	public static final String LOGINREQUEST = "New login request" ;
@@ -49,7 +51,9 @@ public class Protocol {
 	public static final String LOGINCOMPLETED = "Login completed!" ;
 	public static final String ALREADYONLINE = "You are already logged" ;
 	public static final String LOGINFAILED = "Your username or password aren't correct";
-	public static final String LOGOUT = "I want to do logout" ;
+	public static final String INCORRECTPASSWORD = "Incorrect password" ;
+	public static final String INCORRECTUSERNAME = "Incorrect username" ;
+ 	public static final String LOGOUT = "I want to do logout" ;
 	public static final String LOGUTDONE ="Logout done for ";
 
 	

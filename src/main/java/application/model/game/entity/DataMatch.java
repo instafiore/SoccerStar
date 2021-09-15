@@ -39,6 +39,9 @@ public class DataMatch implements Comparable<DataMatch>{
 	
 	public void setResultMatch(String resultMatch) {
 		this.resultMatch = resultMatch;
+		String[] goals = resultMatch.split(Protocol.DELIMITERGOALMATCH);
+		goalHome = Integer.parseInt(goals[0]);
+		goalGuest = Integer.parseInt(goals[1]);
 	}
 	
 	public void setTime(String time) {
@@ -115,9 +118,7 @@ public class DataMatch implements Comparable<DataMatch>{
 	}
 
 	public String getResult() {
-		if(resultMatch == "")
-			return goalHome+Protocol.DELIMITERGOALMATCH+goalGuest;
-		return resultMatch ;
+		return goalHome+Protocol.DELIMITERGOALMATCH+goalGuest;
 	}
 	
 	public String getResultReversed() {
