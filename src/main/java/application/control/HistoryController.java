@@ -79,12 +79,12 @@ public class HistoryController {
     		String guest = dataMatch.getGuest() ;
     		if(home.equals(Client.getInstance().getUsername()))
     		{
-    			informationMatchController.setHome(home, InformationMatchController.getColorPlayer(dataMatch.getColorHome()));
-    			informationMatchController.setGuest(guest, InformationMatchController.getColorPlayer(dataMatch.getColorGuest()));
+    			informationMatchController.setHome(home,dataMatch.getColorHome());
+    			informationMatchController.setGuest(guest,dataMatch.getColorGuest());
     			informationMatchController.setResult(dataMatch.getResult(),dataMatch.getDate(),dataMatch.getTime(),dataMatch.getField(), InformationMatchController.getColorField(dataMatch.getColorField()));
     		}else {
-    			informationMatchController.setHome(guest, InformationMatchController.getColorPlayer(dataMatch.getColorGuest()));
-    			informationMatchController.setGuest(home, InformationMatchController.getColorPlayer(dataMatch.getColorHome()));
+    			informationMatchController.setHome(guest, dataMatch.getColorGuest());
+    			informationMatchController.setGuest(home, dataMatch.getColorHome());
     			informationMatchController.setResult(dataMatch.getResultReversed(),dataMatch.getDate(),dataMatch.getTime(),dataMatch.getField(), InformationMatchController.getColorField(dataMatch.getColorField()));
     		}
 

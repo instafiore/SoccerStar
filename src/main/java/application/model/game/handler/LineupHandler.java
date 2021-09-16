@@ -40,9 +40,36 @@ public class LineupHandler {
 		return lineups;
 	}
 	
-	public void setOwned(String id) {
+	public Lineup getLineup(String name) {
+		for(Lineup lineup : lineups)
+			if(lineup.getName().equals(name))
+				return lineup ;
+		return null ;
+	}
+	
+	public void setUsing(int id) {
+		for(Lineup lineup : lineups)
+			if(lineup.getId() == id)
+				lineup.setUsing(true);
+			else
+				lineup.setUsing(false);
+	}
+	
+	public ArrayList<Lineup> getLineupsOwned() {
+			
+		ArrayList<Lineup> lineupsOwned = new ArrayList<Lineup>();
+		
+		for(Lineup lineup : lineups)
+			if(lineup.isOwned())
+				lineupsOwned.add(lineup);
+		
+		return lineupsOwned ;
+	}
+	
+	
+	public void setOwned(int id) {
 		for(Lineup lineup : lineups) {
-			if(lineup.getId().equals(id)) {
+			if(lineup.getId() == id ) {
 				lineup.setOwned(true);
 				return ;
 			}
@@ -53,11 +80,8 @@ public class LineupHandler {
 		
 		StringTokenizer stringTokenizer = new StringTokenizer(string, Protocol.DELIMITERELEMENTSHOP) ;
 		
-		while(stringTokenizer.hasMoreTokens()) {
-			String id = stringTokenizer.nextToken() ;
-			setOwned(id);
-		}
-		
+		while(stringTokenizer.hasMoreTokens())
+			setOwned(Integer.parseInt(stringTokenizer.nextToken()));		
 	}
 	
 	public void loadLineups(String string) {

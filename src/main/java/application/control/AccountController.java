@@ -209,7 +209,7 @@ public class AccountController {
     
     @FXML
     void onClickInventory_button_account(ActionEvent event) {
-
+    	SceneHandler.getInstance().loadScene("InventaryPage", true, true);
     }
     
     public void showText(String text,int fontSize,String type,double duration) {

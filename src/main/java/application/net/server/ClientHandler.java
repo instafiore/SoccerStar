@@ -371,7 +371,7 @@ public class ClientHandler implements Runnable {
 				sendMessage(Protocol.INITIALINFORMATION);
 				sendMessage(text);
 				
-			}else if(message.equals(Protocol.INFORMATIONSHOP)) {
+			}else if(message.equals(Protocol.INFORMATIONSHOP) || message.equals(Protocol.INFORMATIONINVENTARY)) {
 				
 				String text = "" ;
 				
@@ -428,8 +428,34 @@ public class ClientHandler implements Runnable {
 				
 				text = skins + Protocol.DELIMITERINFORMATIONSHOP + skin_owned + Protocol.DELIMITERINFORMATIONSHOP + lineups + Protocol.DELIMITERINFORMATIONSHOP + lineup_owned + Protocol.DELIMITERINFORMATIONSHOP + coins; 
 				
-				sendMessage(Protocol.INFORMATIONSHOP);
+				sendMessage(message);
 				sendMessage(text);
+				
+			}else  if(message.equals(Protocol.SKININUSE)) {
+				
+				String colorSkin  = "" ;
+				try {
+					colorSkin = Database.getInstance().getAccount(username).getCurrentSkin() ;
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				sendMessage(Protocol.SKININUSE);
+				sendMessage(colorSkin);
+				
+			}else  if(message.equals(Protocol.LINEUPINUSE)) {
+				
+				int lineup = 0 ;
+				try {
+					lineup = Database.getInstance().getAccount(username).getLineup() ;
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				sendMessage(Protocol.LINEUPINUSE);
+				sendMessage(""+lineup);
 				
 			}else  if(message.equals(Protocol.BUYSKIN)) {
 				
@@ -438,14 +464,50 @@ public class ClientHandler implements Runnable {
 				if (message == null)
 					return;
 				
-				Skin skin = new Skin() ;
-				
+				Skin skin = new Skin();
 				skin.loadSkin(message);
 				
 				if(Database.getInstance().buySkin(username, skin))
-					sendMessage(Protocol.SKINBOUGHT);
+					sendMessage(Protocol.ELEMENTSHOPBOUGHT);
 				else
-					sendMessage(Protocol.SKINNOTBOUGHT);
+					sendMessage(Protocol.ELEMENTSHOPNOTBOUGHT);
+				
+			}else  if(message.equals(Protocol.USETHISSKIN)) {
+				
+				String color  = read() ;
+				
+				if (color == null)
+					return;
+				
+				Database.getInstance().updateCurrentSkin(username, color);
+				
+			}else  if(message.equals(Protocol.USETHISLINEUP)) {
+				
+				message  = read() ;
+				
+				if (message == null)
+					return;
+				
+				int idLineup = Integer.parseInt(message);
+				Database.getInstance().updateCurrentLineup(username, idLineup);
+				
+			}else  if(message.equals(Protocol.BUYLINEUP)) {
+				
+				message = read() ;
+				
+				if (message == null)
+					return;
+				
+				Lineup lineup = new Lineup();
+				
+				lineup.loadLineup(message);
+				
+				
+				if(Database.getInstance().buyLineup(username, lineup))
+					sendMessage(Protocol.ELEMENTSHOPBOUGHT);
+				else
+					sendMessage(Protocol.ELEMENTSHOPNOTBOUGHT);
+				
 				
 			}else  if(message.equals(Protocol.LOGOUT)) {
 				logout();

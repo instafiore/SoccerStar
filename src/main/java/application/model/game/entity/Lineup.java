@@ -8,11 +8,12 @@ import application.net.common.Protocol;
 
 public class Lineup {
 	
-	private String id = "" ;
+	private int id  ;
 	private String name = "" ;
 	private String price = "" ;
 	private String image = "" ;
 	private boolean owned = false ;
+	private boolean using = false ;
 	
 	public Lineup() {}
 
@@ -23,12 +24,20 @@ public class Lineup {
 		this.price = price;
 		this.image = image;
 	}
+	
+	public void setUsing(boolean using) {
+		this.using = using;
+	}
+	
+	public boolean isUsing() {
+		return using;
+	}
 
-	public void setId(String id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 	
-	public String getId() {
+	public int getId() {
 		return id;
 	}
 	
@@ -64,7 +73,7 @@ public class Lineup {
 	public void loadLineup(String string) {
 		StringTokenizer stringTokenizer = new StringTokenizer(string, Protocol.DELIMITERINFORMATIONELEMENTSHOP) ;
 		
-		setId(stringTokenizer.nextToken());
+		setId(Integer.parseInt(stringTokenizer.nextToken()));
 		setName(stringTokenizer.nextToken());
 		setPrice(stringTokenizer.nextToken());
 		setImage(stringTokenizer.nextToken());

@@ -41,6 +41,33 @@ public class SkinHandler {
 		return skins;
 	}
 	
+	public ArrayList<Skin> getSkinsOwned() {
+		
+		ArrayList<Skin> skinsOwned = new ArrayList<Skin>();
+		
+		for(Skin skin : skins)
+			if(skin.isOwned())
+				skinsOwned.add(skin);
+		
+		return skinsOwned ;
+	}
+	
+	public void setUsing(String name) {
+		for(Skin skin : skins)
+			if(skin.getName().equals(name))
+				skin.setUsing(true);
+			else
+				skin.setUsing(false);
+	}
+	
+	public Skin getSkinFromColor(String color) {
+		
+		for(Skin skin : skins)
+			if(skin.getColor().equals(color))
+				return skin ;
+		return null ;
+	}
+	
 	public void setOwned(String name) {
 		
 		for(Skin skin : skins)

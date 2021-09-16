@@ -21,6 +21,8 @@ public class Settings {
 	public static final double MULTIPLIERVELOCITY = 150.0 ;
 	public static final double STEPTOREPLACEBALLS = 70 ;
 	public static final int WAITFORGOAL = 20 ;
+	public static final int MAXWIDTHWINDOW = 1000 ;
+	public static final int MAXHEIGHTWINDOW = 1000 ;
 	
 	//FIELDS
 	public static final String FIELD1 = "Grass Field";

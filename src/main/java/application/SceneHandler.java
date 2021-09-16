@@ -89,6 +89,8 @@ public class SceneHandler {
 		stage.hide();
 		stage.setMinWidth(pane.getPrefWidth());
 		stage.setMinHeight(pane.getPrefHeight()+30);
+		stage.setMaxWidth(Settings.MATCHWIDTHFRAME);	
+		stage.setMaxHeight(Settings.MATCHHEIGHTFRAME);
 		stage.setWidth(pane.getPrefWidth());
 		stage.setHeight(pane.getPrefHeight()+30);
 		

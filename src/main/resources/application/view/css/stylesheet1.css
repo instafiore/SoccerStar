@@ -11,12 +11,6 @@
 .field2{-fx-background-color: #bf9b30 ;  -fx-background-radius: 5px;}
 .field3{ -fx-background-color: #334afe ; -fx-background-radius: 5px;}
 .text-area .content { -fx-background-color: #009a00 ; -fx-opacity : 0.9 ; }
-.color1{ -fx-background-color: #0000ff ;  -fx-text-fill: #262626 ;}
-.color2{ -fx-background-color: #000066 ; -fx-text-fill: #e5e5e5 ;}
-.color3{ -fx-background-color: #9999ff ; -fx-text-fill: #2d2d4c ;}
-.color4{ -fx-background-color: #ffa500 ; -fx-text-fill: black ;}
-.color5{ -fx-background-color: #ffd27f ; -fx-text-fill: black ;}
-.color6{ -fx-background-color: #ffff66 ; -fx-text-fill: black ;}
 .text-area {-fx-text-fill: white ; }
 .text-area *.text {-fx-text-alignment: center;}
 .history_pane{ -fx-background-color : #c5fb9c ; }

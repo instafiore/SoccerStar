@@ -12,13 +12,6 @@ import javafx.scene.text.Font;
 
 public class InformationMatchController {
 
-	public static final int COLOR1 = 0 ;
-	public static final int COLOR2 = 1 ;
-	public static final int COLOR3 = 2 ;
-	public static final int COLOR4 = 3 ;
-	public static final int COLOR5 = 4 ;
-	public static final int COLOR6 = 5 ;
-	
 	public static final int FIELD1 = 0 ;
 	public static final int FIELD2 = 1 ;
 	public static final int FIELD3 = 2 ;
@@ -56,17 +49,7 @@ public class InformationMatchController {
     	
     }
     	
-    public static int getColorPlayer(String color) {
-    		
-    	int i = 0 ;
-    	for(Skin skin : SkinHandler.getInstance().getSkins())
-    	{
-    		if(color.equals(skin.getColor()))
-    			return i ;
-    		++i ;
-    	}
-    	return COLOR6 ;
-    }
+
     
     public static int getColorField(String color) {
     	if(color.equals(Settings.COLORFIELD1))
@@ -77,54 +60,18 @@ public class InformationMatchController {
     }
 
     
-    public void setHome(String home,int color) {
+    public void setHome(String home,String color) {
+    	
 		this.home.setText(home);
+		this.home.setStyle("-fx-background-color:"+color+";");
 		
-		switch (color) {
-		case COLOR1:
-			this.home.getStyleClass().add("color1");
-			break;
-		case COLOR2:
-			this.home.getStyleClass().add("color2");
-			break;
-		case COLOR3:
-			this.home.getStyleClass().add("color3");
-			break;
-		case COLOR4:
-			this.home.getStyleClass().add("color4");
-			break;
-		case COLOR5:
-			this.home.getStyleClass().add("color5");
-			break;
-		case COLOR6:
-			this.home.getStyleClass().add("color6");
-			break;
-		}
 	}
     
-    public void setGuest(String guest,int color) {
+    public void setGuest(String guest,String color) {
+    	
 		this.guest.setText(guest);
+		this.guest.setStyle("-fx-background-color:"+color+";");
 		
-		switch (color) {
-		case COLOR1:
-			this.guest.getStyleClass().add("color1");
-			break;
-		case COLOR2:
-			this.guest.getStyleClass().add("color2");
-			break;
-		case COLOR3:
-			this.guest.getStyleClass().add("color3");
-			break;
-		case COLOR4:
-			this.guest.getStyleClass().add("color4");
-			break;
-		case COLOR5:
-			this.guest.getStyleClass().add("color5");
-			break;
-		case COLOR6:
-			this.guest.getStyleClass().add("color6");
-			break;
-		}
 	}
     
     public void setResult(String result,String date,String time , String name_field ,int field) {

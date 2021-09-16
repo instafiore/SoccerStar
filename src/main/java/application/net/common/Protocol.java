@@ -32,27 +32,35 @@ public class Protocol {
 	public static final String NEWPASSOWORDISNOTVALID = "New password isn't valid";
 	public static final String SAMEPASSWORD = "You typed the same password ;) ";
 
-	//Card
+	// Card
 	public static final String NOTINSERTED = "Not inserted yet";
 	
 	// INITIAL INFORMATION
 	public static final String INITIALINFORMATION = "Initial information";
 	public static final String DELIMITERINITIALINFORMATION = "&" ;
 	
-	//Shop
+	// Shop
 	public static final String INFORMATIONSHOP = "Information shop request";
 	public static final String DELIMITERINFORMATIONSHOP = "&" ;
 	public static final String DELIMITERINFORMATIONELEMENTSHOP = "!";
 	public static final String DELIMITERELEMENTSHOP = "?";
 	public static final String BUYSKIN = "I want to buy a skin";
 	public static final String BUYLINEUP = "I want to buy a lineup";
-	public static final String SKINBOUGHT = "Skin bought" ;
-	public static final String SKINNOTBOUGHT = "You don't have enough coins" ;
-	public static final String ALREADYOWNED = "You already own this skin" ;
+	public static final String ELEMENTSHOPBOUGHT = "Element bought" ;
+	public static final String ELEMENTSHOPNOTBOUGHT = "You don't have enough coins" ;
+	public static final String ALREADYOWNED = "You already own this element" ;
 	
+	// Inventory
+	public static final String INFORMATIONINVENTARY = "Information inventary request";
+	public static final String ALREADYUSING = "You are already using this element";
+	public static final String SKININUSE = "Skin in use";
+	public static final String LINEUPINUSE = "Lineup in use";
+	public static final String USETHISSKIN = "I want to use this skin";
+	public static final String USETHISLINEUP = "I want to use this lineup";
 	
 	// History
 	public static final String INFORMATIONHISTORY = "Information history" ;
+	
 	
 	// Email
 	public static final String EMAILASSISTANCE = "soccerstartsf@gmail.com";
@@ -129,7 +137,7 @@ public class Protocol {
 	public static final String NOERRORBUTLEFTMATCH = "Your opponent left the match , you won!" ;
 	public static final String DELIMITERINFORMATIONDATAMATCH = "&";
 	public static final String DELIMITERDATAMATCH = "!" ;
-
+	
 	
 	public static ArrayList<String> protocolMatch(){
 		

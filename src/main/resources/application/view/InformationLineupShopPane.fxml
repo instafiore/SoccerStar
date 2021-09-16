@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+
+<BorderPane styleClass="pane" stylesheets="@css/stylesheet1.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.control.LineupControllerShop">
+   <center>
+      <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="167.0" prefWidth="189.0" styleClass="skin">
+         <top>
+            <Label fx:id="name" alignment="CENTER" prefHeight="26.0" prefWidth="217.0" textAlignment="CENTER" BorderPane.alignment="CENTER">
+               <BorderPane.margin>
+                  <Insets top="7.0" />
+               </BorderPane.margin>
+            </Label>
+         </top>
+         <bottom>
+            <Button fx:id="buy_button" mnemonicParsing="false" onAction="#onClickBuy_button" prefHeight="30.0" prefWidth="67.0" text="330" BorderPane.alignment="CENTER">
+               <BorderPane.margin>
+                  <Insets bottom="10.0" />
+               </BorderPane.margin>
+            </Button>
+         </bottom>
+         <center>
+            <ImageView fx:id="image_lineup" fitHeight="88.0" fitWidth="139.0" onMouseEntered="#onMouseEnteredImage" onMouseExited="#onMouseExitedImage" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER" />
+         </center>
+      </BorderPane>
+   </center>
+   <padding>
+      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+   </padding>
+</BorderPane>

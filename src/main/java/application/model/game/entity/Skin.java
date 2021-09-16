@@ -10,6 +10,7 @@ public class Skin {
 	private String price = "" ;
 	private String color = "" ;
 	private boolean owned = false ;
+	private boolean using  = false ;
 	
 	public Skin() {}
 
@@ -21,6 +22,13 @@ public class Skin {
 		this.color = color;
 	}
 
+	public void setUsing(boolean using) {
+		this.using = using;
+	}
+	
+	public boolean isUsing() {
+		return using;
+	}
 	
 	public void setOwned(boolean owned) {
 		this.owned = owned;

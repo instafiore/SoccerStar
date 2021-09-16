@@ -65,7 +65,7 @@ public class ClientSucceedController implements EventHandler<WorkerStateEvent>{
 			
 		}else if(message.getProtocol().equals(Protocol.INFORMATIONSHOP)) {
 			
-			ShopController shopController = SceneHandler.getInstance().getLoader("ShopPage").getController() ;
+			ShopController shopController = (ShopController) SceneHandler.getInstance().getLoader("ShopPage").getController() ;
 			
 			StringTokenizer stringTokenizer = new StringTokenizer(message.getMessage(), Protocol.DELIMITERINFORMATIONSHOP);
 			SkinHandler.getInstance().loadSkins(stringTokenizer.nextToken());
@@ -77,11 +77,41 @@ public class ClientSucceedController implements EventHandler<WorkerStateEvent>{
 			shopController.setCoins(coins);
 			
 			shopController.init();
-		}else if(message.getProtocol().equals(Protocol.SKINBOUGHT) || message.getProtocol().equals(Protocol.SKINNOTBOUGHT)) {
+		}else if(message.getProtocol().equals(Protocol.INFORMATIONINVENTARY)) {
+			
+			InventaryController inventaryController = (InventaryController) SceneHandler.getInstance().getLoader("InventaryPage").getController() ;
+			
+			StringTokenizer stringTokenizer = new StringTokenizer(message.getMessage(), Protocol.DELIMITERINFORMATIONSHOP);
+			SkinHandler.getInstance().loadSkins(stringTokenizer.nextToken());
+			SkinHandler.getInstance().loadOwned(stringTokenizer.nextToken());
+			LineupHandler.getInstance().loadLineups(stringTokenizer.nextToken());
+			LineupHandler.getInstance().loadOwned(stringTokenizer.nextToken());
+	
+			inventaryController.init();
+			
+		}else if(message.getProtocol().equals(Protocol.SKININUSE)) {
+			
+			InventaryController inventaryController = (InventaryController) SceneHandler.getInstance().getLoader("InventaryPage").getController() ;
+						
+			String colorSkinInUse = message.getMessage() ;
+			SkinHandler.getInstance().setUsing(SkinHandler.getInstance().getSkinFromColor(colorSkinInUse).getName());
+			
+			inventaryController.init();
+			
+		}else if(message.getProtocol().equals(Protocol.LINEUPINUSE)) {
+			
+			InventaryController inventaryController = (InventaryController) SceneHandler.getInstance().getLoader("InventaryPage").getController() ;
+						
+			int lineupInUse = Integer.parseInt(message.getMessage());
+			LineupHandler.getInstance().setUsing(lineupInUse);
+			
+			inventaryController.init();
+			
+		}else if(message.getProtocol().equals(Protocol.ELEMENTSHOPBOUGHT) || message.getProtocol().equals(Protocol.ELEMENTSHOPNOTBOUGHT)) {
 		
 			ShopController shopController = SceneHandler.getInstance().getLoader("ShopPage").getController() ;
 			
-			if(message.getProtocol().equals(Protocol.SKINBOUGHT))
+			if(message.getProtocol().equals(Protocol.ELEMENTSHOPBOUGHT))
 			{
 				shopController.showText(message.getProtocol(), 30, Dialog.INFORMATION_WINDOW, 6);
 				Client.getInstance().sendMessage(Protocol.INFORMATIONSHOP);

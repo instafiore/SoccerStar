@@ -35,10 +35,13 @@ public class Database {
 	private static final String GETSKIN = "select * from Skin where name = ? ;";
 	private static final String GETOWNEDSKINS = "select skin from Inventary_Skin where account = ? ;";
 	private static final String GETLINEUPS = "select * from Lineup ;";
+	private static final String GETLINEUP = "select * from Lineup where id = ? ;" ;
 	private static final String GETOWNEDLINEUP = "select lineup from Inventary_Lineup where account = ? ;";
 	private static final String INSERT_SKIN = "insert into Inventary_Skin(account,skin) values(?,?);";
-	private static final String INSERT_DEFAULT_LINEUP = "insert into Inventary_Lineup(account,lineup) values(?,?);";
+	private static final String INSERT_LINEUP = "insert into Inventary_Lineup(account,lineup) values(?,?);";
 	private static final String UPDATE_COINS = "update Account set coins = ? where username = ? ;" ;
+	private static final String UPDATE_CURRENT_SKIN = "update Account set current_skin = ? where username = ? ;" ;
+	private static final String UPDATE_CURRENT_LINEUP = "update Account set current_lineup = ? where username = ? ;" ;
 	
 	private Connection connection;
 	private static Database instance = null;
@@ -52,12 +55,16 @@ public class Database {
 	private PreparedStatement get_skins ;
 	private PreparedStatement get_skin ;
 	private PreparedStatement get_owned_skins_query ;
+	private PreparedStatement get_lineups_query ;
 	private PreparedStatement get_lineup_query ;
 	private PreparedStatement get_owned_lineup_query ;
 	private PreparedStatement insert_skin_query ;
-	private PreparedStatement insert_default_lineup_query ;
+	private PreparedStatement insert_lineup_query ;
 	private PreparedStatement update_coins_query ;
-
+	private PreparedStatement update_current_skin_query ;
+	private PreparedStatement update_current_lineup_query ;
+	
+	
 	private Database() {
 		
 	}
@@ -90,11 +97,14 @@ public class Database {
 		get_skins = connection.prepareStatement(GETSKINS);
 		get_skin = connection.prepareStatement(GETSKIN);
 		get_owned_skins_query = connection.prepareStatement(GETOWNEDSKINS);
-		get_lineup_query = connection.prepareStatement(GETLINEUPS);
+		get_lineups_query = connection.prepareStatement(GETLINEUPS);
+		get_lineup_query = connection.prepareStatement(GETLINEUP);
 		get_owned_lineup_query = connection.prepareStatement(GETOWNEDLINEUP);
 		insert_skin_query = connection.prepareStatement(INSERT_SKIN);
-		insert_default_lineup_query = connection.prepareStatement(INSERT_DEFAULT_LINEUP);
+		insert_lineup_query = connection.prepareStatement(INSERT_LINEUP);
 		update_coins_query = connection.prepareStatement(UPDATE_COINS);
+		update_current_skin_query = connection.prepareStatement(UPDATE_CURRENT_SKIN);
+		update_current_lineup_query = connection.prepareStatement(UPDATE_CURRENT_LINEUP);
 
 	}
 	
@@ -189,7 +199,27 @@ public class Database {
 		return skin ;
 	}
 	
-	private void insertSkin(String username,String skin) {
+	public Lineup getLineup(int id) throws SQLException {
+		
+		Lineup lineup = new Lineup() ;
+		
+		get_lineup_query.setInt(1, id);
+		
+		ResultSet result = get_lineup_query.executeQuery();
+		
+		if(!result.next())
+			return null ;
+		
+		lineup.setId(result.getInt("id"));
+		lineup.setName(result.getString("name"));
+		lineup.setPrice(result.getString("price"));
+		lineup.setImage(result.getString("image"));
+		// TODO IMAGE
+		
+		return lineup ;
+	}
+	
+	private void insertSkinToUsername(String username,String skin) {
 		
 		try {
 			insert_skin_query.setString(1, username);
@@ -202,6 +232,26 @@ public class Database {
 		
 		try {
 			insert_skin_query.executeUpdate() ;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+	
+	private void insertLineupToUsername(String username,int lineup) {
+		
+		try {
+			insert_lineup_query.setString(1, username);
+			insert_lineup_query.setInt(2, lineup);
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		try {
+			insert_lineup_query.executeUpdate() ;
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -233,7 +283,37 @@ public class Database {
 		if( newAmoutOfCoins < 0)
 			return false ;
 		
-		insertSkin(username,skinDatabase.getName());
+		insertSkinToUsername(username,skinDatabase.getName());
+		updateCoins(username, newAmoutOfCoins);
+		
+		return true ;
+	}
+	
+	public boolean buyLineup(String username ,Lineup lineup) {
+		
+		Lineup lineupDatabase = null ;
+		try {
+			lineupDatabase = getLineup(lineup.getId());
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		int price = Integer.parseInt(lineup.getPrice());
+		
+		Account account = null ;
+		try {
+			account = getAccount(username);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		int coins = account.getCoins() ;
+		
+		int newAmoutOfCoins = coins - price ;
+		if( newAmoutOfCoins < 0)
+			return false ;
+		
+		insertLineupToUsername(username,lineupDatabase.getId());
 		updateCoins(username, newAmoutOfCoins);
 		
 		return true ;
@@ -250,6 +330,41 @@ public class Database {
 		
 		try {
 			update_coins_query.executeUpdate();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+
+	public void updateCurrentSkin(String username , String color) {
+		
+		try {
+			update_current_skin_query.setString(1, color);
+			update_current_skin_query.setString(2, username);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		try {
+			update_current_skin_query.executeUpdate();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void updateCurrentLineup(String username , int id) {
+		
+		try {
+			update_current_lineup_query.setInt(1, id);
+			update_current_lineup_query.setString(2, username);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		try {
+			update_current_lineup_query.executeUpdate();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -293,11 +408,11 @@ public class Database {
 	
 		ArrayList<Lineup> lineups = new ArrayList<Lineup>();
 		
-		ResultSet result = get_lineup_query.executeQuery();
+		ResultSet result = get_lineups_query.executeQuery();
 	
 		while(result.next()) {
 			Lineup lineup = new Lineup();
-			lineup.setId(""+result.getInt("id"));
+			lineup.setId(result.getInt("id"));
 			lineup.setName(result.getString("name"));
 			lineup.setPrice(result.getString("price"));
 			lineup.setImage(result.getString("image"));
@@ -379,8 +494,8 @@ public class Database {
 	private void insertDefaultLineup(String username) {
 		
 		try {
-			insert_default_lineup_query.setString(1, username);
-			insert_default_lineup_query.setInt(2, DEFAULTLINEUP);
+			insert_lineup_query.setString(1, username);
+			insert_lineup_query.setInt(2, DEFAULTLINEUP);
 
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -388,7 +503,7 @@ public class Database {
 		}
 		
 		try {
-			insert_default_lineup_query.executeUpdate() ;
+			insert_lineup_query.executeUpdate() ;
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

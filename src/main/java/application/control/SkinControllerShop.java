@@ -1,30 +1,36 @@
 package application.control;
 
+
+
 import application.SceneHandler;
 import application.Utilities;
+import application.net.client.Client;
 import application.net.common.Protocol;
 import application.view.Dialog;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 
-public class LineupController {
-
+public class SkinControllerShop {
+	
 	public static final String OWNED = "OWNED" ;
 	
+    @FXML
+    private Circle skin;
+
     @FXML
     private Label name;
 
     @FXML
     private Button buy_button;
-
-    @FXML
-    private ImageView image_lineup;
     
+    private String color = "" ;
+
     private boolean owned = false;
     
     @FXML
@@ -39,6 +45,7 @@ public class LineupController {
     
     public void setOwn(boolean own) {
 		this.owned = own;
+		buy_button.setText(OWNED);
 	}
     
     
@@ -60,26 +67,34 @@ public class LineupController {
 		}
     }
     
+    public void setColor(String color) {
+    	this.color = color ;
+    	skin.setFill(Color.web(color));
+    }
+    
     @FXML
     void onClickBuy_button(ActionEvent event) {
     	if(owned)
     	{
     		ShopController shopController = (ShopController) SceneHandler.getInstance().getLoader("ShopPage").getController() ;
-    		shopController.showText(Protocol.ALREADYOWNED, 24, Dialog.INFORMATION_WINDOW, 5);
+    		shopController.showText(Protocol.ALREADYOWNED, 20, Dialog.INFORMATION_WINDOW, 5);
     		return ;
     	}
+    	Client.getInstance().sendMessage(Protocol.BUYSKIN);
+    	String text = name.getText() + Protocol.DELIMITERINFORMATIONELEMENTSHOP + buy_button.getText() + Protocol.DELIMITERINFORMATIONELEMENTSHOP + color ;  ;
+    	Client.getInstance().sendMessage(text);
     }
 
     @FXML
-    void onMouseEnteredImage(MouseEvent event) {
-    	image_lineup.setScaleX(1.2);
-    	image_lineup.setScaleY(1.2);
+    void onMouseEnteredCircle(MouseEvent event) {
+    	skin.setScaleX(1.2);
+    	skin.setScaleY(1.2);
     }
-   
+
     @FXML
-    void onMouseExitedImage(MouseEvent event) {
-    	image_lineup.setScaleX(1);
-    	image_lineup.setScaleY(1);
+    void onMouseExitedCircle(MouseEvent event) {
+    	skin.setScaleX(1);
+    	skin.setScaleY(1);
     }
 
 }
