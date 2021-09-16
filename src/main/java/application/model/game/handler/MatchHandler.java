@@ -7,7 +7,7 @@ import application.Settings;
 import application.model.game.entity.Ball;
 import application.model.game.entity.DataMatch;
 import application.model.game.entity.Field;
-import application.model.game.entity.Lineup;
+import application.model.game.entity.GeneratorLineup;
 import application.model.game.physics.VectorFioreNoSync;
 import application.model.game.physics.VelocityNoSync;
 

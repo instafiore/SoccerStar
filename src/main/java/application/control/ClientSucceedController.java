@@ -8,6 +8,7 @@ import application.SceneHandler;
 import application.model.game.entity.Account;
 import application.model.game.entity.DataMatch;
 import application.model.game.entity.Message;
+import application.model.game.handler.LineupHandler;
 import application.model.game.handler.SkinHandler;
 import application.net.client.Client;
 import application.net.client.MatchClient;
@@ -47,11 +48,9 @@ public class ClientSucceedController implements EventHandler<WorkerStateEvent>{
 		}else if(message.getProtocol().equals(Protocol.INITIALINFORMATION)) {
 			
 			MainPageController mainPageController =  SceneHandler.getInstance().getLoader("MainPage").getController() ;
-			StringTokenizer stringTokenizer = new StringTokenizer(message.getMessage(), Protocol.DELIMITERINITIALINFORMATION);
 			
-			mainPageController.setCoins_main_page_label(stringTokenizer.nextToken());
-			SkinHandler.getInstance().loadSkins(stringTokenizer.nextToken());
-			SkinHandler.getInstance().loadOwned(stringTokenizer.nextToken());
+			mainPageController.setCoins_main_page_label(message.getMessage());
+			
 			
 		}else if(message.getProtocol().equals(Protocol.INFORMATIONACCOUNT)) {
 			
@@ -61,8 +60,34 @@ public class ClientSucceedController implements EventHandler<WorkerStateEvent>{
 			accountController.setCard_field_account(Protocol.NOTINSERTED);
 			accountController.setUsername_field_account(account.getUsername());
 			accountController.setEmail_field_account(account.getEmail());
-			accountController.changeColorBall(account.getColor_my_balls());
+			accountController.changeColorBall(account.getCurrentSkin());
 			accountController.setCoins_label_account(""+account.getCoins());
+			
+		}else if(message.getProtocol().equals(Protocol.INFORMATIONSHOP)) {
+			
+			ShopController shopController = SceneHandler.getInstance().getLoader("ShopPage").getController() ;
+			
+			StringTokenizer stringTokenizer = new StringTokenizer(message.getMessage(), Protocol.DELIMITERINFORMATIONSHOP);
+			SkinHandler.getInstance().loadSkins(stringTokenizer.nextToken());
+			SkinHandler.getInstance().loadOwned(stringTokenizer.nextToken());
+			LineupHandler.getInstance().loadLineups(stringTokenizer.nextToken());
+			LineupHandler.getInstance().loadOwned(stringTokenizer.nextToken());
+			
+			String coins = stringTokenizer.nextToken() ;
+			shopController.setCoins(coins);
+			
+			shopController.init();
+		}else if(message.getProtocol().equals(Protocol.SKINBOUGHT) || message.getProtocol().equals(Protocol.SKINNOTBOUGHT)) {
+		
+			ShopController shopController = SceneHandler.getInstance().getLoader("ShopPage").getController() ;
+			
+			if(message.getProtocol().equals(Protocol.SKINBOUGHT))
+			{
+				shopController.showText(message.getProtocol(), 30, Dialog.INFORMATION_WINDOW, 6);
+				Client.getInstance().sendMessage(Protocol.INFORMATIONSHOP);
+			}
+			else
+				shopController.showText(message.getProtocol(), 21, Dialog.ERROR_WINDOW, 6);
 			
 		}else if(message.getProtocol().equals(Protocol.INFORMATIONHISTORY)) {
 			

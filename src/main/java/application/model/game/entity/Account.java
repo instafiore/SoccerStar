@@ -10,8 +10,7 @@ public class Account {
 	private String password = "" ;
 	private int coins  ;
 	private String email = "" ;
-	private String color_my_balls = "" ;
-	private String color_ball_to_play = "" ;
+	private String current_skin = "" ;
 	private int lineup ;
 	
 	public Account(String username, String password, int coins, String email, String color_balls,
@@ -21,8 +20,7 @@ public class Account {
 		this.password = password;
 		this.coins = coins;
 		this.email = email;
-		this.color_my_balls = color_balls;
-		this.color_ball_to_play = color_ball_to_play;
+		this.current_skin = color_balls;
 		this.lineup = lineup;
 	}
 	
@@ -60,21 +58,14 @@ public class Account {
 		this.email = email;
 	}
 
-	public String getColor_my_balls() {
-		return color_my_balls;
+	public String getCurrentSkin() {
+		return current_skin;
 	}
 
-	public void setColor_my_balls(String color_balls) {
-		this.color_my_balls = color_balls;
+	public void setCurrentSkin(String color_balls) {
+		this.current_skin = color_balls;
 	}
 
-	public String getColor_ball_to_play() {
-		return color_ball_to_play;
-	}
-
-	public void setColor_ball_to_play(String color_ball_to_play) {
-		this.color_ball_to_play = color_ball_to_play;
-	}
 
 	public int getLineup() {
 		return lineup;
@@ -91,8 +82,7 @@ public class Account {
 		setUsername(stringTokenizer.nextToken());
 		setPassword(stringTokenizer.nextToken());
 		setCoins(Integer.parseInt(stringTokenizer.nextToken()));
-		setColor_ball_to_play(stringTokenizer.nextToken());
-		setColor_my_balls(stringTokenizer.nextToken());
+		setCurrentSkin(stringTokenizer.nextToken());
 		setEmail(stringTokenizer.nextToken());
 		setLineup(Integer.parseInt(stringTokenizer.nextToken()));
 	

@@ -1,7 +1,7 @@
 package application.view;
 
 import application.Settings;
-import application.model.game.entity.Lineup;
+import application.model.game.entity.GeneratorLineup;
 import javafx.scene.image.Image;
 
 public class Field extends application.model.game.entity.Field{

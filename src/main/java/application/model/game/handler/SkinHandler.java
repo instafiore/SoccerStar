@@ -52,7 +52,7 @@ public class SkinHandler {
 	}
 	
 	public void loadOwned(String string) {
-		StringTokenizer stringTokenizer = new StringTokenizer(string, Protocol.DELIMITERSKIN) ;
+		StringTokenizer stringTokenizer = new StringTokenizer(string, Protocol.DELIMITERELEMENTSHOP) ;
 		
 		while(stringTokenizer.hasMoreTokens()) {
 			String name = stringTokenizer.nextToken() ;
@@ -62,7 +62,7 @@ public class SkinHandler {
 	
 	public void loadSkins(String string) {
 		
-		StringTokenizer stringTokenizer = new StringTokenizer(string, Protocol.DELIMITERSKIN) ;
+		StringTokenizer stringTokenizer = new StringTokenizer(string, Protocol.DELIMITERELEMENTSHOP) ;
 		clear();
 		while(stringTokenizer.hasMoreTokens()) {
 			Skin skin = new Skin() ;

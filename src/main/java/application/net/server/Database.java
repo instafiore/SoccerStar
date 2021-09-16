@@ -14,6 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 import application.Settings;
 import application.model.game.entity.Account;
 import application.model.game.entity.DataMatch;
+import application.model.game.entity.Lineup;
 import application.model.game.entity.LoginClient;
 import application.model.game.entity.RegistrationClient;
 import application.model.game.entity.Skin;
@@ -23,16 +24,21 @@ public class Database {
 	
 	
 	private static final String DEFAULTCOLOR = "color1";
+	private static final int    DEFAULTLINEUP = 1 ;
 	private static final String QUERY_INSERT_REGISTRATIONCLIENT = "insert into Account(username,password,email) values(?,?,?);";
 	private static final String SEARCH_CLIENT = "select * from Account where username = ? ;";
 	private static final String CHECK_LOGIN = "select * from Account where username = ? and password = ? ;";
 	private static final String INSERT_MATCH = "insert into Match(date_match,result,field,home,guest,time_match) values(?,?,?,?,?,?);" ;
 	private static final String CHANGEPASSWORD = "update Account set password = ? where username = ? ;";
-	private static final String GETMATCHESUSER = "select date_match  , time_match , result , home , guest , field , A1.color_my_balls as colorHome , A2.color_my_balls as colorGuest from Match , Account as A1 , Account as A2 where home = A1.username and guest = A2.username and (home = ? or guest = ? ) order by date_match desc , time_match desc ;" ;
+	private static final String GETMATCHESUSER = "select date_match  , time_match , result , home , guest , field , A1.current_skin as colorHome , A2.current_skin as colorGuest from Match , Account as A1 , Account as A2 where home = A1.username and guest = A2.username and (home = ? or guest = ? ) order by date_match desc , time_match desc ;" ;
 	private static final String GETSKINS = "select * from Skin ;";
-	private static final String INSERT_DEFAULT_SKIN = "insert into Inventary(account,skin) values(?,?);";
-	private static final String GETOWNEDSKINS = "select skin from Inventary where account = ? ;";
-
+	private static final String GETSKIN = "select * from Skin where name = ? ;";
+	private static final String GETOWNEDSKINS = "select skin from Inventary_Skin where account = ? ;";
+	private static final String GETLINEUPS = "select * from Lineup ;";
+	private static final String GETOWNEDLINEUP = "select lineup from Inventary_Lineup where account = ? ;";
+	private static final String INSERT_SKIN = "insert into Inventary_Skin(account,skin) values(?,?);";
+	private static final String INSERT_DEFAULT_LINEUP = "insert into Inventary_Lineup(account,lineup) values(?,?);";
+	private static final String UPDATE_COINS = "update Account set coins = ? where username = ? ;" ;
 	
 	private Connection connection;
 	private static Database instance = null;
@@ -43,11 +49,15 @@ public class Database {
 	private PreparedStatement insert_match_query;
 	private PreparedStatement change_password_query ;
 	private PreparedStatement get_matches_user_query ;
-	private PreparedStatement get_skin_query ;
-	private PreparedStatement insert_default_skin_query ;
+	private PreparedStatement get_skins ;
+	private PreparedStatement get_skin ;
 	private PreparedStatement get_owned_skins_query ;
-	
-	
+	private PreparedStatement get_lineup_query ;
+	private PreparedStatement get_owned_lineup_query ;
+	private PreparedStatement insert_skin_query ;
+	private PreparedStatement insert_default_lineup_query ;
+	private PreparedStatement update_coins_query ;
+
 	private Database() {
 		
 	}
@@ -77,27 +87,17 @@ public class Database {
 		insert_match_query = connection.prepareStatement(INSERT_MATCH);
 		change_password_query = connection.prepareStatement(CHANGEPASSWORD);
 		get_matches_user_query = connection.prepareStatement(GETMATCHESUSER);
-		get_skin_query = connection.prepareStatement(GETSKINS);
-		insert_default_skin_query = connection.prepareStatement(INSERT_DEFAULT_SKIN);
+		get_skins = connection.prepareStatement(GETSKINS);
+		get_skin = connection.prepareStatement(GETSKIN);
 		get_owned_skins_query = connection.prepareStatement(GETOWNEDSKINS);
+		get_lineup_query = connection.prepareStatement(GETLINEUPS);
+		get_owned_lineup_query = connection.prepareStatement(GETOWNEDLINEUP);
+		insert_skin_query = connection.prepareStatement(INSERT_SKIN);
+		insert_default_lineup_query = connection.prepareStatement(INSERT_DEFAULT_LINEUP);
+		update_coins_query = connection.prepareStatement(UPDATE_COINS);
 
 	}
 	
-	public String getOwnedSkins(String username) throws SQLException {
-		
-		get_owned_skins_query.setString(1,username);
-
-		ResultSet result = get_owned_skins_query.executeQuery();
-		
-		String text = "" ;
-		
-		while(result.next()) {
-			text+=result.getString("skin");
-			text+=Protocol.DELIMITERSKIN;
-		}
-		System.out.println(text);
- 		return text ;
-	}
 	
 	public List<DataMatch> getDataMatches(String username){
 		
@@ -163,19 +163,104 @@ public class Database {
 		account.setUsername(username);
 		account.setPassword(result.getString("password"));
 		account.setCoins(result.getInt("coins"));
-		account.setLineup(result.getInt("lineup"));
-		account.setColor_my_balls(result.getString("color_my_balls"));
-		account.setColor_ball_to_play(result.getString("color_ball_to_play"));
+		account.setLineup(result.getInt("current_lineup"));
+		account.setCurrentSkin(result.getString("current_skin"));
 		account.setEmail(result.getString("email"));
 		
 		return account ;
 	}
 	
-	public ArrayList<Skin> getSkins() throws SQLException {
 	
+	public Skin getSkin(String name) throws SQLException {
+		
+		Skin skin = new Skin() ;
+		
+		get_skin.setString(1, name);
+		
+		ResultSet result = get_skin.executeQuery();
+		
+		if(!result.next())
+			return null ;
+		
+		skin.setName(result.getString("name"));
+		skin.setPrice(result.getString("price"));
+		skin.setColor(result.getString("color"));
+		
+		return skin ;
+	}
+	
+	private void insertSkin(String username,String skin) {
+		
+		try {
+			insert_skin_query.setString(1, username);
+			insert_skin_query.setString(2, skin);
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		try {
+			insert_skin_query.executeUpdate() ;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+	
+	public boolean buySkin(String username ,Skin skin) {
+			
+		Skin skinDatabase = null ;
+		try {
+			skinDatabase = getSkin(skin.getName());
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		int price = Integer.parseInt(skin.getPrice());
+		
+		Account account = null ;
+		try {
+			account = getAccount(username);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		int coins = account.getCoins() ;
+		
+		int newAmoutOfCoins = coins - price ;
+		if( newAmoutOfCoins < 0)
+			return false ;
+		
+		insertSkin(username,skinDatabase.getName());
+		updateCoins(username, newAmoutOfCoins);
+		
+		return true ;
+	}
+	
+	private void updateCoins(String username , int coins) {
+		
+		try {
+			update_coins_query.setInt(1, coins);
+			update_coins_query.setString(2, username);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		try {
+			update_coins_query.executeUpdate();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public ArrayList<Skin> getSkins() throws SQLException {
+		
 		ArrayList<Skin> skins = new ArrayList<Skin>();
 		
-		ResultSet result = get_skin_query.executeQuery();
+		ResultSet result = get_skins.executeQuery();
 	
 		while(result.next()) {
 			Skin skin = new Skin(); 
@@ -187,6 +272,57 @@ public class Database {
 	
 		return skins ;
 	}
+	
+	public String getOwnedSkins(String username) throws SQLException {
+		
+		get_owned_skins_query.setString(1,username);
+
+		ResultSet result = get_owned_skins_query.executeQuery();
+		
+		String text = "" ;
+		
+		while(result.next()) {
+			text+=result.getString("skin");
+			text+=Protocol.DELIMITERELEMENTSHOP;
+		}
+		
+ 		return text ;
+	}
+	
+	public ArrayList<Lineup> getLineups() throws SQLException {
+	
+		ArrayList<Lineup> lineups = new ArrayList<Lineup>();
+		
+		ResultSet result = get_lineup_query.executeQuery();
+	
+		while(result.next()) {
+			Lineup lineup = new Lineup();
+			lineup.setId(""+result.getInt("id"));
+			lineup.setName(result.getString("name"));
+			lineup.setPrice(result.getString("price"));
+			lineup.setImage(result.getString("image"));
+			lineups.add(lineup);
+		}
+	
+		return lineups ;
+	}
+	
+	public String getOwnedLineup(String username) throws SQLException {
+		
+		get_owned_lineup_query.setString(1,username);
+
+		ResultSet result = get_owned_lineup_query.executeQuery();
+		
+		String text = "" ;
+		
+		while(result.next()) {
+			text+=result.getString("lineup");
+			text+=Protocol.DELIMITERELEMENTSHOP;
+		}
+ 		return text ;
+	}
+	
+	
 	
 	public String insertUser(RegistrationClient user) {
 		
@@ -215,6 +351,7 @@ public class Database {
 		}
 		
 		insertDefaultSkin(user.getUsername());
+		insertDefaultLineup(user.getUsername());
 		
 		return Protocol.REGISTRATIONCOMPLETED;
 	}
@@ -222,8 +359,8 @@ public class Database {
 	private void insertDefaultSkin(String username) {
 		
 		try {
-			insert_default_skin_query.setString(1, username);
-			insert_default_skin_query.setString(2, DEFAULTCOLOR);
+			insert_skin_query.setString(1, username);
+			insert_skin_query.setString(2, DEFAULTCOLOR);
 
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -231,7 +368,27 @@ public class Database {
 		}
 		
 		try {
-			insert_match_query.executeUpdate() ;
+			insert_skin_query.executeUpdate() ;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+	
+	private void insertDefaultLineup(String username) {
+		
+		try {
+			insert_default_lineup_query.setString(1, username);
+			insert_default_lineup_query.setInt(2, DEFAULTLINEUP);
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		try {
+			insert_default_lineup_query.executeUpdate() ;
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

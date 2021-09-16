@@ -21,7 +21,7 @@ import application.Utilities;
 import application.model.game.entity.Ball;
 import application.model.game.entity.DataMatch;
 import application.model.game.entity.Field;
-import application.model.game.entity.Lineup;
+import application.model.game.entity.GeneratorLineup;
 import application.model.game.entity.ParseMatchInformation;
 import application.model.game.handler.MatchHandler;
 import application.model.game.physics.VectorFioreNoSync;
@@ -118,9 +118,9 @@ public class MatchServer implements Runnable {
 			sendMessage(Protocol.USERNAMEGUEST, PLAYER2);
 			sendMessage(username2, PLAYER2);
 			
-			matchHandler.addBalls(Lineup.getInstace().getLineup(typeOfLineup[0]));
-			matchHandler.addBalls(Lineup.getInstace().getLineupMirrored(typeOfLineup[1]));
-			matchHandler.add(Lineup.getInstace().getBallToPlay());
+			matchHandler.addBalls(GeneratorLineup.getInstace().getLineup(typeOfLineup[0]));
+			matchHandler.addBalls(GeneratorLineup.getInstace().getLineupMirrored(typeOfLineup[1]));
+			matchHandler.add(GeneratorLineup.getInstace().getBallToPlay());
 			
 			System.out.println("[MATCHSERVER] "+Protocol.GAMESTARTED+" -> Player1: "+username1+" , Player2: "+username2);
 			
@@ -418,13 +418,13 @@ public class MatchServer implements Runnable {
 		for(Ball ball : matchHandler.getBalls())
 			initialPositions.add(ball.getPosition());
 		
-		for(Ball ball : Lineup.getInstace().getLineup(typeOfLineup[0]))
+		for(Ball ball : GeneratorLineup.getInstace().getLineup(typeOfLineup[0]))
 			endPositions.add(ball.getPosition());
 		
-		for(Ball ball : Lineup.getInstace().getLineupMirrored(typeOfLineup[1]))
+		for(Ball ball : GeneratorLineup.getInstace().getLineupMirrored(typeOfLineup[1]))
 			endPositions.add(ball.getPosition());
 		
-		endPositions.add(Lineup.getInstace().getBallToPlay().getPosition());
+		endPositions.add(GeneratorLineup.getInstace().getBallToPlay().getPosition());
 		
 		int ind = 0 ;
 		
@@ -442,9 +442,9 @@ public class MatchServer implements Runnable {
 	
 	private void resetLineups() {
 		matchHandler.clearBalls();
-		matchHandler.addBalls(Lineup.getInstace().getLineup(typeOfLineup[0]));
-		matchHandler.addBalls(Lineup.getInstace().getLineupMirrored(typeOfLineup[1]));
-		matchHandler.add(Lineup.getInstace().getBallToPlay());
+		matchHandler.addBalls(GeneratorLineup.getInstace().getLineup(typeOfLineup[0]));
+		matchHandler.addBalls(GeneratorLineup.getInstace().getLineupMirrored(typeOfLineup[1]));
+		matchHandler.add(GeneratorLineup.getInstace().getBallToPlay());
 	}
 	
 	private Pair<String, Integer> getAction() throws IOException{

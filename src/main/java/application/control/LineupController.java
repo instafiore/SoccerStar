@@ -1,36 +1,30 @@
 package application.control;
 
-
-
 import application.SceneHandler;
 import application.Utilities;
-import application.net.client.Client;
 import application.net.common.Protocol;
 import application.view.Dialog;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 
-public class SkinController {
-	
+public class LineupController {
+
 	public static final String OWNED = "OWNED" ;
 	
-    @FXML
-    private Circle skin;
-
     @FXML
     private Label name;
 
     @FXML
     private Button buy_button;
-    
-    private String color = "" ;
 
+    @FXML
+    private ImageView image_lineup;
+    
     private boolean owned = false;
     
     @FXML
@@ -66,11 +60,6 @@ public class SkinController {
 		}
     }
     
-    public void setColor(String color) {
-    	this.color = color ;
-    	skin.setFill(Color.web(color));
-    }
-    
     @FXML
     void onClickBuy_button(ActionEvent event) {
     	if(owned)
@@ -79,21 +68,18 @@ public class SkinController {
     		shopController.showText(Protocol.ALREADYOWNED, 24, Dialog.INFORMATION_WINDOW, 5);
     		return ;
     	}
-    	Client.getInstance().sendMessage(Protocol.BUYSKIN);
-    	String text = name.getText() + Protocol.DELIMITERINFORMATIONELEMENTSHOP + buy_button.getText() + Protocol.DELIMITERINFORMATIONELEMENTSHOP + color ;  ;
-    	Client.getInstance().sendMessage(text);
     }
 
     @FXML
-    void onMouseEnteredCircle(MouseEvent event) {
-    	skin.setScaleX(1.2);
-    	skin.setScaleY(1.2);
+    void onMouseEnteredImage(MouseEvent event) {
+    	image_lineup.setScaleX(1.2);
+    	image_lineup.setScaleY(1.2);
     }
-
+   
     @FXML
-    void onMouseExitedCircle(MouseEvent event) {
-    	skin.setScaleX(1);
-    	skin.setScaleY(1);
+    void onMouseExitedImage(MouseEvent event) {
+    	image_lineup.setScaleX(1);
+    	image_lineup.setScaleY(1);
     }
 
 }

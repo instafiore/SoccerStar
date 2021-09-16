@@ -38,11 +38,18 @@ public class Protocol {
 	// INITIAL INFORMATION
 	public static final String INITIALINFORMATION = "Initial information";
 	public static final String DELIMITERINITIALINFORMATION = "&" ;
-	public static final String DELIMITERSKIN = "?";
-	public static final String DELIMITERINFORMATIONSKIN = "!";
 	
 	//Shop
+	public static final String INFORMATIONSHOP = "Information shop request";
+	public static final String DELIMITERINFORMATIONSHOP = "&" ;
+	public static final String DELIMITERINFORMATIONELEMENTSHOP = "!";
+	public static final String DELIMITERELEMENTSHOP = "?";
 	public static final String BUYSKIN = "I want to buy a skin";
+	public static final String BUYLINEUP = "I want to buy a lineup";
+	public static final String SKINBOUGHT = "Skin bought" ;
+	public static final String SKINNOTBOUGHT = "You don't have enough coins" ;
+	public static final String ALREADYOWNED = "You already own this skin" ;
+	
 	
 	// History
 	public static final String INFORMATIONHISTORY = "Information history" ;

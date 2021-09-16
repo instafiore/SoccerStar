@@ -18,6 +18,7 @@ import com.sun.scenario.effect.impl.prism.PrTexture;
 import application.Settings;
 import application.model.game.entity.Account;
 import application.model.game.entity.DataMatch;
+import application.model.game.entity.Lineup;
 import application.model.game.entity.LoginClient;
 import application.model.game.entity.RegistrationClient;
 import application.model.game.entity.Skin;
@@ -311,8 +312,8 @@ public class ClientHandler implements Runnable {
 					return;
 				}
 				String string = account.getUsername() + Protocol.DELIMITERINFORMATIONACCOUNT + account.getPassword() + Protocol.DELIMITERINFORMATIONACCOUNT +
-						account.getCoins() + Protocol.DELIMITERINFORMATIONACCOUNT + account.getColor_ball_to_play() + Protocol.DELIMITERINFORMATIONACCOUNT +
-						account.getColor_my_balls() + Protocol.DELIMITERINFORMATIONACCOUNT + account.getEmail() + Protocol.DELIMITERINFORMATIONACCOUNT+
+						account.getCoins() + Protocol.DELIMITERINFORMATIONACCOUNT + 
+						account.getCurrentSkin() + Protocol.DELIMITERINFORMATIONACCOUNT + account.getEmail() + Protocol.DELIMITERINFORMATIONACCOUNT+
 						account.getLineup() ;
 				sendMessage(Protocol.INFORMATIONACCOUNT);
 				sendMessage(string);
@@ -365,12 +366,21 @@ public class ClientHandler implements Runnable {
 					return;
 				}
 			
+				text = coins ;
+				
+				sendMessage(Protocol.INITIALINFORMATION);
+				sendMessage(text);
+				
+			}else if(message.equals(Protocol.INFORMATIONSHOP)) {
+				
+				String text = "" ;
+				
 				String skins = "" ;
 				
 				try {
 					for(Skin skin : Database.getInstance().getSkins()) {
-						skins += skin.getName() + Protocol.DELIMITERINFORMATIONSKIN + skin.getPrice() + Protocol.DELIMITERINFORMATIONSKIN + skin.getColor() ;
-						skins += Protocol.DELIMITERSKIN ;
+						skins += skin.getName() + Protocol.DELIMITERINFORMATIONELEMENTSHOP + skin.getPrice() + Protocol.DELIMITERINFORMATIONELEMENTSHOP + skin.getColor() ;
+						skins += Protocol.DELIMITERELEMENTSHOP ;
 					}
 				} catch (SQLException e) {
 					sendMessage(Protocol.GENERALERROR);
@@ -386,10 +396,56 @@ public class ClientHandler implements Runnable {
 					return;
 				}
 				
-				text = coins + Protocol.DELIMITERINITIALINFORMATION + skins + Protocol.DELIMITERINITIALINFORMATION + skin_owned ;
+				String lineups = "" ;
 				
-				sendMessage(Protocol.INITIALINFORMATION);
+				try {
+					for(Lineup lineup : Database.getInstance().getLineups()) {
+						lineups += lineup.getId() + Protocol.DELIMITERINFORMATIONELEMENTSHOP + lineup.getName() + Protocol.DELIMITERINFORMATIONELEMENTSHOP + lineup.getPrice() + Protocol.DELIMITERINFORMATIONELEMENTSHOP + lineup.getImage() ;
+						lineups += Protocol.DELIMITERELEMENTSHOP ;
+					}
+				} catch (SQLException e) {
+					sendMessage(Protocol.GENERALERROR);
+					printConnectionLost();
+					return;
+				}
+				String lineup_owned  = ""; 
+				try {
+					lineup_owned = Database.getInstance().getOwnedLineup(username);
+				} catch (SQLException e) {
+					sendMessage(Protocol.GENERALERROR);
+					printConnectionLost();
+					return;
+				}
+				
+				String coins = "";
+				try {
+					coins = "" + Database.getInstance().getAccount(username).getCoins();
+				} catch (SQLException e) {
+					sendMessage(Protocol.GENERALERROR);
+					printConnectionLost();
+					return;
+				}
+				
+				text = skins + Protocol.DELIMITERINFORMATIONSHOP + skin_owned + Protocol.DELIMITERINFORMATIONSHOP + lineups + Protocol.DELIMITERINFORMATIONSHOP + lineup_owned + Protocol.DELIMITERINFORMATIONSHOP + coins; 
+				
+				sendMessage(Protocol.INFORMATIONSHOP);
 				sendMessage(text);
+				
+			}else  if(message.equals(Protocol.BUYSKIN)) {
+				
+				message = read() ;
+				
+				if (message == null)
+					return;
+				
+				Skin skin = new Skin() ;
+				
+				skin.loadSkin(message);
+				
+				if(Database.getInstance().buySkin(username, skin))
+					sendMessage(Protocol.SKINBOUGHT);
+				else
+					sendMessage(Protocol.SKINNOTBOUGHT);
 				
 			}else  if(message.equals(Protocol.LOGOUT)) {
 				logout();

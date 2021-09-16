@@ -70,7 +70,12 @@ public class RegistrationController {
     @FXML
     private Button information_password_rule;
 
-
+    
+    private boolean pressed = false ;
+    
+    public void setPressed(boolean pressed) {
+		this.pressed = pressed;
+	}
     
     @FXML
     void onClickInformation_password_rule(ActionEvent event) {
@@ -128,6 +133,9 @@ public class RegistrationController {
     @FXML
     void onClick_sign_up_button_registration(ActionEvent event) {
     	
+    	if(pressed)
+    		return ;
+      	
     	if(username_field_registration.getText().equals("") || password_field_registration.equals("") || repeat_password_field_registration.getText().equals("") || email_field_registration.equals(""))
     	{
     		showError(Protocol.FIELDEMPTY,20);
@@ -151,6 +159,8 @@ public class RegistrationController {
     	
     	Client.getInstance().sendMessage(Protocol.REGISTRATIONREQUEST);
     	Client.getInstance().sendMessage(stringa);
+    	
+      	pressed = true ;
     }
 
 

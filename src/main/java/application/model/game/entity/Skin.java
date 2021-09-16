@@ -52,7 +52,7 @@ public class Skin {
 	
 	
 	public void loadSkin(String string) {
-		StringTokenizer stringTokenizer = new StringTokenizer(string, Protocol.DELIMITERINFORMATIONSKIN) ;
+		StringTokenizer stringTokenizer = new StringTokenizer(string, Protocol.DELIMITERINFORMATIONELEMENTSHOP) ;
 		
 		setName(stringTokenizer.nextToken());
 		setPrice(stringTokenizer.nextToken());

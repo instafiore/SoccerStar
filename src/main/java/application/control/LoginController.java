@@ -71,6 +71,12 @@ public class LoginController {
     	SceneHandler.getInstance().loadScene("Step1PSW", false, true);
     }
  
+    private boolean pressed = false ;
+    
+    public void setPressed(boolean pressed) {
+  		this.pressed = pressed;
+  	}
+    
     @FXML
     public void initialize() {
     	
@@ -103,6 +109,11 @@ public class LoginController {
     @FXML
     void onClick_sign_in_button_login(ActionEvent event) {
 
+    	if(pressed)
+    		return;
+    	
+ 
+    	
     	if(username_field_login.getText().equals("") || password_field_login.equals(""))
     	{
     		showText(Protocol.FIELDEMPTY,20,Dialog.ERROR_WINDOW,4);
@@ -119,7 +130,6 @@ public class LoginController {
     			showText(Protocol.INCORRECTPASSWORD, 15, Dialog.ERROR_WINDOW, 2) ;
     		else
     			showText(Protocol.INCORRECTUSERNAME, 15, Dialog.ERROR_WINDOW, 2) ;
-    		
     		return ;
     	}
     	
@@ -127,6 +137,7 @@ public class LoginController {
     	
     	Client.getInstance().sendMessage(Protocol.LOGINREQUEST);
     	Client.getInstance().sendMessage(stringa);
+       	pressed = true ;
     }
     
     public void showText(String text,int fontSize,String type,double duration) {

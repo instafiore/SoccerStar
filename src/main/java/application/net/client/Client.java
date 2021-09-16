@@ -296,12 +296,31 @@ public class Client extends Service<Message>{
 		return message ;
 	}
 	
-	public Message readShop(String protocol) {
+	public Message readShop(String protocol) throws IOException {
 		
-		if(protocol.equals(Protocol.PREPARINGMATCH)) 
-			return new Message(Protocol.PREPARINGMATCH);
+		Message message = null ;
+		String mess = null ;
 		
-		return new Message(Protocol.GENERALERROR);
+		if(protocol.equals(Protocol.INFORMATIONSHOP)) {
+			
+			mess = in.readLine();
+			if(mess == null )
+			{
+				closeStreams();
+				message = new Message(Protocol.GENERALERROR);
+				return message ;
+			}
+			message = new Message(protocol,mess);
+			
+		}else if(protocol.equals(Protocol.SKINBOUGHT) || protocol.equals(Protocol.SKINNOTBOUGHT)) {
+			
+			message = new Message(protocol);
+			
+		}else {
+			message = new Message();
+			message.setProtocol(Protocol.GENERALERROR);
+		}
+		return message ;
 	}
 	
 	public Message readStep1PSW(String protocol) throws IOException {

@@ -13,7 +13,7 @@ import application.Updater;
 import application.control.MainPageController;
 import application.control.MatchController;
 import application.model.game.entity.Ball;
-import application.model.game.entity.Lineup;
+import application.model.game.entity.GeneratorLineup;
 import application.model.game.entity.ParseMatchInformation;
 import application.model.game.handler.MatchHandler;
 import application.model.game.physics.VectorFioreNoSync;
@@ -28,7 +28,7 @@ public class MatchClient extends Task<String>{
 	
 	private Client client = null ;
 	private BufferedReader in = null ;
-	private int lineup = Lineup.LINEUP2;
+	private int lineup = GeneratorLineup.LINEUP2;
 	private String usernameGuest = null ;
 	private boolean match_activated = false ;
 	

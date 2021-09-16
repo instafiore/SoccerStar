@@ -2,9 +2,12 @@ package application.control;
 
 import application.SceneHandler;
 import application.Utilities;
+import application.model.game.entity.Lineup;
 import application.model.game.entity.Skin;
+import application.model.game.handler.LineupHandler;
 import application.model.game.handler.SkinHandler;
 import application.net.client.Client;
+import application.net.common.Protocol;
 import application.view.Dialog;
 import javafx.animation.FadeTransition;
 import javafx.event.ActionEvent;
@@ -21,18 +24,31 @@ import javafx.util.Pair;
 
 public class ShopController {
 
+	 @FXML
+    private Button back_button_shop_page;
+
     @FXML
     private Label information_label;
-	
-    @FXML
-    private Button back_button_shop_page;
 
     @FXML
     private Button buy_coins_button_shop_page;
 
-
     @FXML
     private FlowPane box_skins;
+
+    @FXML
+    private Label label_balls;
+
+    @FXML
+    private FlowPane box_lineups;
+
+    @FXML
+    private Label label_lineups;
+    
+    @FXML
+    private Label coins;
+
+
     
     private static final String ShopTitle = "Shop";
     
@@ -40,8 +56,12 @@ public class ShopController {
     public void initialize() {
     	Client.getInstance().setCurrentState(Client.SHOP);
     	
+    	coins.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 31));
     	back_button_shop_page.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 20));
     	buy_coins_button_shop_page.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 14));
+    	label_balls.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 23));
+    	label_lineups.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 23));
+    	
     	
     	back_button_shop_page.setOnMouseEntered(new HoverButton());
     	back_button_shop_page.setOnMouseExited(new HoverButton());
@@ -50,24 +70,41 @@ public class ShopController {
     	buy_coins_button_shop_page.setOnMouseExited(new HoverButton());
     	
     	showText(ShopTitle, 40, Dialog.INFORMATION_WINDOW, 20);
-    	 
-    	init();
-    }
+    	
+    	Client.getInstance().sendMessage(Protocol.INFORMATIONSHOP);
 
-    private void init() {
+    }
+    
+    public void setCoins(String coins) {
+		this.coins.setText(coins);
+	}
+
+    public void init() {
+    	
+    	box_lineups.getChildren().clear();
+    	box_skins.getChildren().clear();
     	
 		for(Skin skin : SkinHandler.getInstance().getSkins()) {
 			Pair<Pane, Object> pair = SceneHandler.getInstance().loadPane("InformationSkinPane");
 			SkinController skinController = (SkinController) pair.getValue() ;
 			
 			skinController.setName(skin.getName());
-			if(!skin.isOwned())	
-				skinController.setPrice(skin.getPrice());
-			else 
-				skinController.setPrice(SkinController.OWNED);
-			skinController.setColor(skin.getColor());
 			skinController.setOwn(skin.isOwned());
+			skinController.setPrice(skin.getPrice());
+			skinController.setColor(skin.getColor());
 			box_skins.getChildren().add(pair.getKey());
+		}
+		
+		for(Lineup lineup : LineupHandler.getInstance().getLineups()) {
+			Pair<Pane, Object> pair = SceneHandler.getInstance().loadPane("InformationLineupPane");
+			LineupController lineupController = (LineupController) pair.getValue() ;
+			
+			lineupController.setName(lineup.getName());
+			lineupController.setOwn(lineup.isOwned());
+			lineupController.setPrice(lineup.getPrice());
+			// TODO IMAGE
+			
+			box_lineups.getChildren().add(pair.getKey());
 		}
 	}
 

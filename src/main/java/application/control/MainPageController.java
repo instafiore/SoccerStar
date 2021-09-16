@@ -10,6 +10,7 @@ import application.view.Dialog;
 import javafx.animation.FadeTransition;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -132,7 +133,21 @@ public class MainPageController {
     	    trans.play();
     	    container_cancel_button.getChildren().remove(cancel_button);
     	});
+    	
+    	FXMLLoader loaderLogin = SceneHandler.getInstance().getLoader("LoginPage") ;
+    	FXMLLoader loaderRegistration = SceneHandler.getInstance().getLoader("RegistrationPage");
+    	
+    	if(loaderLogin != null ) {
+    		LoginController loginController = (LoginController) loaderLogin.getController() ;
+    		loginController.setPressed(false);
+    	}
+    	
+    	if(loaderRegistration != null ) {
     		
+    		RegistrationController registrationController = (RegistrationController) loaderRegistration.getController() ;
+        	registrationController.setPressed(false);
+    	}
+    
     	
     	changeBackgroundButtonField();
     	changeDataButtonField();
