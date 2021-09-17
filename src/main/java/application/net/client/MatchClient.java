@@ -31,6 +31,8 @@ public class MatchClient extends Task<String>{
 	private int lineup = GeneratorLineup.LINEUP2;
 	private String usernameGuest = null ;
 	private boolean match_activated = false ;
+	private String colorHome = "" ;
+	private String colorGuest = "" ;
 	
 	private ParseMatchInformation parseMatchInformation ;
 	private int field ;
@@ -97,6 +99,80 @@ public class MatchClient extends Task<String>{
 			return Protocol.ERRORMATCH;
 		}
 		
+		MatchController.getInstance().setUsernameGuest(usernameGuest);
+		
+		message = read();
+		
+		if(message == null)
+			return Protocol.ERRORMATCH;
+		
+		if(message.equals(Protocol.CONNECTION_LOST)) {
+			printConnectionLost();
+			return Protocol.NOERRORBUTLEFTMATCH ;
+		}
+		if(message.equals(Protocol.GENERALERROR)) {
+			printConnectionLost();
+			return Protocol.ERRORMATCH;
+		}
+		
+		if(!message.equals(Protocol.YOURCOLOR))
+		{
+			printConnectionLost();
+			return Protocol.ERRORMATCH;
+		}
+		
+		colorHome = read() ;
+		
+		if(colorHome == null)
+			return Protocol.ERRORMATCH;
+		
+
+		if(colorHome.equals(Protocol.CONNECTION_LOST)) {
+			printConnectionLost();
+			return Protocol.NOERRORBUTLEFTMATCH ;
+		}
+		if(colorHome.equals(Protocol.GENERALERROR)) {
+			printConnectionLost();
+			return Protocol.ERRORMATCH;
+		}
+		
+		message = read();
+		
+		if(message == null)
+			return Protocol.ERRORMATCH;
+		
+		if(message.equals(Protocol.CONNECTION_LOST)) {
+			printConnectionLost();
+			return Protocol.NOERRORBUTLEFTMATCH ;
+		}
+		if(message.equals(Protocol.GENERALERROR)) {
+			printConnectionLost();
+			return Protocol.ERRORMATCH;
+		}
+		
+		if(!message.equals(Protocol.COLORGUEST))
+		{
+			printConnectionLost();
+			return Protocol.ERRORMATCH;
+		}
+		
+		colorGuest = read() ;
+		
+		if(colorGuest == null)
+			return Protocol.ERRORMATCH;
+		
+		if(colorGuest.equals(Protocol.CONNECTION_LOST)) {
+			printConnectionLost();
+			return Protocol.NOERRORBUTLEFTMATCH ;
+		}
+		if(colorGuest.equals(Protocol.GENERALERROR)) {
+			printConnectionLost();
+			return Protocol.ERRORMATCH;
+		}
+		
+		MatchController.getInstance().setColorHome(colorHome);
+		MatchController.getInstance().setColorGuest(colorGuest);
+
 		message = read();
 		
 		if(message.equals(Protocol.CONNECTION_LOST)) {
@@ -146,6 +222,7 @@ public class MatchClient extends Task<String>{
 
 		showView();
 		setMatch_activated(true);
+		parseMatchInformation.setReady(true);
 		
 		return Protocol.NOERRORMATCH;
 }
@@ -183,23 +260,38 @@ public class MatchClient extends Task<String>{
 	public String readingMatchStarted() throws IOException {
 		
 		String message = null ;
-		
+
 		if(in == null) {
 			setMatch_activated(false);
 			return Protocol.ERRORMATCH;
 		}
-	
+		
 		if(in.ready()) {
 			message = read() ;
 			if(message == null)
 			{
 				setMatch_activated(false);
 				return Protocol.ERRORMATCH;
+				
 			}else if(message.equals(Protocol.INFORMATIONMATCHMESSAGE)) {
+				
 				message = read() ;
 				parseMatchInformation.addNewInformation(message);
-			}
-			else if(message.equals(Protocol.YOUWON)){
+				
+			}else if(message.equals(Protocol.HOVERBALL)) {
+				
+				message = read() ;
+				
+				double x = Double.parseDouble(message.split(Protocol.BALLDELIMITER)[0]);
+				double y = Double.parseDouble(message.split(Protocol.BALLDELIMITER)[1]);
+				
+				parseMatchInformation.setHover(new VectorFioreNoSync(x, y));
+				
+			}else if(message.equals(Protocol.HOVERNOBALL)) {
+				
+				parseMatchInformation.setHoverFalseAll();
+				
+			}else if(message.equals(Protocol.YOUWON)){
 				//TODO
 				try {
 					Thread.sleep(2000);
@@ -225,10 +317,12 @@ public class MatchClient extends Task<String>{
 				return Protocol.NOERRORBUTLEFTMATCH;
 			}
 			else if(message.equals(Protocol.YOUSCORED)){
-				//TODO
+				
+				parseMatchInformation.setHomeScored(true);
 				
 			}else if(message.equals(Protocol.OPPONENTSCORED)){
-				//TODO
+				
+				parseMatchInformation.setGuestScored(true);
 				
 			}else if(message.equals(Protocol.GENERALERROR) || message.equals(Protocol.GENERALERROR)){
 				setMatch_activated(false);

@@ -32,7 +32,7 @@ public class MainPageController {
 
     private static final double TIMETRANSACTION = 1.0 ;
     
-
+ 
     @FXML
     private BorderPane root;
 
@@ -67,21 +67,23 @@ public class MainPageController {
     @FXML
     private Label information_label;
     
-    private boolean cancel_attive = false ;
-    
     @FXML
     private HBox container_cancel_button;
+    
+    @FXML
+    private Label coins_main_page_label;
     
     private Button cancel_button = new Button("CANCEL");
     
     private static final String WELCOME  = "Welcome ";
     
-    @FXML
-    private Label coins_main_page_label;
+    private boolean cancel_attive = false ;
+    
+    private boolean ready = false ;
     
     @FXML
     public void initialize() {
-    	
+    	SceneHandler.getInstance().setCursor(SceneHandler.DEFAULT_CURSOR);
     	Client.getInstance().setCurrentState(Client.MAINPAGE);
     	
     	leave_button_main_page.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 15));
@@ -157,6 +159,14 @@ public class MainPageController {
     	Client.getInstance().sendMessage(Protocol.INITIALINFORMATION);
     }
     
+    public void setReady(boolean ready) {
+		this.ready = ready;
+	}
+    
+    public boolean isReady() {
+		return ready;
+	}
+    
     public void setCoins_main_page_label(String coins) {
 		this.coins_main_page_label.setText(coins);
 	}
@@ -191,6 +201,10 @@ public class MainPageController {
     		showText(Protocol.LEAVEWITHOUTCANCEL, 20, Dialog.ERROR_WINDOW,2);
     		return;
     	}
+    	
+    	if(!isReady())
+    		return ;
+    	
     	Client.getInstance().setCurrentState(Client.ACCOUNT);
     	SceneHandler.getInstance().loadScene("AccountPage", true, true);
     }
@@ -204,7 +218,7 @@ public class MainPageController {
     @FXML
     void onClickButtonField(MouseEvent event) {
     	
-    	if(Client.getInstance().getCurrentState() != Client.MAINPAGE)
+    	if(Client.getInstance().getCurrentState() != Client.MAINPAGE || !isReady())
     		return ;
     	
     	container_cancel_button.getChildren().add(cancel_button);
@@ -240,6 +254,8 @@ public class MainPageController {
     		showText(Protocol.LEAVEWITHOUTCANCEL, 20, Dialog.ERROR_WINDOW,2);
     		return;
     	}
+    	if(!isReady())
+    		return ;
     }
 
     @FXML
@@ -249,6 +265,8 @@ public class MainPageController {
     		showText(Protocol.LEAVEWITHOUTCANCEL, 20, Dialog.ERROR_WINDOW,2);
     		return;
     	}
+    	if(!isReady())
+    		return ;
     	if(Dialog.getInstance().showConfirmDialog(Dialog.CONFIRMLOGOUT) != Dialog.YES)
     		return ;
     	Client.getInstance().logout();
@@ -261,6 +279,8 @@ public class MainPageController {
     		showText(Protocol.LEAVEWITHOUTCANCEL, 20, Dialog.ERROR_WINDOW,2);
     		return;
     	}
+    	if(!isReady())
+    		return ;
     	SceneHandler.getInstance().loadScene("ShopPage", true, true);
     }
     
@@ -315,6 +335,8 @@ public class MainPageController {
     		showText(Protocol.LEAVEWITHOUTCANCEL, 20, Dialog.ERROR_WINDOW,2);
     		return;
     	}
+    	if(!isReady())
+    		return ;
     	Client.getInstance().clickButtonLeft();
     	changeBackgroundButtonField();
     	changeDataButtonField();
@@ -328,6 +350,8 @@ public class MainPageController {
     		showText(Protocol.LEAVEWITHOUTCANCEL, 20, Dialog.ERROR_WINDOW,2);
     		return;
     	}
+    	if(!isReady())
+    		return ;
     	Client.getInstance().clickButtonRight();
     	changeBackgroundButtonField();
     	changeDataButtonField();

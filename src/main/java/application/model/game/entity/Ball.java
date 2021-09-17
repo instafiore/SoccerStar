@@ -10,27 +10,37 @@ public class Ball {
 	private VectorFioreNoSync positionCenter;
 	private VelocityNoSync velocity;
 	private Double radius;
-	private int color = BLUE;
+	private int player = PLAYER1;
+	private String color = "" ;
 	private boolean inDoor = false;
-	private int player ;
+	private boolean hover = false ;
 	
-
-	public static final int BLUE = 0 ;
-	public static final int RED = 1;
+	public static final int PLAYER1 = 0 ;
+	public static final int PLAYER2 = 1;
 	public static final int WHITE = 2 ;
-	public static final int TOOK = 3 ;
 	
 
 	
-	public Ball(VectorFioreNoSync position, VelocityNoSync velocity, Double radius, int color) {
+	public Ball(VectorFioreNoSync position, VelocityNoSync velocity, Double radius,String color , int player) {
 		super();
 		this.position = position;
 		this.radius = radius;
 		updatePositionCenter();
 		this.velocity = velocity;
 		velocity.setMag(velocity.getMagnitude()*Settings.FREQUENCY);
+		this.player = player ;
 		this.color = color ;
 	}
+	
+	
+	public void setHover(boolean hover) {
+		this.hover = hover;
+	}
+	
+	public boolean isHover() {
+		return hover;
+	}
+	
 	
 	public void updatePositionCenter() {
 		this.positionCenter = new VectorFioreNoSync(position.getX()+radius, position.getY()+radius);
@@ -98,12 +108,20 @@ public class Ball {
 		updatePositionCenter();
 	}
 	
-	public void setColor(int color) {
+	public void setColor(String color) {
 		this.color = color;
 	}
 	
-	public int getColor() {
+	public String getColor() {
 		return color;
+	}
+	
+	public void setPlayer(int player) {
+		this.player = player;
+	}
+	
+	public int getPlayer() {
+		return player;
 	}
 
 

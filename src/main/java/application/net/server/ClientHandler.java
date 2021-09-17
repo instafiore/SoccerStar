@@ -34,11 +34,21 @@ public class ClientHandler implements Runnable {
 	private String username = null;
 	private boolean throwMessagesMatch = false;
 	private Server server;
+	private String currentField = Settings.FIELD1 ;
 
 	public String getUsername() {
 		return username;
 	}
 
+	
+	public void setCurrentField(String currentField) {
+		this.currentField = currentField;
+	}
+	
+	public String getCurrentField() {
+		return currentField;
+	}
+	
 	public ClientHandler(Socket client, Server server) {
 		super();
 		this.client = client;

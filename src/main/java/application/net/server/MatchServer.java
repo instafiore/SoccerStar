@@ -51,14 +51,16 @@ public class MatchServer implements Runnable {
 	private static final String DISCONNECTEDPLAYER2 = "Player2 is disconnected" ;
 	private static final String NOONEISDISCONNETED = "No one is disconnected" ;
 	
-	private static final int PLAYER1 = Ball.BLUE ;
-	private static final int PLAYER2 = Ball.RED ;
+	private static final int PLAYER1 = Ball.PLAYER1 ;
+	private static final int PLAYER2 = Ball.PLAYER2 ;
 	
 	private Integer[] typeOfLineup = new Integer[2] ;
 	private boolean matchActive = false ;
 	private String informationMessagePlayer1 = null ;
 	private String informationMessagePlayer2 = null ;
 	private DataMatch dataMatch = null ;
+	private String colorPlayer1 = "" ;
+	private String colorPlayer2 = "" ;
 	
 	public MatchServer(ClientHandler player1, ClientHandler player2 , Field field) {
 		super();
@@ -95,7 +97,11 @@ public class MatchServer implements Runnable {
 	public void run() {
 		
 		
-		try {			
+		try {	
+			
+			Database.getInstance().removeCoins(username1, Utilities.getPriceField(player1.getCurrentField()));
+			Database.getInstance().removeCoins(username2, Utilities.getPriceField(player2.getCurrentField()));
+			
 			sendMessageAll(Protocol.PREPARINGMATCH);
 		
 			String message = null ;
@@ -118,8 +124,29 @@ public class MatchServer implements Runnable {
 			sendMessage(Protocol.USERNAMEGUEST, PLAYER2);
 			sendMessage(username2, PLAYER2);
 			
-			matchHandler.addBalls(GeneratorLineup.getInstace().getLineup(typeOfLineup[0]));
-			matchHandler.addBalls(GeneratorLineup.getInstace().getLineupMirrored(typeOfLineup[1]));
+			
+			try {
+				colorPlayer1 = Database.getInstance().getAccount(username1).getCurrentSkin();
+				colorPlayer2 = Database.getInstance().getAccount(username2).getCurrentSkin() ;
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			sendMessage(Protocol.YOURCOLOR, PLAYER2);
+			sendMessage(colorPlayer1, PLAYER2);
+			sendMessage(Protocol.COLORGUEST, PLAYER2);
+			sendMessage(colorPlayer2, PLAYER2);
+			
+			sendMessage(Protocol.YOURCOLOR, PLAYER1);
+			sendMessage(colorPlayer2, PLAYER1);
+			sendMessage(Protocol.COLORGUEST, PLAYER1);
+			sendMessage(colorPlayer1, PLAYER1);
+			
+			
+		
+			matchHandler.addBalls(GeneratorLineup.getInstace().getLineup(typeOfLineup[0],colorPlayer1));
+			matchHandler.addBalls(GeneratorLineup.getInstace().getLineupMirrored(typeOfLineup[1],colorPlayer2));
 			matchHandler.add(GeneratorLineup.getInstace().getBallToPlay());
 			
 			System.out.println("[MATCHSERVER] "+Protocol.GAMESTARTED+" -> Player1: "+username1+" , Player2: "+username2);
@@ -202,8 +229,76 @@ public class MatchServer implements Runnable {
 					
 					return ;
 					
-				}
-				else if(p.getKey().equals(Protocol.LEFTGAME)) {
+				}else if(p.getKey().equals(Protocol.HOVERBALL)) {
+					
+					i = p.getValue();
+					
+					double x = 0 ;
+					double y = 0 ;
+					
+					
+					if(i == PLAYER1) 
+					{
+						message = read1() ;
+						x = Double.parseDouble(message.split(Protocol.BALLDELIMITER)[0]);
+						y = Double.parseDouble(message.split(Protocol.BALLDELIMITER)[1]);
+						
+						x += Settings.DIMENSIONSTANDARDBALL ;
+						y += Settings.DIMENSIONSTANDARDBALL ;
+						
+						Ball ball = matchHandler.tookBall(x, y);
+						
+						x = Settings.FIELDWIDTHFRAME - x  - Settings.DIMENSIONSTANDARDBALL;
+						y -= Settings.DIMENSIONSTANDARDBALL ;
+						
+						if(ball == null) {
+							System.out.println("[MATCHSERVER] Player 1 -> "+ Protocol.LEFTGAME);
+							sendMessage(Protocol.LEFTGAME, i);
+							notifyClients(NOONEISDISCONNETED);
+							dataMatch.forfeitOnTheBooks(PLAYER1);
+							Database.getInstance().insertMatch(dataMatch);
+							return ;
+						}
+					}
+					else 
+					{
+						message = read2() ;
+						
+						x = Double.parseDouble(message.split(Protocol.BALLDELIMITER)[0]);
+						y = Double.parseDouble(message.split(Protocol.BALLDELIMITER)[1]);
+						
+						
+						x += Settings.DIMENSIONSTANDARDBALL ;
+						y += Settings.DIMENSIONSTANDARDBALL ;
+						
+						x = Settings.FIELDWIDTHFRAME - x  - Settings.DIMENSIONSTANDARDBALL;
+					
+						Ball ball = matchHandler.tookBall(x, y);
+						
+	
+						y -= Settings.DIMENSIONSTANDARDBALL ;
+						
+						if(ball == null) {
+							System.out.println("[MATCHSERVER] Player 2 -> "+ Protocol.LEFTGAME);
+							sendMessage(Protocol.LEFTGAME, i);
+							notifyClients(NOONEISDISCONNETED);
+							dataMatch.forfeitOnTheBooks(PLAYER2);
+							Database.getInstance().insertMatch(dataMatch);
+							return ;
+						}
+						
+					}
+					
+					sendMessage(Protocol.HOVERBALL, i);
+					sendMessage(x+Protocol.BALLDELIMITER+y, i);
+					
+				}else if(p.getKey().equals(Protocol.HOVERNOBALL)) {
+					
+					i = p.getValue();
+					
+					sendMessage(Protocol.HOVERNOBALL, i);
+					
+				}else if(p.getKey().equals(Protocol.LEFTGAME)) {
 					
 					i = p.getValue();
 					
@@ -212,6 +307,7 @@ public class MatchServer implements Runnable {
 						System.out.println("[MATCHSERVER] Player 1 -> "+ Protocol.LEFTGAME);
 						sendMessage(Protocol.LEFTGAME, i);
 						notifyClients(NOONEISDISCONNETED);
+						Database.getInstance().insertCoins(username2, Utilities.getRewardField(player2.getCurrentField()));
 						dataMatch.forfeitOnTheBooks(PLAYER1);
 						Database.getInstance().insertMatch(dataMatch);
 					}
@@ -220,6 +316,7 @@ public class MatchServer implements Runnable {
 						System.out.println("[MATCHSERVER] Player 2 -> "+ Protocol.LEFTGAME);
 						sendMessage(Protocol.LEFTGAME, i);
 						notifyClients(NOONEISDISCONNETED);
+						Database.getInstance().insertCoins(username1, Utilities.getRewardField(player1.getCurrentField()));
 						dataMatch.forfeitOnTheBooks(PLAYER2);
 						Database.getInstance().insertMatch(dataMatch);
 					}
@@ -302,7 +399,7 @@ public class MatchServer implements Runnable {
 						return ;
 					}
 					
-					if(b.getColor() == i && ( i == PLAYER1 && matchHandler.getTurn() || i == PLAYER2 && !matchHandler.getTurn() ) )
+					if(b.getPlayer() == i && ( i == PLAYER1 && matchHandler.getTurn() || i == PLAYER2 && !matchHandler.getTurn() ) )
 					{
 						matchHandler.setTurn(!matchHandler.getTurn());
 						
@@ -418,10 +515,11 @@ public class MatchServer implements Runnable {
 		for(Ball ball : matchHandler.getBalls())
 			initialPositions.add(ball.getPosition());
 		
-		for(Ball ball : GeneratorLineup.getInstace().getLineup(typeOfLineup[0]))
+	
+		for(Ball ball : GeneratorLineup.getInstace().getLineup(typeOfLineup[0],colorPlayer1))
 			endPositions.add(ball.getPosition());
 		
-		for(Ball ball : GeneratorLineup.getInstace().getLineupMirrored(typeOfLineup[1]))
+		for(Ball ball : GeneratorLineup.getInstace().getLineupMirrored(typeOfLineup[1],colorPlayer2))
 			endPositions.add(ball.getPosition());
 		
 		endPositions.add(GeneratorLineup.getInstace().getBallToPlay().getPosition());
@@ -442,10 +540,73 @@ public class MatchServer implements Runnable {
 	
 	private void resetLineups() {
 		matchHandler.clearBalls();
-		matchHandler.addBalls(GeneratorLineup.getInstace().getLineup(typeOfLineup[0]));
-		matchHandler.addBalls(GeneratorLineup.getInstace().getLineupMirrored(typeOfLineup[1]));
+		matchHandler.addBalls(GeneratorLineup.getInstace().getLineup(typeOfLineup[0],colorPlayer1));
+		matchHandler.addBalls(GeneratorLineup.getInstace().getLineupMirrored(typeOfLineup[1],colorPlayer2));
 		matchHandler.add(GeneratorLineup.getInstace().getBallToPlay());
 	}
+	
+	
+	public String read1() {
+		
+		String message = null ;
+		
+		try {
+			message = in1.readLine();
+			
+			if(message == null) {
+				if(username1 != null)
+					System.out.println("[MATCHSERVER] "+Protocol.CONNECTION_LOST+" with "+username1);
+				else
+					System.out.println("[MATCHSERVER] "+Protocol.CONNECTION_LOST+" with player1");
+				in1 = null ;
+				out1 = null ;
+				out2.println(Protocol.LEFTGAME);
+				return null;
+			}else
+			{
+				if(username1 != null)
+					System.out.println("[MATCHSERVER] Message: "+message+" from "+username1);
+				else
+					System.out.println("[MATCHSERVER] Message: "+message+" from player1");
+			}
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		return message ;
+	}
+	
+	public String read2() {
+
+		String message = null ;
+		
+		try {
+			message = in2.readLine();
+			
+			if(message == null) {
+				if(username2 != null)
+					System.out.println("[MATCHSERVER] "+Protocol.CONNECTION_LOST+" with "+username2);
+				else
+					System.out.println("[MATCHSERVER] "+Protocol.CONNECTION_LOST+" with player2");
+				in2 = null ;
+				out2 = null ;
+				out1.println(Protocol.LEFTGAME);
+				
+				return null;
+			}else
+			{
+				if(username2 != null)
+					System.out.println("[MATCHSERVER] Message: "+message+" from "+username2);
+				else
+					System.out.println("[MATCHSERVER] Message: "+message+" from player2");
+			}
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		return message ;
+	}
+	
 	
 	private Pair<String, Integer> getAction() throws IOException{
 		
@@ -458,6 +619,8 @@ public class MatchServer implements Runnable {
 			i = PLAYER1 ;
 			if(mess == null || mess.equals(Protocol.CONNECTION_LOST))
 				return new Pair<String, Integer>(null, i);
+			
+			System.out.println("[MATCHSERVER] Message: "+mess+" from "+username2);
 			return new Pair<String, Integer>(mess, i);
 		
 		}else if(in2.ready()) {
@@ -465,6 +628,8 @@ public class MatchServer implements Runnable {
 			i = PLAYER2 ;
 			if(mess == null || mess.equals(Protocol.CONNECTION_LOST))
 				return new Pair<String, Integer>(null, i);
+			
+			System.out.println("[MATCHSERVER] Message: "+mess+" from "+username2);
 			return new Pair<String, Integer>(mess, i);
 		}
 		
@@ -558,66 +723,7 @@ public class MatchServer implements Runnable {
 		
 	}
 	
-	public String read1() {
-		
-		String message = null ;
-		
-		try {
-			message = in1.readLine();
-			
-			if(message == null) {
-				if(username1 != null)
-					System.out.println("[MATCHSERVER] "+Protocol.CONNECTION_LOST+" with "+username1);
-				else
-					System.out.println("[MATCHSERVER] "+Protocol.CONNECTION_LOST+" with player1");
-				in1 = null ;
-				out1 = null ;
-				out2.println(Protocol.LEFTGAME);
-				return null;
-			}else
-			{
-				if(username1 != null)
-					System.out.println("[MATCHSERVER] Message: "+message+" from "+username1);
-				else
-					System.out.println("[MATCHSERVER] Message: "+message+" from player1");
-			}
-			
-		} catch (Exception e) {
-			// TODO: handle exception
-		}
-		return message ;
-	}
-	
-	public String read2() {
 
-		String message = null ;
-		
-		try {
-			message = in2.readLine();
-			
-			if(message == null) {
-				if(username2 != null)
-					System.out.println("[MATCHSERVER] "+Protocol.CONNECTION_LOST+" with "+username2);
-				else
-					System.out.println("[MATCHSERVER] "+Protocol.CONNECTION_LOST+" with player2");
-				in2 = null ;
-				out2 = null ;
-				out1.println(Protocol.LEFTGAME);
-				
-				return null;
-			}else
-			{
-				if(username2 != null)
-					System.out.println("[MATCHSERVER] Message: "+message+" from "+username2);
-				else
-					System.out.println("[MATCHSERVER] Message: "+message+" from player2");
-			}
-			
-		} catch (Exception e) {
-			// TODO: handle exception
-		}
-		return message ;
-	}
 
 	private void closeStreams() {
 		
@@ -719,8 +825,10 @@ public class MatchServer implements Runnable {
 		if(whoIsDisconnected.equals(DISCONNECTEDBOTH)) {
 			closeStreams();
 		}else if(whoIsDisconnected.equals(DISCONNECTEDPLAYER1)){
+			Database.getInstance().insertCoins(username2, Utilities.getRewardField(player2.getCurrentField()));
 			closeStream1();
 		}else if(whoIsDisconnected.equals(DISCONNECTEDPLAYER2)){
+			Database.getInstance().insertCoins(username1, Utilities.getRewardField(player2.getCurrentField()));
 			closeStream2();
 		}
 	}

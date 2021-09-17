@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import application.Settings;
 import application.model.game.physics.VectorFioreNoSync;
 import application.model.game.physics.VelocityNoSync;
+import application.view.MatchView;
 
 public class GeneratorLineup {
 	
@@ -21,24 +22,24 @@ public class GeneratorLineup {
 		return instace;
 	}
 
-	public ArrayList<Ball> getLineup(int typeOfLineup){
+	public ArrayList<Ball> getLineup(int typeOfLineup,String color){
 		
 		ArrayList<Ball> balls = new ArrayList<Ball>();
 		
 		for(int j = 0 ; j < 5 ; ++j)
-			balls.add(new Ball(new VectorFioreNoSync(0.0), new VelocityNoSync(0.0), Settings.DIMENSIONSTANDARDBALL, Ball.BLUE));
+			balls.add(new Ball(new VectorFioreNoSync(0.0), new VelocityNoSync(0.0), Settings.DIMENSIONSTANDARDBALL,color, Ball.PLAYER1));
 		
 		placeBalls(balls,typeOfLineup);
 	
 		return balls ;
 	}
 	
-	public ArrayList<Ball> getLineupMirrored(int typeOfLineup){
+	public ArrayList<Ball> getLineupMirrored(int typeOfLineup,String color){
 		
 		ArrayList<Ball> balls = new ArrayList<Ball>();
 		
 		for(int j = 0 ; j < 5 ; ++j)
-			balls.add(new Ball(new VectorFioreNoSync(0.0), new VelocityNoSync(0.0), Settings.DIMENSIONSTANDARDBALL, Ball.RED));
+			balls.add(new Ball(new VectorFioreNoSync(0.0), new VelocityNoSync(0.0), Settings.DIMENSIONSTANDARDBALL,color, Ball.PLAYER2));
 		
 		placeBallsMirrored(balls,typeOfLineup);
 	
@@ -51,8 +52,8 @@ public class GeneratorLineup {
 		double y = Settings.FIELDHEIGHTFRAME * 0.50 - Settings.DIMENSIONOFBALLTOPLAY ;
 		VectorFioreNoSync position11 = new VectorFioreNoSync(x,y);
 		
-		Ball ball = new Ball(position11,new VelocityNoSync(0.0),Settings.DIMENSIONOFBALLTOPLAY , Ball.WHITE);
-		ball.setColor(Ball.WHITE);
+		Ball ball = new Ball(position11,new VelocityNoSync(0.0),Settings.DIMENSIONOFBALLTOPLAY , MatchView.COLORBALLWHITE , Ball.WHITE);
+		ball.setPlayer(Ball.WHITE);
 		
 		return ball ;
 	}

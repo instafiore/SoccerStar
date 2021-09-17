@@ -26,8 +26,8 @@ public class DataMatch implements Comparable<DataMatch>{
 	private String colorField = "" ;
 	
 	public static final int NOONE = 3;
-	public static final int HOME = Ball.BLUE;
-	public static final int GUEST = Ball.RED ;
+	public static final int HOME = Ball.PLAYER1;
+	public static final int GUEST = Ball.PLAYER2 ;
 	
 	public DataMatch(String date,String field, String home, String guest) {
 		super();

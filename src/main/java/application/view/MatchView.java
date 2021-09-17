@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 
+import application.SceneHandler;
 import application.Settings;
 import application.control.MatchController;
 import application.model.game.entity.Ball;
@@ -30,20 +31,27 @@ public class MatchView extends StackPane{
 	private Image fieldImg;
 	private Line line = null;
 	private Field field = null ;
+	private int currentField = FIELD1 ;
+	private String colorBorder = "";
+	private String colorDoor = "" ;
 	
 	public static final int FIELD1 = 0 ;
 	public static final int FIELD2 = 1 ;
 	public static final int FIELD3 = 2 ;
 	
-	private static final String COLORBLUEYOURTURN = "#16004d";
-	private static final String COLORBLUENOTYOURTURN = "#205a8c";
-	private static final String COLORREDYOURTURN = "#ff0000";
-	private static final String COLORREDNOTYOURTURN = "#8b0101";
-	private static final String COLORWHITENOTINDOOR = "#ffcc00";
-	private static final String COLORWHITEINDOOR = "#fbf6f6";
-	private static final String COLORBALLTOOK = "#f28444";
-	private static final String COLORBORDER = "#00b300";
+	private static final int STROKEWIDTHBALL = 7 ;
+	
+	private static final String NOTYOURTURNBLUE = "#00004c" ;
+	private static final String YOURTURNBLUE = "#0000ff" ;
+	private static final String NOTYOURTURNRED = "#cc0000" ;
+	private static final String YOURTURNRED = "#ff0000" ;
+	public  static final String COLORBALLWHITE = "#ffcc00";
+	
+	private static final String COLORHOVERRED = "ff7f7f";
+	private static final String COLORTOOK = "#6666ff";
 	private static final String COLORDOOR = "#005900";
+	
+	
 	
 	public MatchView() {
 		canvas = new Canvas();
@@ -59,14 +67,17 @@ public class MatchView extends StackPane{
 		case FIELD1:
 			fieldImg = new Image(getClass().getResourceAsStream("/application/view/field1.png"),Settings.FIELDWIDTHFRAME -  Settings.BORDERVERTICAL * 2 , Settings.FIELDHEIGHTFRAME - Settings.BORDERHORIZONTAL * 2 , false , true);
 			field = new Field(Settings.FIELD1 , Settings.BORDERHORIZONTAL, Settings.BORDERVERTICAL, Settings.FIELDWIDTHFRAME, Settings.FIELDHEIGHTFRAME, fieldImg );
+			currentField = FIELD1 ;
 			break;
 		case FIELD2:
 			fieldImg = new Image(getClass().getResourceAsStream("/application/view/field2.png"),Settings.FIELDWIDTHFRAME -  Settings.BORDERVERTICAL * 2 , Settings.FIELDHEIGHTFRAME - Settings.BORDERHORIZONTAL * 2 , false , true);
 			field = new Field(Settings.FIELD2 , Settings.BORDERHORIZONTAL, Settings.BORDERVERTICAL, Settings.FIELDWIDTHFRAME, Settings.FIELDHEIGHTFRAME, fieldImg );
+			currentField = FIELD2 ;
 			break;
 		case FIELD3:
 			fieldImg = new Image(getClass().getResourceAsStream("/application/view/field3.png"),Settings.FIELDWIDTHFRAME -  Settings.BORDERVERTICAL * 2 , Settings.FIELDHEIGHTFRAME - Settings.BORDERHORIZONTAL * 2 , false , true);
 			field = new Field(Settings.FIELD3 , Settings.BORDERHORIZONTAL, Settings.BORDERVERTICAL, Settings.FIELDWIDTHFRAME, Settings.FIELDHEIGHTFRAME, fieldImg );
+			currentField = FIELD3 ;
 			break;
 		default:
 			break;
@@ -83,6 +94,8 @@ public class MatchView extends StackPane{
 		this.setOnMousePressed(matchController);
 		this.setOnMouseReleased(matchController);
 		this.setOnMouseDragged(matchController);
+		this.setOnMouseMoved(matchController);
+		this.setOnMouseExited(matchController);
 	}
 	
 	
@@ -106,40 +119,54 @@ public class MatchView extends StackPane{
 		ArrayList<Ball> balls = informationMatch.getBalls();
 		boolean turn = informationMatch.isTurn();
 		
+		if(line != null)
+			drawLine(line);
+		
+		boolean hover_some_ball = false ;
+		
 		for(Ball ball : balls) {
-//			canvas.getGraphicsContext2D().setFill(Color.BEIGE);
-//			canvas.getGraphicsContext2D().setLineWidth(10);
-//			canvas.getGraphicsContext2D().strokeOval((int)  Math.round(ball.getPosition().getX()), (int)  Math.round(ball.getPosition().getY()),(int)  Math.round(ball.getRadius()*2),(int)  Math.round(ball.getRadius()*2));
-		switch (ball.getColor()) {
-			case Ball.RED:
+			
+		switch (ball.getPlayer()) {
+		
+			case Ball.PLAYER2:
 				if(!turn)
-					canvas.getGraphicsContext2D().setFill(Color.web(COLORREDYOURTURN, 1.0));
+					canvas.getGraphicsContext2D().setStroke(Color.web(YOURTURNRED, 1.0));
 				else	
-					canvas.getGraphicsContext2D().setFill(Color.web(COLORREDNOTYOURTURN, 1.0));
+					canvas.getGraphicsContext2D().setStroke(Color.web(NOTYOURTURNRED, 1.0));
+				if(ball.isHover())
+					canvas.getGraphicsContext2D().setStroke(Color.web(COLORHOVERRED, 1.0));
+				canvas.getGraphicsContext2D().setLineWidth(STROKEWIDTHBALL);
+				canvas.getGraphicsContext2D().strokeOval((int)  Math.round(ball.getPosition().getX()), (int)  Math.round(ball.getPosition().getY()),(int)  Math.round(ball.getRadius()*2),(int)  Math.round(ball.getRadius()*2));
+				canvas.getGraphicsContext2D().setFill(Color.web(ball.getColor(), 1.0));
 				break;
-			case Ball.BLUE:
+			case Ball.PLAYER1:
 				if(turn)
-					canvas.getGraphicsContext2D().setFill(Color.web(COLORBLUEYOURTURN, 1.0));
+					canvas.getGraphicsContext2D().setStroke(Color.web(YOURTURNBLUE, 1.0));
 				else
-					canvas.getGraphicsContext2D().setFill(Color.web(COLORBLUENOTYOURTURN, 1.0));
+					canvas.getGraphicsContext2D().setStroke(Color.web(NOTYOURTURNBLUE, 1.0));
+				if(ball.isHover())
+				{
+					canvas.getGraphicsContext2D().setStroke(Color.web(COLORTOOK, 1.0));
+					hover_some_ball = true ;
+				}
+				canvas.getGraphicsContext2D().setLineWidth(STROKEWIDTHBALL);
+				canvas.getGraphicsContext2D().strokeOval((int)  Math.round(ball.getPosition().getX()), (int)  Math.round(ball.getPosition().getY()),(int)  Math.round(ball.getRadius()*2),(int)  Math.round(ball.getRadius()*2));
+				canvas.getGraphicsContext2D().setFill(Color.web(ball.getColor(), 1.0));
 				break;
 			case Ball.WHITE:
-				
-				if(ball.isInDoor())
-					canvas.getGraphicsContext2D().setFill(Color.web(COLORWHITEINDOOR, 1.0));
-				else
-					canvas.getGraphicsContext2D().setFill(Color.web(COLORWHITENOTINDOOR, 1.0));
+				canvas.getGraphicsContext2D().setLineWidth(1);
+				canvas.getGraphicsContext2D().setFill(Color.web(COLORBALLWHITE, 1.0));
 				break;
-			case Ball.TOOK:
-				canvas.getGraphicsContext2D().setFill(Color.web(COLORBALLTOOK,1.0));
 			default:
 				break;
 			}
 			canvas.getGraphicsContext2D().fillOval((int)  Math.round(ball.getPosition().getX()), (int)  Math.round(ball.getPosition().getY()),(int)  Math.round(ball.getRadius()*2),(int)  Math.round(ball.getRadius()*2));
 		}
 		
-		if(line != null)
-			drawLine(line);
+		if(hover_some_ball)
+			SceneHandler.getInstance().setCursor(SceneHandler.HOVER_BALL_CURSOR);
+		else
+			SceneHandler.getInstance().setCursor(SceneHandler.MATCH_CURSOR);
 	}
 	
 	private void drawField() {
@@ -151,8 +178,33 @@ public class MatchView extends StackPane{
 
 	
 	private void drawBorders() {
+		
+		String colorLine = "" ;
+		
+		switch (currentField) {
+		case FIELD1:
+			colorBorder = Settings.COLORBORDERFIELD1 ;
+			colorDoor = Settings.COLORFIELD1 ;
+			colorLine = "#ffffff" ;
+			break;
+		case FIELD2:
+			colorBorder = Settings.COLORBORDERFIELD2 ;
+			colorDoor = Settings.COLORFIELD2 ;
+			colorLine = "#ffffff" ;
+			break;
+		case FIELD3:
+			colorBorder = Settings.COLORBORDERFIELD3 ;
+			colorDoor = Settings.COLORFIELD3 ;
+			colorLine = "#FF00FF" ;
+			break;
+		default:
+			colorBorder = Settings.COLORBORDERFIELD1 ;
+			colorDoor = Settings.COLORFIELD1 ;
+			colorLine = "#ffffff" ;
+			break;
+		}
 			
-			canvas.getGraphicsContext2D().setFill(Color.web(COLORBORDER, 0.7));
+			canvas.getGraphicsContext2D().setFill(Color.web(colorBorder, 0.7));
 			
 			// Upper border
 			canvas.getGraphicsContext2D().fillRect(0,0,field.getWidth(),field.getBorderHorizontal());
@@ -172,12 +224,18 @@ public class MatchView extends StackPane{
 			// Right border down
 			canvas.getGraphicsContext2D().fillRect(field.getWidth()-field.getBorderVertical(),field.getHeight()*2/3,field.getBorderVertical(),field.getHeight()/3);
 			
-			canvas.getGraphicsContext2D().setFill(Color.web(COLORDOOR, 0.7));
+			canvas.getGraphicsContext2D().setFill(Color.web(colorDoor, 0.7));
 			
 			// Left door
+			canvas.getGraphicsContext2D().setStroke(Color.web(colorLine, 1));
+			canvas.getGraphicsContext2D().setLineWidth(4);
+			canvas.getGraphicsContext2D().strokeRect(0,field.getHeight()/3,field.getBorderVertical(),field.getHeight()/3);
 			canvas.getGraphicsContext2D().fillRect(0,field.getHeight()/3,field.getBorderVertical(),field.getHeight()/3);
 			
 			// Right door
+			canvas.getGraphicsContext2D().setStroke(Color.web(colorLine, 1));
+			canvas.getGraphicsContext2D().setLineWidth(4);
+			canvas.getGraphicsContext2D().strokeRect(0,field.getHeight()/3,field.getBorderVertical(),field.getHeight()/3);
 			canvas.getGraphicsContext2D().fillRect(field.getWidth()-field.getBorderVertical(),field.getHeight()/3,field.getBorderVertical(),field.getHeight()/3);
 			
 	}
@@ -190,11 +248,19 @@ public class MatchView extends StackPane{
 		this.line = line;
 	}
 
-	public void drawLine(Line line) {	
-		canvas.getGraphicsContext2D().setStroke(Color.web(COLORBALLTOOK, 1.0));
-		canvas.getGraphicsContext2D().strokeLine(line.getStartX(),line.getStartY(),line.getEndX(),line.getEndY());
-		canvas.getGraphicsContext2D().setLineWidth(5);
+	public void drawLine(Line line) {
+
+		// Line 1
+		double initialXLine1 = line.getStartX() ;
+		double initialYLine1 = line.getStartY() ;
+		double finalXLine1 = line.getEndX() ;
+		double finalYLine1 = line.getEndY() ;
 		
+		
+		canvas.getGraphicsContext2D().setLineWidth(5);
+		canvas.getGraphicsContext2D().setStroke(Color.web(COLORTOOK, 0.7));
+		canvas.getGraphicsContext2D().strokeLine(initialXLine1,initialYLine1,finalXLine1,finalYLine1);
+
 	}
 	
 	private int intersectBorders(Ball b) {

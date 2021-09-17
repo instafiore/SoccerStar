@@ -1,5 +1,6 @@
 package application.control;
 
+import application.SceneHandler;
 import application.Settings;
 import application.model.game.entity.Ball;
 import application.model.game.entity.ParseMatchInformation;
@@ -23,16 +24,45 @@ public class MatchController implements EventHandler<MouseEvent>{
 	private long startPress;
 	private long endPress;
 	
+	private String colorHome = "" ;
+	private String colorGuest = "" ;
+	private String usernameGuest = "" ;
+	
 	private Double initialX = null ;
 	private Double initialY = null ;
 
 	private Ball ballTook = null;
 	
+	private boolean hoverABall = false ;
 	
 	private MatchController() {
 		super();
 	}
 
+	
+	public void setUsernameGuest(String usernameGuest) {
+		this.usernameGuest = usernameGuest;
+	}
+	public String getUsernameGuest() {
+		return usernameGuest;
+	}
+	
+	public void setColorHome(String colorHome) {
+		this.colorHome = colorHome;
+	}
+	
+	public void setColorGuest(String colorGuest) {
+		this.colorGuest = colorGuest;
+	}
+	
+	public String getColorHome() {
+		return colorHome;
+	}
+	
+	public String getColorGuest() {
+		return colorGuest;
+	}
+	
 	public void setParseMatchInformation(ParseMatchInformation parseMatchInformation) {
 		this.parseMatchInformation = parseMatchInformation;
 	}
@@ -65,29 +95,57 @@ public class MatchController implements EventHandler<MouseEvent>{
 	}
 
 	public void handle(MouseEvent event) {
-		if(event.getEventType() == MouseEvent.MOUSE_PRESSED)
+		
+		if(!parseMatchInformation.isReady())
+			return ;
+		
+		if(event.getEventType() == MouseEvent.MOUSE_MOVED)
+		{
+			double x = event.getX();
+			double y = event.getY();
+
+			ballTook = parseMatchInformation.tookBall(x, y); 
+			
+			if(ballTook != null && ballTook.getPlayer() == Ball.PLAYER1 && ballTook.getPlayer() != Ball.WHITE  && parseMatchInformation.getLastInformationMatch().isTurn() )
+			{
+				ballTook.setHover(true);
+				if(!hoverABall)
+				{
+					Client.getInstance().sendMessage(Protocol.HOVERBALL);
+					Client.getInstance().sendMessage(ballTook.getPosition().getX()+Protocol.BALLDELIMITER+ballTook.getPosition().getY());
+				}
+				hoverABall = true ;
+			}else if(hoverABall)
+			{
+				parseMatchInformation.setHoverFalseAll();
+				if(parseMatchInformation.getLastInformationMatch().isTurn() && initialX == null )
+					Client.getInstance().sendMessage(Protocol.HOVERNOBALL);
+				hoverABall = false ;
+			}
+
+			
+		}else if(event.getEventType() == MouseEvent.MOUSE_EXITED)
+		{
+			SceneHandler.getInstance().setCursor(SceneHandler.DEFAULT_CURSOR);
+		}else if(event.getEventType() == MouseEvent.MOUSE_PRESSED)
 		{
 			initialX = event.getX();
 			initialY = event.getY();
 			
 			ballTook = parseMatchInformation.tookBall(initialX, initialY); 
 			
-			if( ballTook != null && ballTook.getColor() == Ball.BLUE && ballTook.getColor() != Ball.WHITE  && parseMatchInformation.getLastInformationMatch().isTurn())
+			if( !(ballTook != null && ballTook.getPlayer() == Ball.PLAYER1 && ballTook.getPlayer() != Ball.WHITE  && parseMatchInformation.getLastInformationMatch().isTurn()) )
 			{
-				ballTook.setColor(Ball.TOOK);
-			}
-			else {
-				ballTook = null ;
 				initialX = null;
 				initialY = null;
 				if(!parseMatchInformation.getLastInformationMatch().isTurn()) {
 					System.out.println("[CLIENT] "+Protocol.ITSNOTYOURTURN);
 				}else if(ballTook == null ) {
 					System.out.println("[CLIENT] "+Protocol.NOBALLTOOK);
-				}else if(ballTook.getColor() != Ball.BLUE) {
+				}else if(ballTook.getPlayer() != Ball.PLAYER1) {
 					System.out.println("[CLIENT] "+Protocol.NOTYOURBALL);
 				}
-				
+				ballTook = null ;
 			}
 		}
 		else if(event.getEventType() == MouseEvent.MOUSE_DRAGGED) {
@@ -102,8 +160,8 @@ public class MatchController implements EventHandler<MouseEvent>{
 			
 			VectorFioreNoSync length = VectorFioreNoSync.sub( new VectorFioreNoSync(finalX, finalY) , new VectorFioreNoSync(initialX, initialY));
 			
-			if(length.getMagnitude() > Settings.MAXIMUMVELOCITY)
-				length.setMag(Settings.MAXIMUMVELOCITY);
+			if(length.getMagnitude() > Settings.MAXVELOCITY)
+				length.setMag(Settings.MAXVELOCITY);
 			
 			VectorFioreNoSync positionLine = VectorFioreNoSync.add(length, new VectorFioreNoSync(initialX, initialY));
 			
@@ -119,15 +177,24 @@ public class MatchController implements EventHandler<MouseEvent>{
 			
 			VectorFioreNoSync length = VectorFioreNoSync.sub(new VectorFioreNoSync(initialX, initialY), new VectorFioreNoSync(finalX, finalY));
 
-			if(length.getMagnitude() > Settings.MAXIMUMVELOCITY)
-				length.setMag(Settings.MAXIMUMVELOCITY);
+			if(length.getMagnitude() <= Settings.MINVELOCITY)
+			{
+				initialX = null;
+				initialY = null;
+				matchView.setLine(null);
+				ballTook.setPlayer(Ball.PLAYER1);
+				return ;
+			}
+			
+			if(length.getMagnitude() > Settings.MAXVELOCITY)
+				length.setMag(Settings.MAXVELOCITY);
 			
 			VelocityNoSync v = new VelocityNoSync(length.getX(),length.getY()) ;
 			
 			v.mult(Settings.MULTIPLIERVELOCITY);
 			
 			ballTook.setVelocity(v);
-			ballTook.setColor(Ball.BLUE);
+			ballTook.setPlayer(Ball.PLAYER1);
 			
 			
 			String message = ballTook.getPosition().getX() + "&" + ballTook.getPosition().getY() + ";" + ballTook.getVelocity().getX() + "&"+ ballTook.getVelocity().getY();

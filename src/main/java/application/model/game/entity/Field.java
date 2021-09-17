@@ -77,12 +77,12 @@ public class Field {
 	
 	public boolean goalLeft(Ball b) {
 		
-		return   b.getPosition().getX() + b.getRadius() * 2 < borderVertical    && ( b.getPosition().getY() + b.getRadius() * 2  > height / 3 && b.getPosition().getY()  + b.getRadius() * 2  < height * 2 / 3 ) && b.getColor() == Ball.WHITE;
+		return   b.getPosition().getX() + b.getRadius() * 2 < borderVertical    && ( b.getPosition().getY() + b.getRadius() * 2  > height / 3 && b.getPosition().getY()  + b.getRadius() * 2  < height * 2 / 3 ) && b.getPlayer() == Ball.WHITE;
 	}
 	
 	public boolean goalRight(Ball b) {
 			
-		return   b.getPosition().getX()  > width - borderVertical   && ( b.getPosition().getY() + b.getRadius() * 2   > height / 3 && b.getPosition().getY() +  b.getRadius() * 2  < height * 2 / 3 ) && b.getColor() == Ball.WHITE ;
+		return   b.getPosition().getX()  > width - borderVertical   && ( b.getPosition().getY() + b.getRadius() * 2   > height / 3 && b.getPosition().getY() +  b.getRadius() * 2  < height * 2 / 3 ) && b.getPlayer() == Ball.WHITE ;
 	}
 	
 	public boolean tookBorderLeftInDoor(Ball b) {

@@ -37,6 +37,7 @@ public class ClientSucceedController implements EventHandler<WorkerStateEvent>{
 			
 			RegistrationController registrationController =  SceneHandler.getInstance().getLoader("RegistrationPage").getController();
 			registrationController.showError(message.getProtocol(), 15);
+			registrationController.setPressed(false);
 		}else if(message.getProtocol().equals(Protocol.LOGINCOMPLETED)) {
 			
 			SceneHandler.getInstance().loadScene("MainPage", true , true);
@@ -45,12 +46,13 @@ public class ClientSucceedController implements EventHandler<WorkerStateEvent>{
 			
 			LoginController loginController = SceneHandler.getInstance().getLoader("LoginPage").getController() ;
 			loginController.showText(message.getProtocol(),15,Dialog.ERROR_WINDOW,4);
+			loginController.setPressed(false);
 		}else if(message.getProtocol().equals(Protocol.INITIALINFORMATION)) {
 			
 			MainPageController mainPageController =  SceneHandler.getInstance().getLoader("MainPage").getController() ;
 			
 			mainPageController.setCoins_main_page_label(message.getMessage());
-			
+			mainPageController.setReady(true);
 			
 		}else if(message.getProtocol().equals(Protocol.INFORMATIONACCOUNT)) {
 			
@@ -157,7 +159,7 @@ public class ClientSucceedController implements EventHandler<WorkerStateEvent>{
 			SceneHandler.getInstance().loadScene("LoginPage", false, true);
 			LoginController loginController = SceneHandler.getInstance().getLoader("LoginPage").getController() ;
 			loginController.showText(message.getProtocol(),15,Dialog.INFORMATION_WINDOW,4);
-			
+			loginController.setPressed(false);
 		}else if(message.getProtocol().equals(Protocol.GENERALERROR)) {
 			
 			Dialog.getInstance().showInformationDialog(Dialog.ERROR_WINDOW,message.getProtocol());

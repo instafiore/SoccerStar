@@ -33,19 +33,19 @@
             </HBox>
          </left>
          <center>
-            <Label fx:id="information_label" prefHeight="75.0" prefWidth="289.0" BorderPane.alignment="CENTER" />
+            <Label fx:id="information_label" prefHeight="75.0" prefWidth="302.0" BorderPane.alignment="CENTER" />
          </center>
          <right>
-            <HBox alignment="CENTER_LEFT" prefHeight="80.0" prefWidth="199.0" BorderPane.alignment="CENTER">
+            <HBox alignment="CENTER_LEFT" prefHeight="81.0" prefWidth="213.0" BorderPane.alignment="CENTER">
                <children>
-                  <Label fx:id="coins_label_account" alignment="CENTER" prefHeight="47.0" prefWidth="91.0" textAlignment="CENTER" textFill="#e1f508" wrapText="true">
+                  <Label fx:id="coins_label_account" alignment="CENTER" prefHeight="47.0" prefWidth="124.0" textAlignment="CENTER" textFill="#e1f508" wrapText="true">
                      <HBox.margin>
                         <Insets left="20.0" />
                      </HBox.margin>
                   </Label>
                   <Circle fill="#f2ff1f" radius="17.0" stroke="BLACK" strokeType="INSIDE">
                      <HBox.margin>
-                        <Insets left="20.0" />
+                        <Insets left="5.0" right="5.0" />
                      </HBox.margin>
                   </Circle>
                </children>

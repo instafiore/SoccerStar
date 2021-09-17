@@ -124,7 +124,7 @@ public class Protocol {
 	public static final String STRINGINFORMATIONDELIMITER = "$";
 	public static final String INFORMATIONDELIMITER = "&";
 	public static final String BALLDELIMITER = ";";
-	public static final String INFORMATIONBALLDELIMITER = "#";
+	public static final String INFORMATIONBALLDELIMITER = "~";
 	public static final String POSITIONBALLDELIMITER = ":" ;
 	public static final String DELIMITERGOALMATCH = ":";
 	public static final String YOUSCORED = "You scored!"; 
@@ -137,7 +137,10 @@ public class Protocol {
 	public static final String NOERRORBUTLEFTMATCH = "Your opponent left the match , you won!" ;
 	public static final String DELIMITERINFORMATIONDATAMATCH = "&";
 	public static final String DELIMITERDATAMATCH = "!" ;
-	
+	public static final String HOVERBALL = "I am hover a ball" ;
+	public static final String HOVERNOBALL = "I am hover no ball" ;
+	public static final String YOURCOLOR = "This is your color";
+	public static final String COLORGUEST = "This the color of opponent" ;
 	
 	public static ArrayList<String> protocolMatch(){
 		
@@ -153,6 +156,13 @@ public class Protocol {
 		strings.add(ITSTHETURNOF);
 		strings.add(ITSYOURTURN);
 		strings.add(ITSNOTYOURTURN);
+		strings.add(HOVERBALL);
+		strings.add(HOVERNOBALL);
+		strings.add(YOURCOLOR);
+		strings.add(COLORGUEST);
+		strings.add(INFORMATIONMATCHMESSAGE);
+		strings.add(YOUWON);
+		strings.add(YOULOST);
 		
 		return strings ;
 	}

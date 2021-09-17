@@ -15,10 +15,35 @@ public class ParseMatchInformation {
 
 	private ArrayList<Frame> informationMatchQueue = null ;
 	private Frame lastInformationMatch = null ;
-	
+	private boolean ready = false ;
+	private boolean homeScored = false ;
+	private boolean guestScored = false ;
 	
 	public ParseMatchInformation() {
 		informationMatchQueue = new ArrayList<Frame>();
+	}
+	
+	public void setHomeScored(boolean homeScored) {
+		this.homeScored = homeScored;
+	}
+	
+	public void setGuestScored(boolean guestScored) {
+		this.guestScored = guestScored;
+	}
+	
+	public boolean isGuestScored() {
+		return guestScored;
+	}
+	public boolean isHomeScored() {
+		return homeScored;
+	}
+	
+	public void setReady(boolean ready) {
+		this.ready = ready;
+	}
+	
+	public boolean isReady() {
+		return ready;
 	}
 	
 	public void addNewInformation(String string) {
@@ -36,20 +61,22 @@ public class ParseMatchInformation {
 			while(stringTokenizer2.hasMoreElements()) {
 				
 				
-				// POSITION # COLOR 
+				// POSITION # PLAYER 
 				String[] informationBall = stringTokenizer2.nextToken().split(Protocol.INFORMATIONBALLDELIMITER);
 				
 				Double x = Double.parseDouble(informationBall[0].split(Protocol.POSITIONBALLDELIMITER)[0]);
 				Double y = Double.parseDouble(informationBall[0].split(Protocol.POSITIONBALLDELIMITER)[1]);
 				
-				int color = Integer.parseInt(informationBall[1]);
+				int player = Integer.parseInt(informationBall[1]);
 				
 				Ball b = null ;
 				
-				if(color != Ball.WHITE)
-					b = new Ball(new VectorFioreNoSync(x,y), new VelocityNoSync(0.0), Settings.DIMENSIONSTANDARDBALL , color) ;
+				String color = informationBall[2] ;
+				
+				if(player != Ball.WHITE)
+					b = new Ball(new VectorFioreNoSync(x,y), new VelocityNoSync(0.0), Settings.DIMENSIONSTANDARDBALL ,color , player) ;
 				else
-					b = new Ball(new VectorFioreNoSync(x,y), new VelocityNoSync(0.0), Settings.DIMENSIONOFBALLTOPLAY , color) ;
+					b = new Ball(new VectorFioreNoSync(x,y), new VelocityNoSync(0.0), Settings.DIMENSIONOFBALLTOPLAY ,color , player) ;
 
 				balls.add(b);
 			}
@@ -75,21 +102,21 @@ public class ParseMatchInformation {
 			x = b.getPosition().getX();
 			y = b.getPosition().getY();
 			
-			int color = b.getColor() ;
+			int owner = b.getPlayer() ;
 			
-			if(player == Ball.RED)
+			if(player == Ball.PLAYER2)
 			{
 				x = Settings.FIELDWIDTHFRAME - x - b.getRadius() * 2;
 				
-				switch (color) {
-				case Ball.BLUE:
-					color = Ball.RED ;
+				switch (owner) {
+				case Ball.PLAYER1:
+					owner = Ball.PLAYER2 ;
 					break;
-				case Ball.RED:
-					color = Ball.BLUE ;
+				case Ball.PLAYER2:
+					owner = Ball.PLAYER1 ;
 					break;
 				case Ball.WHITE:
-					color = Ball.WHITE ;
+					owner = Ball.WHITE ;
 					break;
 				}
 				
@@ -97,7 +124,9 @@ public class ParseMatchInformation {
 			
 			string += x + Protocol.POSITIONBALLDELIMITER + y ; 
 			string += Protocol.INFORMATIONBALLDELIMITER ;
-			string += "" + color ;
+			string += "" + owner ;
+			string += Protocol.INFORMATIONBALLDELIMITER ;
+			string += b.getColor() ;
 			string += Protocol.BALLDELIMITER ;
 		}
 		
@@ -141,6 +170,21 @@ public class ParseMatchInformation {
 		return null;
 	}
 
+	public void setHoverFalseAll() {
+		for(Ball ball : getLastInformationMatch().getBalls())
+			ball.setHover(false);
+	}
+	
+	public void setHover(VectorFioreNoSync position) {
+		for(Ball ball : getLastInformationMatch().getBalls())
+			if(ball.getPosition().equals(position))
+			{
+				ball.setHover(true);
+				System.out.println("FOUND");
+				return ;
+			}
+		System.out.println("NOT FOUND");
+	}
 	
 	private boolean intersect(Ball b1,double x,double y) {
 		

@@ -91,4 +91,27 @@ public class Utilities {
     public static boolean ruleEmailRespected(String email) {
     	return patternEmail.matcher(email).matches();
     }
+    
+    public static int getPriceField(String field) {
+    	
+    	if(field.equals(Settings.FIELD1))
+    		return Settings.PRICEFIELD1;
+    	else if(field.equals(Settings.FIELD2))
+    		return Settings.PRICEFIELD2;
+    	else if(field.equals(Settings.FIELD3))
+    		return Settings.PRICEFIELD3;
+    	return 0 ;
+    }
+
+    public static int getRewardField(String field) {
+    	
+    	if(field.equals(Settings.FIELD1))
+    		return Settings.REWARDFIELD1;
+    	else if(field.equals(Settings.FIELD2))
+    		return Settings.REWARDFIELD2;
+    	else if(field.equals(Settings.FIELD3))
+    		return Settings.REWARDFIELD3;
+    	return 0 ;
+    }
+
 }

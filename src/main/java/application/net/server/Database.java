@@ -45,7 +45,6 @@ public class Database {
 	
 	private Connection connection;
 	private static Database instance = null;
-	
 	private PreparedStatement insertion_client_query;
 	private PreparedStatement search_client_query;
 	private PreparedStatement check_login_query;
@@ -109,7 +108,7 @@ public class Database {
 	}
 	
 	
-	public List<DataMatch> getDataMatches(String username){
+	public synchronized List<DataMatch> getDataMatches(String username){
 		
 		ArrayList<DataMatch> dataMatches = new ArrayList<DataMatch>();
 		
@@ -155,7 +154,7 @@ public class Database {
 		return dataMatches ;
 	}
 	
-	public void closeConnection() throws SQLException {
+	public synchronized void closeConnection() throws SQLException {
 		
 		if(connection != null  && !connection.isClosed())
 			connection.close();
@@ -163,7 +162,7 @@ public class Database {
 		connection = null ;
 	}
 	
-	public Account getAccount(String username) throws SQLException {
+	public synchronized  Account getAccount(String username) throws SQLException {
 		Account account = new Account();
 		search_client_query.setString(1,username);
 		search_client_query.execute();
@@ -181,7 +180,7 @@ public class Database {
 	}
 	
 	
-	public Skin getSkin(String name) throws SQLException {
+	public synchronized Skin getSkin(String name) throws SQLException {
 		
 		Skin skin = new Skin() ;
 		
@@ -199,7 +198,7 @@ public class Database {
 		return skin ;
 	}
 	
-	public Lineup getLineup(int id) throws SQLException {
+	public synchronized Lineup getLineup(int id) throws SQLException {
 		
 		Lineup lineup = new Lineup() ;
 		
@@ -219,7 +218,7 @@ public class Database {
 		return lineup ;
 	}
 	
-	private void insertSkinToUsername(String username,String skin) {
+	private synchronized void insertSkinToUsername(String username,String skin) {
 		
 		try {
 			insert_skin_query.setString(1, username);
@@ -239,7 +238,7 @@ public class Database {
 
 	}
 	
-	private void insertLineupToUsername(String username,int lineup) {
+	private synchronized void insertLineupToUsername(String username,int lineup) {
 		
 		try {
 			insert_lineup_query.setString(1, username);
@@ -259,7 +258,7 @@ public class Database {
 
 	}
 	
-	public boolean buySkin(String username ,Skin skin) {
+	public synchronized boolean buySkin(String username ,Skin skin) {
 			
 		Skin skinDatabase = null ;
 		try {
@@ -289,7 +288,7 @@ public class Database {
 		return true ;
 	}
 	
-	public boolean buyLineup(String username ,Lineup lineup) {
+	public synchronized boolean buyLineup(String username ,Lineup lineup) {
 		
 		Lineup lineupDatabase = null ;
 		try {
@@ -319,7 +318,7 @@ public class Database {
 		return true ;
 	}
 	
-	private void updateCoins(String username , int coins) {
+	private synchronized void updateCoins(String username , int coins) {
 		
 		try {
 			update_coins_query.setInt(1, coins);
@@ -336,8 +335,64 @@ public class Database {
 		}
 	}
 	
+	public synchronized void insertCoins(String username,int coins) {
+		
+		int currentCoins = 0;
+		try {
+			currentCoins = getAccount(username).getCoins();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		int newCoins = currentCoins + coins ;
+		
+		try {
+			update_coins_query.setInt(1, newCoins);
+			update_coins_query.setString(2, username);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		try {
+			update_coins_query.executeUpdate();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
+	public synchronized void removeCoins(String username,int coins) {
+		
+		int currentCoins = 0;
+		try {
+			currentCoins = getAccount(username).getCoins();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		int newCoins = currentCoins - coins ;
+		
+		try {
+			update_coins_query.setInt(1, newCoins);
+			update_coins_query.setString(2, username);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		try {
+			update_coins_query.executeUpdate();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
 
-	public void updateCurrentSkin(String username , String color) {
+	public synchronized void updateCurrentSkin(String username , String color) {
 		
 		try {
 			update_current_skin_query.setString(1, color);
@@ -354,7 +409,7 @@ public class Database {
 		}
 	}
 	
-	public void updateCurrentLineup(String username , int id) {
+	public synchronized void updateCurrentLineup(String username , int id) {
 		
 		try {
 			update_current_lineup_query.setInt(1, id);
@@ -371,7 +426,7 @@ public class Database {
 		}
 	}
 	
-	public ArrayList<Skin> getSkins() throws SQLException {
+	public synchronized ArrayList<Skin> getSkins() throws SQLException {
 		
 		ArrayList<Skin> skins = new ArrayList<Skin>();
 		
@@ -388,7 +443,7 @@ public class Database {
 		return skins ;
 	}
 	
-	public String getOwnedSkins(String username) throws SQLException {
+	public synchronized String getOwnedSkins(String username) throws SQLException {
 		
 		get_owned_skins_query.setString(1,username);
 
@@ -404,7 +459,7 @@ public class Database {
  		return text ;
 	}
 	
-	public ArrayList<Lineup> getLineups() throws SQLException {
+	public synchronized ArrayList<Lineup> getLineups() throws SQLException {
 	
 		ArrayList<Lineup> lineups = new ArrayList<Lineup>();
 		
@@ -422,7 +477,7 @@ public class Database {
 		return lineups ;
 	}
 	
-	public String getOwnedLineup(String username) throws SQLException {
+	public synchronized String getOwnedLineup(String username) throws SQLException {
 		
 		get_owned_lineup_query.setString(1,username);
 
@@ -439,7 +494,7 @@ public class Database {
 	
 	
 	
-	public String insertUser(RegistrationClient user) {
+	public synchronized String insertUser(RegistrationClient user) {
 		
 		if(checkUser(user.getUsername()))
 		{
@@ -471,7 +526,7 @@ public class Database {
 		return Protocol.REGISTRATIONCOMPLETED;
 	}
 	
-	private void insertDefaultSkin(String username) {
+	private synchronized void insertDefaultSkin(String username) {
 		
 		try {
 			insert_skin_query.setString(1, username);
@@ -491,7 +546,7 @@ public class Database {
 
 	}
 	
-	private void insertDefaultLineup(String username) {
+	private synchronized void insertDefaultLineup(String username) {
 		
 		try {
 			insert_lineup_query.setString(1, username);
@@ -511,7 +566,7 @@ public class Database {
 
 	}
 	
-	public boolean insertMatch(DataMatch dataMatch) {
+	public synchronized boolean insertMatch(DataMatch dataMatch) {
 		
 		try {
 			
@@ -541,7 +596,7 @@ public class Database {
 	}
 	
 	
-	public void changePassword(String username ,String password) {
+	public synchronized void changePassword(String username ,String password) {
 		String crypto_password = cryptoPassword(password);
 		
 		try {
@@ -560,7 +615,7 @@ public class Database {
 		}
 	}
 	
-	public boolean checkUser(String user) {
+	public synchronized boolean checkUser(String user) {
 		
 		if(Server.getInstance().isOnline(user))
 			return false ;
@@ -585,7 +640,7 @@ public class Database {
 		return false;
 	}
 	
-	public String checkLogin(LoginClient user) {
+	public synchronized String checkLogin(LoginClient user) {
 	
 		try {
 			search_client_query.setString(1, user.getUsername());
@@ -612,7 +667,7 @@ public class Database {
 		return Protocol.LOGINFAILED;
 	}
 	
-	public boolean checkPassword(String username ,String password) {
+	public synchronized boolean checkPassword(String username ,String password) {
 		
 		try {
 			search_client_query.setString(1,username);
@@ -635,7 +690,7 @@ public class Database {
 	}
 	
 	
-	public String cryptoPassword(String originalPassoword) {
+	public synchronized String cryptoPassword(String originalPassoword) {
 		
 		return BCrypt.hashpw(originalPassoword, BCrypt.gensalt(12));
     

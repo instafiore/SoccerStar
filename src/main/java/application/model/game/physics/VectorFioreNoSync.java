@@ -141,9 +141,9 @@ public class VectorFioreNoSync {
 		if (obj == this)
 			return true;
 		if (obj == null || this.getClass() != obj.getClass())
-			return true;
+			return false;
 		VectorFioreNoSync v = (VectorFioreNoSync) obj;
-		return x == v.x && y == v.y;
+		return x.equals(v.x) && y.equals(v.y);
 	}
 	
 	@Override

@@ -3,13 +3,14 @@ package application;
 public class Settings {
 	
 	public static final int MATCHWIDTHFRAME = 1080 ;
-	public static final int MATCHHEIGHTFRAME = 647 ;
+	public static final int MATCHHEIGHTFRAME = 680 ;
 	public static final int FIELDWIDTHFRAME = 1080 ;
 	public static final int FIELDHEIGHTFRAME = 600 ;
 	public static final double DIMENSIONSTANDARDBALL = 20 ;
 	public static final double DIMENSIONOFBALLTOPLAY = 12.0 ;
 	public static final double FREQUENCY = 10 ;
-	public static final double MAXIMUMVELOCITY = 150.0 ;
+	public static final double MINVELOCITY = 40.0 ;
+	public static final double MAXVELOCITY = 150.0 ;
 	public static final int PORT = 8000 ;
 	public static final double BORDERHORIZONTAL =  10.0 ;
 	public static final double BORDERVERTICAL =  45.0 ; 
@@ -23,6 +24,8 @@ public class Settings {
 	public static final int WAITFORGOAL = 20 ;
 	public static final int MAXWIDTHWINDOW = 1000 ;
 	public static final int MAXHEIGHTWINDOW = 1000 ;
+	public static final double CURSORWIDTH = 32 ;
+	public static final double CURSORHEIGHT = 32 ;
 	
 	//FIELDS
 	public static final String FIELD1 = "Grass Field";
@@ -31,6 +34,10 @@ public class Settings {
 	public static final String COLORFIELD1 = "#009a00";
 	public static final String COLORFIELD2 = "#bf9b30";
 	public static final String COLORFIELD3 = "#334afe";
+	// BORDERS 
+	public static final String COLORBORDERFIELD1 = "#005900";
+	public static final String COLORBORDERFIELD2 = "#cc8400";
+	public static final String COLORBORDERFIELD3 = "#000099";
 	public static final double FRICTIONFIELD1 = 15.0 ;
 	public static final double FRICTIONFIELD2 = 25.0 ;
 	public static final double FRICTIONFIELD3 = 5.0 ;

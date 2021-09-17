@@ -1,11 +1,17 @@
 package application;
 
+
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 
+import javax.imageio.ImageIO;
+
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Cursor;
+import javafx.scene.ImageCursor;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.stage.Window;
@@ -13,16 +19,23 @@ import javafx.util.Pair;
 
 public class SceneHandler {
 
+	public static final int DEFAULT_CURSOR = 0 ;
+	public static final int MATCH_CURSOR = 1 ;
+	public static final int HOVER_BALL_CURSOR = 2 ;
 	
 	private Scene scene = null ;
 	private Stage stage = null;
 
 	private HashMap<String, Pane> panes ;
 	private HashMap<String, FXMLLoader> loaders ;
+	private Image match_cursor = null ;
+	private Image hover_ball_cursor = null ;
 	
 	private SceneHandler() {
 		panes = new HashMap<String, Pane>();
 		loaders = new HashMap<String ,FXMLLoader>();
+		match_cursor = new Image(getClass().getResourceAsStream("/application/view/matchCursor.png"),Settings.CURSORWIDTH , Settings.CURSORHEIGHT , true, true) ;
+		hover_ball_cursor = new Image(getClass().getResourceAsStream("/application/view/tookBallCursor.png"),Settings.CURSORWIDTH , Settings.CURSORHEIGHT , true, true) ;
 	}
 	
 	public static SceneHandler instance = null ;
@@ -56,6 +69,7 @@ public class SceneHandler {
 		try {
 			pane = (Pane) loader.load(); 
 			object = loader.getController() ;
+			loaders.put(namePane, loader);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -106,5 +120,25 @@ public class SceneHandler {
 		
 	}
 	
+	
+	public void setCursor(int cursor) {
+		
+		switch (cursor) {
+		case DEFAULT_CURSOR:
+			scene.setCursor(Cursor.DEFAULT);
+			break;
+		case MATCH_CURSOR:
+			scene.setCursor(new ImageCursor(match_cursor));
+			break;
+		case HOVER_BALL_CURSOR:
+			scene.setCursor(new ImageCursor(hover_ball_cursor));
+			break;
+		default:
+			scene.setCursor(Cursor.DEFAULT);
+			break;
+		}
+		
+		
+	}
 	
 }
