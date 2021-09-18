@@ -10,13 +10,6 @@
 <?import javafx.scene.layout.VBox?>
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="514.0" prefWidth="765.0" styleClass="pane" stylesheets="@css/stylesheet1.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.control.FriendsController">
-   <bottom>
-      <HBox alignment="CENTER_RIGHT" prefHeight="69.0" prefWidth="600.0" BorderPane.alignment="CENTER">
-         <children>
-            <Label fx:id="information_label" alignment="CENTER" prefHeight="69.0" prefWidth="813.0" textAlignment="CENTER" />
-         </children>
-      </HBox>
-   </bottom>
    <center>
       <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" prefHeight="187.0" prefWidth="647.0" styleClass="pane" vbarPolicy="NEVER" BorderPane.alignment="CENTER">
          <BorderPane.margin>
@@ -75,4 +68,11 @@
          </center>
       </BorderPane>
    </top>
+   <bottom>
+      <Label fx:id="information_label" alignment="CENTER" prefHeight="64.0" prefWidth="821.0" BorderPane.alignment="CENTER">
+         <BorderPane.margin>
+            <Insets bottom="20.0" />
+         </BorderPane.margin>
+      </Label>
+   </bottom>
 </BorderPane>

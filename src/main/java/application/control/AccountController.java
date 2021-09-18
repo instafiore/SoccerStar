@@ -233,8 +233,8 @@ public class AccountController {
     }
     
     public void showText(String text,int fontSize,String type,double duration) {
-    	if(!ready)
-    		return ;
+    	
+    	
     	String color = "" ;
 		
 		if(type.equals(Dialog.ERROR_WINDOW)) {

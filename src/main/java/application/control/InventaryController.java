@@ -101,8 +101,6 @@ public class InventaryController {
     
     public void showText(String text,int fontSize,String type,double duration) {
     	
-    	if(!ready)
-    		return ;
     	
     	String color = "" ;
 		

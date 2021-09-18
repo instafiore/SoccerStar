@@ -23,10 +23,7 @@ import javafx.util.Pair;
 
 public class FriendsController {
 
-	@FXML
-    private Label information_label;
-
-    @FXML
+  @FXML
     private VBox vbox;
 
     @FXML
@@ -37,6 +34,9 @@ public class FriendsController {
 
     @FXML
     private VBox box_friends_online;
+
+    @FXML
+    private BorderPane paneOfflineFriends;
 
     @FXML
     private Label label_all_friends;
@@ -53,9 +53,8 @@ public class FriendsController {
     @FXML
     private Button add_friend;
 
-  
     @FXML
-    private BorderPane paneOfflineFriends;
+    private Label information_label;
 
     private boolean ready = false ;
     
@@ -74,6 +73,9 @@ public class FriendsController {
     	label_friends_online.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 23));
     	label_all_friends.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 23));
     	
+    	add_friend.setOnMouseEntered(new HoverButton());
+    	add_friend.setOnMouseExited(new HoverButton());
+
     	back_button_friends_page.setOnMouseEntered(new HoverButton());
     	back_button_friends_page.setOnMouseExited(new HoverButton());
     	
@@ -176,8 +178,7 @@ public class FriendsController {
     
     
     public void showText(String text,int fontSize,String type,double duration) {
-    	if(!ready)
-			return ;
+    	
     	String color = "" ;
 		
 		if(type.equals(Dialog.ERROR_WINDOW)) {
