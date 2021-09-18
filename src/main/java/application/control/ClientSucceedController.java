@@ -109,7 +109,7 @@ public class ClientSucceedController implements EventHandler<WorkerStateEvent>{
 			shopController.setReady(true);
 		}else if(message.getProtocol().equals(Protocol.INFORMATIONINVENTARY)) {
 			
-			InventaryController inventaryController = (InventaryController) SceneHandler.getInstance().getLoader("InventaryPage").getController() ;
+			InventoryController inventaryController = (InventoryController) SceneHandler.getInstance().getLoader("InventaryPage").getController() ;
 			
 			StringTokenizer stringTokenizer = new StringTokenizer(message.getMessage(), Protocol.DELIMITERINFORMATIONSHOP);
 			SkinHandler.getInstance().loadSkins(stringTokenizer.nextToken());
@@ -121,7 +121,7 @@ public class ClientSucceedController implements EventHandler<WorkerStateEvent>{
 
 		}else if(message.getProtocol().equals(Protocol.SKININUSE)) {
 			
-			InventaryController inventaryController = (InventaryController) SceneHandler.getInstance().getLoader("InventaryPage").getController() ;
+			InventoryController inventaryController = (InventoryController) SceneHandler.getInstance().getLoader("InventaryPage").getController() ;
 						
 			String colorSkinInUse = message.getMessage() ;
 			SkinHandler.getInstance().setUsing(SkinHandler.getInstance().getSkinFromColor(colorSkinInUse).getName());
@@ -130,7 +130,7 @@ public class ClientSucceedController implements EventHandler<WorkerStateEvent>{
 			
 		}else if(message.getProtocol().equals(Protocol.LINEUPINUSE)) {
 			
-			InventaryController inventaryController = (InventaryController) SceneHandler.getInstance().getLoader("InventaryPage").getController() ;
+			InventoryController inventaryController = (InventoryController) SceneHandler.getInstance().getLoader("InventaryPage").getController() ;
 						
 			int lineupInUse = Integer.parseInt(message.getMessage());
 			LineupHandler.getInstance().setUsing(lineupInUse);

@@ -21,7 +21,7 @@ import javafx.scene.text.Font;
 import javafx.util.Duration;
 import javafx.util.Pair;
 
-public class InventaryController {
+public class InventoryController {
 
 
     @FXML
@@ -80,7 +80,7 @@ public class InventaryController {
     	
 		for(Skin skin : SkinHandler.getInstance().getSkinsOwned()) {
 			Pair<Pane, Object> pair = SceneHandler.getInstance().loadPane("InformationSkinInventaryPane");
-			SkinControllerInventary skinController = (SkinControllerInventary) pair.getValue() ;
+			SkinControllerInventory skinController = (SkinControllerInventory) pair.getValue() ;
 			
 			skinController.setName(skin.getName());
 			skinController.setUsing(skin.isUsing());
@@ -90,7 +90,7 @@ public class InventaryController {
 		
 		for(Lineup lineup : LineupHandler.getInstance().getLineupsOwned()) {
 			Pair<Pane, Object> pair = SceneHandler.getInstance().loadPane("InformationLineupInventaryPane");
-			LineupControllerInventary lineupController = (LineupControllerInventary) pair.getValue() ;
+			LineupControllerInventory lineupController = (LineupControllerInventory) pair.getValue() ;
 			lineupController.setName(lineup.getName());
 			lineupController.setUsing(lineup.isUsing());
 			// TODO IMAGE

@@ -216,6 +216,7 @@ public class AccountController {
     void onClickFriends_button_account(ActionEvent event) {
     	if(!ready)
     		return ;
+    	SceneHandler.getInstance().loadScene("FriendsPage", true, true);
     }
 
     @FXML
@@ -229,7 +230,7 @@ public class AccountController {
     void onClickInventory_button_account(ActionEvent event) {
     	if(!ready)
     		return ;
-    	SceneHandler.getInstance().loadScene("InventaryPage", true, true);
+    	SceneHandler.getInstance().loadScene("InventoryPage", true, true);
     }
     
     public void showText(String text,int fontSize,String type,double duration) {

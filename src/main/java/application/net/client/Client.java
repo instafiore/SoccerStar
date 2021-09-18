@@ -39,10 +39,12 @@ public class Client extends Service<Message>{
 	public static final int SHOP = 8;
 	public static final int INVENTARY = 9;
 	public static final int FRIENDS = 10;
+	public static final int FRIENDLYBATTLE = 11;
 	
 	public static final int FIELD1 = 1 ;
 	public static final int FIELD2 = 2 ;
 	public static final int FIELD3 = 3 ;
+	
 
 	
 	private int currentState = STEP_LOGIN;
@@ -165,6 +167,8 @@ public class Client extends Service<Message>{
 		case INVENTARY:
 			return readInventary(message);
 		case FRIENDS:
+			return readFriends(message);
+		case FRIENDLYBATTLE:
 			return readFriends(message);
 		default:
 			return new Message(Protocol.GENERALERROR);
@@ -331,6 +335,33 @@ public class Client extends Service<Message>{
 	
 	
 	public Message readFriends(String protocol) throws IOException {
+		
+		Message message = null ;
+		String mess = null ;
+		
+		if(protocol.equals(Protocol.INFORMATIONFRIENDS)) {
+			
+			mess = in.readLine();
+			if(mess == null )
+			{
+				closeStreams();
+				message = new Message(Protocol.GENERALERROR);
+				return message ;
+			}
+			message = new Message(protocol,mess);
+			
+		}else if(protocol.equals(Protocol.FRIENDADDED) || protocol.equals(Protocol.USERNAMEFRIENDDOESNTEXIST) ) {
+			
+			message = new Message(protocol);
+			
+		}else {
+			message = new Message();
+			message.setProtocol(Protocol.GENERALERROR);
+		}
+		return message ;
+	}
+	
+	public Message readFriendlyBattle(String protocol) throws IOException {
 		
 		Message message = null ;
 		String mess = null ;
