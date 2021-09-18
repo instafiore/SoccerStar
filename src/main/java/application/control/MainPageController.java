@@ -81,6 +81,15 @@ public class MainPageController {
     
     private boolean ready = false ;
     
+    public void setReady(boolean ready) {
+		this.ready = ready;
+	}
+    
+    public boolean isReady() {
+		return ready;
+	}
+    
+    
     @FXML
     public void initialize() {
     	SceneHandler.getInstance().setCursor(SceneHandler.DEFAULT_CURSOR);
@@ -159,14 +168,7 @@ public class MainPageController {
     	Client.getInstance().sendMessage(Protocol.INITIALINFORMATION);
     }
     
-    public void setReady(boolean ready) {
-		this.ready = ready;
-	}
-    
-    public boolean isReady() {
-		return ready;
-	}
-    
+   
     public void setCoins_main_page_label(String coins) {
 		this.coins_main_page_label.setText(coins);
 	}

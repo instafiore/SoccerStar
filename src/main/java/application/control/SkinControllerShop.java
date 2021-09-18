@@ -74,12 +74,15 @@ public class SkinControllerShop {
     
     @FXML
     void onClickBuy_button(ActionEvent event) {
+    	ShopController shopController = null ;
     	if(owned)
     	{
-    		ShopController shopController = (ShopController) SceneHandler.getInstance().getLoader("ShopPage").getController() ;
+    		shopController = (ShopController) SceneHandler.getInstance().getLoader("ShopPage").getController() ;
     		shopController.showText(Protocol.ALREADYOWNED, 20, Dialog.INFORMATION_WINDOW, 5);
     		return ;
     	}
+    	if(!shopController.isReady())
+    		return ;
     	Client.getInstance().sendMessage(Protocol.BUYSKIN);
     	String text = name.getText() + Protocol.DELIMITERINFORMATIONELEMENTSHOP + buy_button.getText() + Protocol.DELIMITERINFORMATIONELEMENTSHOP + color ;  ;
     	Client.getInstance().sendMessage(text);

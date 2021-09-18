@@ -64,6 +64,7 @@ public class ClientSucceedController implements EventHandler<WorkerStateEvent>{
 			accountController.setEmail_field_account(account.getEmail());
 			accountController.changeColorBall(account.getCurrentSkin());
 			accountController.setCoins_label_account(""+account.getCoins());
+			accountController.setReady(true);
 			
 		}else if(message.getProtocol().equals(Protocol.INFORMATIONSHOP)) {
 			
@@ -79,6 +80,7 @@ public class ClientSucceedController implements EventHandler<WorkerStateEvent>{
 			shopController.setCoins(coins);
 			
 			shopController.init();
+			shopController.setReady(true);
 		}else if(message.getProtocol().equals(Protocol.INFORMATIONINVENTARY)) {
 			
 			InventaryController inventaryController = (InventaryController) SceneHandler.getInstance().getLoader("InventaryPage").getController() ;
@@ -90,7 +92,7 @@ public class ClientSucceedController implements EventHandler<WorkerStateEvent>{
 			LineupHandler.getInstance().loadOwned(stringTokenizer.nextToken());
 	
 			inventaryController.init();
-			
+			inventaryController.setReady(true);
 		}else if(message.getProtocol().equals(Protocol.SKININUSE)) {
 			
 			InventaryController inventaryController = (InventaryController) SceneHandler.getInstance().getLoader("InventaryPage").getController() ;
@@ -125,7 +127,7 @@ public class ClientSucceedController implements EventHandler<WorkerStateEvent>{
 			
 			HistoryController historyController =  SceneHandler.getInstance().getLoader("HistoryPage").getController() ;
 			historyController.init(DataMatch.getMatches(message.getMessage()));
-			
+			historyController.setReady(true);
 		}else if(message.getProtocol().equals(Protocol.PASSWORDCHANGED) || message.getProtocol().equals(Protocol.OLDPASSOWORDNOTCORRECT)) {
 			
 			AccountController accountController =  SceneHandler.getInstance().getLoader("AccountPage").getController() ;
@@ -146,7 +148,7 @@ public class ClientSucceedController implements EventHandler<WorkerStateEvent>{
 			SceneHandler.getInstance().loadScene("Step2PSW", false, true);
 			Step2PSW step2psw = SceneHandler.getInstance().getLoader("Step2PSW").getController() ;
 			step2psw.setText_area_step2psw(message.getMessage());
-			
+			step2psw.setReady(true);
 		}else if(message.getProtocol().equals(Protocol.CODENOTVALID)) {
 			
 			
@@ -166,7 +168,6 @@ public class ClientSucceedController implements EventHandler<WorkerStateEvent>{
 			System.exit(0);
 		}else if(message.getProtocol().equals(Protocol.GENERALERROR)){
 			
-			// RELOADING APP
 			Dialog.getInstance().showInformationDialog(Dialog.ERROR_WINDOW,message.getProtocol());
 			System.exit(0);
 		}else if(message.getProtocol().equals(Protocol.CONNECTION_LOST)) {

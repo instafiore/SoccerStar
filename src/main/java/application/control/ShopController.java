@@ -49,6 +49,15 @@ public class ShopController {
     private Label coins;
 
 
+    private boolean ready = false ;
+    
+    public void setReady(boolean ready) {
+		this.ready = ready;
+	}
+    
+    public boolean isReady() {
+		return ready;
+    }
     
     private static final String ShopTitle = "Shop";
     
@@ -109,16 +118,20 @@ public class ShopController {
 
 	@FXML
     void onClickBack_button_shop_page(ActionEvent event) {
+		if(!ready)
+			return ;
 		SceneHandler.getInstance().loadScene("MainPage", true, true);
     }
 
     @FXML
     void onClickBuy_coins_button_shop_page(ActionEvent event) {
-
+    	if(!ready)
+			return ;
     }
     
     public void showText(String text,int fontSize,String type,double duration) {
-    	
+    	if(!ready)
+			return ;
     	String color = "" ;
 		
 		if(type.equals(Dialog.ERROR_WINDOW)) {

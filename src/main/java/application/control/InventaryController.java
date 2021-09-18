@@ -42,6 +42,16 @@ public class InventaryController {
     @FXML
     private Label information_label;
     
+    private boolean ready = false ;
+    
+    public void setReady(boolean ready) {
+		this.ready = ready;
+	}
+    
+    public boolean isReady() {
+		return ready;
+    }
+    
   private static final String InventaryTitle = "Inventary";
     
     @FXML
@@ -91,6 +101,9 @@ public class InventaryController {
     
     public void showText(String text,int fontSize,String type,double duration) {
     	
+    	if(!ready)
+    		return ;
+    	
     	String color = "" ;
 		
 		if(type.equals(Dialog.ERROR_WINDOW)) {
@@ -117,6 +130,8 @@ public class InventaryController {
 
     @FXML
     void onClickBack_button_inventary_page(ActionEvent event) {
+    	if(!ready)
+    		return ;
     	SceneHandler.getInstance().loadScene("MainPage", true, true);
     }
 

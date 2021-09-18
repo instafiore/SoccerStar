@@ -70,7 +70,8 @@ public class SkinControllerInventary {
     		inventaryController.showText(Protocol.ALREADYUSING, 20, Dialog.INFORMATION_WINDOW, 5);
     		return ;
     	}
-    	
+    	if(!inventaryController.isReady())
+    		return ;
     	Client.getInstance().sendMessage(Protocol.USETHISSKIN);
        	Client.getInstance().sendMessage(color);
        	

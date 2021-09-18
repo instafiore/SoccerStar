@@ -33,7 +33,7 @@ public class Utilities {
 	
 	private static final String REGEXUSERNAME = "[a-zA-Z].*" ; 
 	private static final String REGEXPASSWORD = "(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@\\.?#$_%^&+=!])(?=\\S+$).*"; 
-	private static final String REGEXEMAIL = ".+@gmail\\.com" ; 
+	private static final String REGEXEMAIL = "((.+@gmail\\.com)|(.+@servizimicrosoft.unical.it))" ; 
 
 	
     private static Pattern patternUsername = Pattern.compile(REGEXUSERNAME);

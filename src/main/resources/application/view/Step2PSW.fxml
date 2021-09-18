@@ -15,7 +15,7 @@
       <Line endY="315.0" layoutX="244.0" layoutY="14.0" startY="-14.0" stroke="#f8f0f0" />
       <Circle fill="#1f93ff0d" layoutX="245.0" layoutY="165.0" radius="53.0" stroke="#f8f3f3" strokeType="INSIDE" />
       <Label fx:id="information_label" alignment="CENTER" layoutX="100.0" layoutY="14.0" prefHeight="47.0" prefWidth="288.0" textAlignment="CENTER" wrapText="true" />
-      <TextArea fx:id="text_area_step2psw" layoutX="108.0" layoutY="74.0" prefHeight="98.0" prefWidth="275.0" wrapText="true" />
+      <TextArea fx:id="text_area_step2psw" editable="false" layoutX="108.0" layoutY="74.0" prefHeight="98.0" prefWidth="275.0" wrapText="true" />
       <TextField fx:id="code_field_step2psw" layoutX="129.0" layoutY="190.0" prefHeight="28.0" prefWidth="234.0" styleClass="input_field" />
       <Button fx:id="reset_button_step2psw" layoutX="175.0" layoutY="274.0" mnemonicParsing="false" onAction="#onClickReset_button_step2psw" prefHeight="41.0" prefWidth="137.0" styleClass="initial_button" text="RESET PASSWORD">
          <font>

@@ -31,6 +31,18 @@ public class Step1PSW {
     
     @FXML
     private Button back_button_step1PSW;
+    
+    
+    private boolean ready = false ;
+    
+    public void setReady(boolean ready) {
+		this.ready = ready;
+	}
+    
+    public boolean isReady() {
+		return ready;
+    }
+    
 
     @FXML
     void onClickBack_button_step1PSW(ActionEvent event) {

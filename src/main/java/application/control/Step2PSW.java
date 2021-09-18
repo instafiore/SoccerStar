@@ -36,6 +36,15 @@ public class Step2PSW {
     @FXML
     private Button back_button_step2PSW;
     
+    private boolean ready = false ;
+    
+    public void setReady(boolean ready) {
+		this.ready = ready;
+	}
+    
+    public boolean isReady() {
+		return ready;
+    }
     @FXML
     public void initialize() {
     	
@@ -79,13 +88,16 @@ public class Step2PSW {
 
     @FXML
     void onClickBack_button_step2PSW(ActionEvent event) {
+    	if(!ready)
+    		return ;
     	SceneHandler.getInstance().loadScene("Step1PSW", false, true);
     	Client.getInstance().sendMessage(Protocol.CANCELPASSWORDRECOVERY);
     }
     
     @FXML
     void onClickReset_button_step2psw(ActionEvent event) {
-    	
+    	if(!ready)
+    		return ;
     	if(code_field_step2psw.getText().equals("") || reset_password_field.getText().equals(""))
     	{
     		showError(Protocol.FIELDEMPTY, 16);

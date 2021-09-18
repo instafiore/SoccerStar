@@ -34,6 +34,7 @@ public class MatchView extends StackPane{
 	private int currentField = FIELD1 ;
 	private String colorBorder = "";
 	private String colorDoor = "" ;
+	private boolean isEntered = false;
 	
 	public static final int FIELD1 = 0 ;
 	public static final int FIELD2 = 1 ;
@@ -51,7 +52,13 @@ public class MatchView extends StackPane{
 	private static final String COLORTOOK = "#6666ff";
 	private static final String COLORDOOR = "#005900";
 	
+	public void setEntered(boolean isEntered) {
+		this.isEntered = isEntered;
+	}
 	
+	public boolean isEntered() {
+		return isEntered;
+	}
 	
 	public MatchView() {
 		canvas = new Canvas();
@@ -96,11 +103,14 @@ public class MatchView extends StackPane{
 		this.setOnMouseDragged(matchController);
 		this.setOnMouseMoved(matchController);
 		this.setOnMouseExited(matchController);
+		this.setOnMouseEntered(matchController);
 	}
 	
 	
 	
 	public void draw() {
+		
+		
 		
 		canvas.getGraphicsContext2D().clearRect(0, 0, getWidth(), getHeight());		
 		
@@ -165,8 +175,10 @@ public class MatchView extends StackPane{
 		
 		if(hover_some_ball)
 			SceneHandler.getInstance().setCursor(SceneHandler.HOVER_BALL_CURSOR);
-		else
+		else if(isEntered )
 			SceneHandler.getInstance().setCursor(SceneHandler.MATCH_CURSOR);
+		else
+			SceneHandler.getInstance().setCursor(SceneHandler.DEFAULT_CURSOR);
 	}
 	
 	private void drawField() {

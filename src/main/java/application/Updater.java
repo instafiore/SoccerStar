@@ -56,13 +56,16 @@ public class Updater extends AnimationTimer{
 			menuMatchPaneController.setUsernameHome( Client.getInstance().getUsername(), colorHome);
 			menuMatchPaneController.setUsernameGuest( MatchController.getInstance().getUsernameGuest(), colorGuest);
 			menuMatchPaneController.initGoals();
+			menuMatchPaneController.setField();
 			firstTime = false ;
 		}
 		long time = now - previousTime;
 		if(time >= Settings.FREQUENCY * 1000000) {
 			previousTime = now;
 			try {
-				
+				if(!matchController.getInstance().getTextToShow().equals("")) {
+					matchController.getInstance().showText();
+				}
 				if(matchController.getParseMatchInformation().isHomeScored()) {
 					MenuMatchPaneController menuMatchPaneController = (MenuMatchPaneController) SceneHandler.getInstance().getLoader("MenuMatchPane").getController() ;
 					menuMatchPaneController.goalHome();

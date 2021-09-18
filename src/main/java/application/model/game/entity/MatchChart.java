@@ -43,10 +43,11 @@ public class MatchChart extends BarChart<String, Number>{
 	private void initialize() {
 		
 		Set<String> days = new TreeSet<>();
-		
+	
 		for(DataMatch d : dataMatches)
 			days.add(d.getDate());
-		
+			
+		int i = 0 ;
 		for(String day : days) {
 			int won = 0 ;
 			int lost = 0 ;
@@ -59,9 +60,11 @@ public class MatchChart extends BarChart<String, Number>{
 					else 
 						++lost ;
 				}
+				
 			}
-			matchesWon.getData().add(new XYChart.Data<String, Number>(day, won));
-			matchesLost.getData().add(new XYChart.Data<String, Number>(day, lost));
+			matchesWon.getData().add(new XYChart.Data<String, Number>(day.split("-")[2]+"-"+day.split("-")[1], won));
+			matchesLost.getData().add(new XYChart.Data<String, Number>(day.split("-")[2]+"-"+day.split("-")[1], lost));
+			++i;
 		}
 		
 		this.getData().add(matchesWon);

@@ -49,7 +49,16 @@ public class HistoryController {
     private BorderPane boxChartMatches;
     
     private static final String HistoryTitle = "History" ;
-
+    
+    private boolean ready = false ;
+    
+    public void setReady(boolean ready) {
+		this.ready = ready;
+	}
+    
+    public boolean isReady() {
+		return ready;
+	}
     @FXML
     public void initialize() {
     	Client.getInstance().setCurrentState(Client.HISTORY);
@@ -71,7 +80,25 @@ public class HistoryController {
     
     public void init(List<DataMatch> dataMatches) {
     	
+    	
+    	CategoryAxis xAxis = new CategoryAxis();
+		NumberAxis yAxis = new NumberAxis();
+    	MatchChart matchChart = new MatchChart(Client.getInstance().getUsername(), xAxis, yAxis, dataMatches) ;
+    	
+    	boxChartMatches.setCenter(matchChart);
+    	
+    	int i = 0;
+    	
+    	if(dataMatches.isEmpty()) {
+    		Pane noMatchYet = SceneHandler.getInstance().loadPane("NoMatchYet").getKey() ;
+    		box_history_match.getChildren().add(noMatchYet);
+    		return ;
+    	}
+    	
     	for(DataMatch dataMatch : dataMatches) {
+    		if(i > 20)
+    			break ;
+    		++i ;
     		Pair<Pane, Object> pair = SceneHandler.getInstance().loadPane("InformationMatchPane") ;
     		Pane pane = pair.getKey();
     		InformationMatchController informationMatchController = (InformationMatchController) pair.getValue() ;
@@ -91,20 +118,20 @@ public class HistoryController {
     		box_history_match.getChildren().add(pane);
     	}
     	
-    	CategoryAxis xAxis = new CategoryAxis();
-		NumberAxis yAxis = new NumberAxis();
-    	MatchChart matchChart = new MatchChart(Client.getInstance().getUsername(), xAxis, yAxis, dataMatches) ;
     	
-    	boxChartMatches.setCenter(matchChart);
     }
     
     @FXML
     void onClickBack_button_history(ActionEvent event) {
+    	if(!ready)
+    		return;
     	SceneHandler.getInstance().loadScene("MainPage", true, true);
     }
     
     @FXML
     void onMouseEnteredBoxChartMatch(MouseEvent event) {
+    	if(!ready)
+    		return;
     	FadeTransition trans = new FadeTransition(Duration.seconds(2),boxChartMatches);
 		
 		trans.setFromValue(0.85);
@@ -114,6 +141,8 @@ public class HistoryController {
 
     @FXML
     void onMouseEnteredBoxMatches(MouseEvent event) {
+    	if(!ready)
+    		return;
     	FadeTransition trans = new FadeTransition(Duration.seconds(2),box_history_match);
 		
 		trans.setFromValue(0.85);
@@ -123,6 +152,8 @@ public class HistoryController {
 
     @FXML
     void onMouseExitedBoxChartMatch(MouseEvent event) {
+    	if(!ready)
+    		return;
     	FadeTransition trans = new FadeTransition(Duration.seconds(2),boxChartMatches);
 		
 		trans.setFromValue(1.0);
@@ -132,6 +163,8 @@ public class HistoryController {
 
     @FXML
     void onMouseExitedBoxMatches(MouseEvent event) {
+    	if(!ready)
+    		return;
     	FadeTransition trans = new FadeTransition(Duration.seconds(2),box_history_match);
 		
 		trans.setFromValue(1.0);
@@ -141,7 +174,8 @@ public class HistoryController {
     	
     
   public void showText(String text,int fontSize,String type,double duration) {
-    	
+	  if(!ready)
+  		return;
     	String color = "" ;
 		
 		if(type.equals(Dialog.ERROR_WINDOW)) {

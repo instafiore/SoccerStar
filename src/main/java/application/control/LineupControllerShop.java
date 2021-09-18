@@ -65,13 +65,15 @@ public class LineupControllerShop {
     
     @FXML
     void onClickBuy_button(ActionEvent event) {
+    	ShopController shopController = null ;
     	if(owned)
     	{
-    		ShopController shopController = (ShopController) SceneHandler.getInstance().getLoader("ShopPage").getController() ;
+    		shopController = (ShopController) SceneHandler.getInstance().getLoader("ShopPage").getController() ;
     		shopController.showText(Protocol.ALREADYOWNED, 20, Dialog.INFORMATION_WINDOW, 5);
     		return ;
     	}
- 
+    	if(!shopController.isReady())
+    		return ;
     	Lineup lineup = LineupHandler.getInstance().getLineup(name.getText());
     	String text = lineup.getId() + Protocol.DELIMITERINFORMATIONELEMENTSHOP + lineup.getName() + Protocol.DELIMITERINFORMATIONELEMENTSHOP + lineup.getPrice() + Protocol.DELIMITERINFORMATIONELEMENTSHOP + lineup.getImage() ;
     	Client.getInstance().sendMessage(Protocol.BUYLINEUP);

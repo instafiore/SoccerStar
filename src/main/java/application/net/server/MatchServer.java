@@ -248,7 +248,7 @@ public class MatchServer implements Runnable {
 						
 						Ball ball = matchHandler.tookBall(x, y);
 						
-						x = Settings.FIELDWIDTHFRAME - x  - Settings.DIMENSIONSTANDARDBALL;
+						x  = Settings.FIELDWIDTHFRAME - x  - Settings.DIMENSIONSTANDARDBALL;
 						y -= Settings.DIMENSIONSTANDARDBALL ;
 						
 						if(ball == null) {
@@ -268,17 +268,27 @@ public class MatchServer implements Runnable {
 						y = Double.parseDouble(message.split(Protocol.BALLDELIMITER)[1]);
 						
 						
+						
+//						
+//						xPos += Settings.DIMENSIONSTANDARDBALL;
+//						yPos += Settings.DIMENSIONSTANDARDBALL;
+//						
+//						if(i == PLAYER2)
+//							xPos = Settings.FIELDWIDTHFRAME - xPos ;
+						
+						
 						x += Settings.DIMENSIONSTANDARDBALL ;
 						y += Settings.DIMENSIONSTANDARDBALL ;
 						
-						x = Settings.FIELDWIDTHFRAME - x  - Settings.DIMENSIONSTANDARDBALL;
+						x = Settings.FIELDWIDTHFRAME - x  ;
 					
 						Ball ball = matchHandler.tookBall(x, y);
 						
-	
+						x -= Settings.DIMENSIONSTANDARDBALL ;
 						y -= Settings.DIMENSIONSTANDARDBALL ;
 						
 						if(ball == null) {
+							System.out.println(x+" "+y);
 							System.out.println("[MATCHSERVER] Player 2 -> "+ Protocol.LEFTGAME);
 							sendMessage(Protocol.LEFTGAME, i);
 							notifyClients(NOONEISDISCONNETED);
@@ -366,11 +376,11 @@ public class MatchServer implements Runnable {
 					
 					double xVel = Protocol.parseCoordinates(stringa[1])[0];
 					double yVel = Protocol.parseCoordinates(stringa[1])[1];
-					
+				
 					
 					xPos += Settings.DIMENSIONSTANDARDBALL;
 					yPos += Settings.DIMENSIONSTANDARDBALL;
-			
+					
 					if(i == PLAYER2)
 						xPos = Settings.FIELDWIDTHFRAME - xPos ;
 					

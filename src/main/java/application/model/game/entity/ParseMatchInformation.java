@@ -180,18 +180,18 @@ public class ParseMatchInformation {
 			if(ball.getPosition().equals(position))
 			{
 				ball.setHover(true);
-				System.out.println("FOUND");
+
 				return ;
 			}
-		System.out.println("NOT FOUND");
+
 	}
 	
 	private boolean intersect(Ball b1,double x,double y) {
-		
+
 		VectorFioreNoSync position = new VectorFioreNoSync(x, y);
 		VectorFioreNoSync dist = VectorFioreNoSync.sub(b1.getPositionCenter(), position);
 			
-		return dist.getMagnitude() <= b1.getRadius();
+		return dist.getMagnitude() <= b1.getRadius() ;
 	}
 	
 	

@@ -24,8 +24,8 @@ public class Settings {
 	public static final int WAITFORGOAL = 20 ;
 	public static final int MAXWIDTHWINDOW = 1000 ;
 	public static final int MAXHEIGHTWINDOW = 1000 ;
-	public static final double CURSORWIDTH = 32 ;
-	public static final double CURSORHEIGHT = 32 ;
+	public static final double CURSORWIDTH = 60 ;
+	public static final double CURSORHEIGHT = 60 ;
 	
 	//FIELDS
 	public static final String FIELD1 = "Grass Field";

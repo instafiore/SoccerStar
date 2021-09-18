@@ -1,5 +1,7 @@
 package application.control;
 
+import com.sun.javafx.scene.text.FontHelper.FontAccessor;
+
 import application.SceneHandler;
 import application.Settings;
 import application.model.game.entity.Ball;
@@ -9,6 +11,7 @@ import application.model.game.physics.VectorFioreNoSync;
 import application.model.game.physics.VelocityNoSync;
 import application.net.client.Client;
 import application.net.common.Protocol;
+import application.view.Dialog;
 import application.view.MatchView;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
@@ -35,10 +38,36 @@ public class MatchController implements EventHandler<MouseEvent>{
 	
 	private boolean hoverABall = false ;
 	
+	private String textToShow = "";
+	private int font_size = 14 ;
+	private String window = Dialog.INFORMATION_WINDOW ;
+	private double duration = 4 ;
+	
 	private MatchController() {
 		super();
 	}
 
+	public void setTextToShow(String textToShow , int font_size , String window , double duration) {
+		this.textToShow = textToShow ;
+		this.font_size = font_size ;
+		this.window = window ;
+		this.duration = duration ;
+	}
+	
+	public void setNoTextToShow() {
+		this.textToShow = "" ;
+	}
+	
+	
+	public String getTextToShow() {
+		return textToShow;
+	}
+	
+	public void showText() {
+		MenuMatchPaneController menuMatchPaneController = (MenuMatchPaneController) SceneHandler.getInstance().getLoader("MenuMatchPane").getController() ;
+		menuMatchPaneController.showText(textToShow, font_size, window, duration);
+		textToShow = "" ;
+	}
 	
 	public void setUsernameGuest(String usernameGuest) {
 		this.usernameGuest = usernameGuest;
@@ -126,7 +155,10 @@ public class MatchController implements EventHandler<MouseEvent>{
 			
 		}else if(event.getEventType() == MouseEvent.MOUSE_EXITED)
 		{
-			SceneHandler.getInstance().setCursor(SceneHandler.DEFAULT_CURSOR);
+			matchView.setEntered(false);
+		}else if(event.getEventType() == MouseEvent.MOUSE_ENTERED)
+		{
+			matchView.setEntered(true);
 		}else if(event.getEventType() == MouseEvent.MOUSE_PRESSED)
 		{
 			initialX = event.getX();

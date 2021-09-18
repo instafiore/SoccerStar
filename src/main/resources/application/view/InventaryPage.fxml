@@ -14,12 +14,12 @@
       <HBox alignment="CENTER_RIGHT" prefHeight="69.0" prefWidth="600.0" BorderPane.alignment="CENTER" />
    </bottom>
    <center>
-      <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" prefHeight="187.0" prefWidth="647.0" styleClass="transparent" BorderPane.alignment="CENTER">
+      <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" prefHeight="187.0" prefWidth="647.0" styleClass="pane" BorderPane.alignment="CENTER">
          <BorderPane.margin>
             <Insets left="50.0" right="50.0" />
          </BorderPane.margin>
          <content>
-            <VBox>
+            <VBox styleClass="pane">
                <children>
                   <BorderPane styleClass="pane">
                      <center>

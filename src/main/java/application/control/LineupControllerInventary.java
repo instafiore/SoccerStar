@@ -62,6 +62,8 @@ public class LineupControllerInventary {
     void onClickUse_button(ActionEvent event) {
     	
     	InventaryController inventaryController = (InventaryController) SceneHandler.getInstance().getLoader("InventaryPage").getController()  ;
+    	if(!inventaryController.isReady())
+    		return ;
     	if(using)
     	{
     		inventaryController.showText(Protocol.ALREADYUSING, 20, Dialog.INFORMATION_WINDOW, 5);

@@ -312,16 +312,16 @@ public class MatchClient extends Task<String>{
 				setMatch_activated(false);
 				return Protocol.YOULOST;
 			}else if(message.equals(Protocol.LEFTGAME) || message.equals(Protocol.CONNECTION_LOST)){
-				
+				MatchController.getInstance().setTextToShow(message, 13 , Dialog.ERROR_WINDOW, 4);
 				setMatch_activated(false);
 				return Protocol.NOERRORBUTLEFTMATCH;
 			}
 			else if(message.equals(Protocol.YOUSCORED)){
-				
+				MatchController.getInstance().setTextToShow(message, 13 , Dialog.INFORMATION_WINDOW, 4);
 				parseMatchInformation.setHomeScored(true);
 				
 			}else if(message.equals(Protocol.OPPONENTSCORED)){
-				
+				MatchController.getInstance().setTextToShow(message, 13 , Dialog.ATTENTION_WINDOW, 4);
 				parseMatchInformation.setGuestScored(true);
 				
 			}else if(message.equals(Protocol.GENERALERROR) || message.equals(Protocol.GENERALERROR)){

@@ -75,6 +75,16 @@ public class AccountController {
 
     
     private static final String AccountTitle = "Account" ;
+    
+    private boolean ready = false ;
+    
+    public void setReady(boolean ready) {
+		this.ready = ready;
+	}
+    
+    public boolean isReady() {
+		return ready;
+	}
    
     @FXML
     public void initialize() {
@@ -127,6 +137,9 @@ public class AccountController {
     
     @FXML
     void onClickChange_password_button(ActionEvent event) {
+    	
+    	if(!ready)
+    		return ;
     	
     	if(old_password_field_account.getText().equals("") || new_password_field_account.getText().equals(""))
     	{
@@ -189,6 +202,8 @@ public class AccountController {
 
     @FXML
     void onClickBack_button_account(ActionEvent event) {
+    	if(!ready)
+    		return ;
     	SceneHandler.getInstance().loadScene("MainPage", true, true);
     }
 
@@ -199,21 +214,27 @@ public class AccountController {
 
     @FXML
     void onClickFriends_button_account(ActionEvent event) {
-
+    	if(!ready)
+    		return ;
     }
 
     @FXML
     void onClickHistory_button_account(ActionEvent event) {
+    	if(!ready)
+    		return ;
     	SceneHandler.getInstance().loadScene("HistoryPage", true, true);
     }
     
     @FXML
     void onClickInventory_button_account(ActionEvent event) {
+    	if(!ready)
+    		return ;
     	SceneHandler.getInstance().loadScene("InventaryPage", true, true);
     }
     
     public void showText(String text,int fontSize,String type,double duration) {
-    	
+    	if(!ready)
+    		return ;
     	String color = "" ;
 		
 		if(type.equals(Dialog.ERROR_WINDOW)) {
