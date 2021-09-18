@@ -64,6 +64,22 @@ public class ClientSucceedController implements EventHandler<WorkerStateEvent>{
 			friendsController.init();
 			friendsController.setReady(true);
 		
+		}else if(message.getProtocol().equals(Protocol.FRIENDADDED)) {
+			
+			FriendsController friendsController = (FriendsController) SceneHandler.getInstance().getLoader("FriendsPage").getController() ;
+			
+			friendsController.showText(message.getProtocol(), 30, Dialog.INFORMATION_WINDOW, 5);
+			
+			Client.getInstance().sendMessage(Protocol.INFORMATIONFRIENDS);
+			
+		}else if(message.getProtocol().equals(Protocol.USERNAMEFRIENDDOESNTEXIST)) {
+			
+			FriendsController friendsController = (FriendsController) SceneHandler.getInstance().getLoader("FriendsPage").getController() ;
+			
+			friendsController.showText(message.getProtocol(), 30, Dialog.ERROR_WINDOW, 5);
+			
+			friendsController.setReady(true);
+			
 		}else if(message.getProtocol().equals(Protocol.INFORMATIONACCOUNT)) {
 			
 			AccountController accountController =  SceneHandler.getInstance().getLoader("AccountPage").getController() ;

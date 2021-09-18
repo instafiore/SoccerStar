@@ -33,12 +33,12 @@
                         <VBox fx:id="box_friends_online" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER" />
                      </center>
                   </BorderPane>
-                  <BorderPane styleClass="pane">
+                  <BorderPane fx:id="paneOfflineFriends" styleClass="pane">
                      <top>
                         <Label fx:id="label_all_friends" alignment="CENTER" prefHeight="48.0" prefWidth="669.0" text="ALL FRIENDS" textAlignment="CENTER" textFill="#e1dbdb" BorderPane.alignment="CENTER" />
                      </top>
                      <center>
-                        <VBox fx:id="box_all_friends" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER" />
+                        <VBox fx:id="box_all_friends" alignment="CENTER" prefHeight="200.0" prefWidth="663.0" BorderPane.alignment="CENTER" />
                      </center>
                   </BorderPane>
                </children>

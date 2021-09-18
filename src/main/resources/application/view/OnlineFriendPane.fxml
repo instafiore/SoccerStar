@@ -7,28 +7,40 @@
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="72.0" prefWidth="476.0" styleClass="no_match_yet" stylesheets="@css/stylesheet1.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.control.FriendControllerOffline">
+
+<BorderPane prefHeight="93.0" prefWidth="345.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.control.FriendControllerOnline">
    <center>
-      <Label fx:id="friend_label" alignment="CENTER" prefHeight="72.0" prefWidth="247.0" text="INSTAFIORE" BorderPane.alignment="CENTER">
-         <font>
-            <Font size="29.0" />
-         </font></Label>
+      <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="87.0" prefWidth="334.0" styleClass="no_match_yet" stylesheets="@css/stylesheet1.css">
+         <center>
+            <Label fx:id="friend_label" alignment="CENTER" prefHeight="47.0" prefWidth="193.0" text="INSTAFIORE" BorderPane.alignment="CENTER">
+               <font>
+                  <Font size="17.0" />
+               </font>
+               <BorderPane.margin>
+                  <Insets />
+               </BorderPane.margin>
+            </Label>
+         </center>
+         <right>
+            <Button fx:id="friendly_battle_button" mnemonicParsing="false" onAction="#onClickFriendly_battle_button" prefHeight="45.0" prefWidth="95.0" text="FRIENDLY BATTLE" BorderPane.alignment="CENTER">
+               <BorderPane.margin>
+                  <Insets right="10.0" />
+               </BorderPane.margin>
+               <font>
+                  <Font size="9.0" />
+               </font>
+            </Button>
+         </right>
+         <left>
+            <Circle fx:id="skin_friend" fill="DODGERBLUE" onMouseEntered="#onMouseEnteredSkin" onMouseExited="#onMouseExitedSkin" radius="17.0" stroke="BLACK" strokeType="INSIDE" BorderPane.alignment="CENTER">
+               <BorderPane.margin>
+                  <Insets left="10.0" right="1.0" />
+               </BorderPane.margin>
+            </Circle>
+         </left>
+      </BorderPane>
    </center>
-   <right>
-      <Button fx:id="friendly_battle_button" mnemonicParsing="false" onAction="#onClickFriendly_battle_button" prefHeight="52.0" prefWidth="126.0" text="FRIENDLY BATTLE" BorderPane.alignment="CENTER">
-         <BorderPane.margin>
-            <Insets left="10.0" right="10.0" />
-         </BorderPane.margin>
-         <font>
-            <Font size="12.0" />
-         </font>
-      </Button>
-   </right>
-   <left>
-      <Circle fx:id="skin_friend" fill="DODGERBLUE" onMouseEntered="#onMouseEnteredSkin" onMouseExited="#onMouseExitedSkin" radius="27.0" stroke="BLACK" strokeType="INSIDE" BorderPane.alignment="CENTER">
-         <BorderPane.margin>
-            <Insets left="20.0" right="10.0" />
-         </BorderPane.margin>
-      </Circle>
-   </left>
+   <padding>
+      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+   </padding>
 </BorderPane>

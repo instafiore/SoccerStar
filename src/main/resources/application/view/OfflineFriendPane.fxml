@@ -6,18 +6,33 @@
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="72.0" prefWidth="456.0" styleClass="no_match_yet" stylesheets="@css/stylesheet1.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.control.FriendControllerOnline">
+
+<BorderPane xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.control.FriendControllerOffline">
    <center>
-      <Label fx:id="friend_label" alignment="CENTER" prefHeight="74.0" prefWidth="572.0" text="INSTAFIORE" BorderPane.alignment="CENTER">
-         <font>
-            <Font size="39.0" />
-         </font></Label>
+      <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="73.0" prefWidth="325.0" styleClass="no_match_yet" stylesheets="@css/stylesheet1.css">
+         <center>
+            <Label fx:id="friend_label" alignment="CENTER" prefHeight="55.0" prefWidth="238.0" text="INSTAFIORE" BorderPane.alignment="CENTER">
+               <font>
+                  <Font size="17.0" />
+               </font>
+               <BorderPane.margin>
+                  <Insets />
+               </BorderPane.margin>
+            </Label>
+         </center>
+         <left>
+            <Circle fx:id="skin_friend" fill="DODGERBLUE" onMouseEntered="#onMouseEnteredSkin" onMouseExited="#onMouseExitedSkin" radius="18.0" stroke="BLACK" strokeType="INSIDE" BorderPane.alignment="CENTER">
+               <BorderPane.margin>
+                  <Insets left="20.0" />
+               </BorderPane.margin>
+            </Circle>
+         </left>
+         <padding>
+            <Insets left="10.0" />
+         </padding>
+      </BorderPane>
    </center>
-   <left>
-      <Circle fx:id="skin_friend" fill="DODGERBLUE" onMouseEntered="#onMouseEnteredSkin" onMouseExited="#onMouseExitedSkin" radius="27.0" stroke="BLACK" strokeType="INSIDE" BorderPane.alignment="CENTER">
-         <BorderPane.margin>
-            <Insets left="20.0" right="20.0" />
-         </BorderPane.margin>
-      </Circle>
-   </left>
+   <padding>
+      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+   </padding>
 </BorderPane>

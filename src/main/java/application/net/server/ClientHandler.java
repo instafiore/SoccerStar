@@ -136,7 +136,7 @@ public class ClientHandler implements Runnable {
 				if (usernamerecory == null)
 					return;
 				
-				if(!Database.getInstance().checkUser(usernamerecory))
+				if(Database.getInstance().getAccount(usernamerecory) == null)
 				{
 					sendMessage(Protocol.USERNAMEDOESNTEXIST);
 					
@@ -144,11 +144,8 @@ public class ClientHandler implements Runnable {
 					
 					Mail.getInstance().send(usernamerecory);
 					StringBuilder emailCovered = null;
-					try {
-						emailCovered = new StringBuilder(Database.getInstance().getAccount(usernamerecory).getEmail()) ;
-					} catch (SQLException e) {
-						e.printStackTrace();
-					}
+					
+					emailCovered = new StringBuilder(Database.getInstance().getAccount(usernamerecory).getEmail()) ;
 					
 					for(int i = 0 ; i < emailCovered.length() - 18 ; ++i)
 						emailCovered.setCharAt(i, 'x');
@@ -315,13 +312,9 @@ public class ClientHandler implements Runnable {
 			}else if(message.equals(Protocol.INFORMATIONACCOUNT)) {
 				
 				Account account;
-				try {
-					account = Database.getInstance().getAccount(username);
-				} catch (SQLException e) {
-					sendMessage(Protocol.GENERALERROR);
-					printConnectionLost();
-					return;
-				}
+				
+				account = Database.getInstance().getAccount(username);
+				
 				String string = account.getUsername() + Protocol.DELIMITERINFORMATIONACCOUNT + account.getPassword() + Protocol.DELIMITERINFORMATIONACCOUNT +
 						account.getCoins() + Protocol.DELIMITERINFORMATIONACCOUNT + 
 						account.getCurrentSkin() + Protocol.DELIMITERINFORMATIONACCOUNT + account.getEmail() + Protocol.DELIMITERINFORMATIONACCOUNT+
@@ -346,33 +339,52 @@ public class ClientHandler implements Runnable {
 						friends_offline.add(friend);
 				
 				for(String friend : friends_online)
-					try {
-						friendsOnline += friend + Protocol.DELIMITERINFORMATIONFRIEND + Database.getInstance().getAccount(friend).getCurrentSkin() ;
-						friendsOnline += Protocol.DELIMITERFRIEND ;
-					} catch (SQLException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+					
+					friendsOnline += friend + Protocol.DELIMITERINFORMATIONFRIEND + Database.getInstance().getAccount(friend).getCurrentSkin() ;
+					friendsOnline += Protocol.DELIMITERFRIEND ;
+				
 				
 				for(String friend : friends_offline)
-					try {
-						friendsOffline += friend + Protocol.DELIMITERINFORMATIONFRIEND + Database.getInstance().getAccount(friend).getCurrentSkin() ;
-						friendsOffline += Protocol.DELIMITERFRIEND ;
-					} catch (SQLException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				
-				
-				String text = friendsOnline + Protocol.DELIMITERINFORMATIONFRIENDS + friendsOffline ;
+				{
+					friendsOffline += friend + Protocol.DELIMITERINFORMATIONFRIEND + Database.getInstance().getAccount(friend).getCurrentSkin() ;
+					friendsOffline += Protocol.DELIMITERFRIEND ;
+				}
 						
+			
+				String text = "" ;
+				
+				if(friendsOnline.equals(""))
+					text = Protocol.NOFRIENDSONLINE + Protocol.DELIMITERINFORMATIONFRIENDS + friendsOffline ;
+				else if(friendsOffline.equals("")) 
+					text = friendsOnline + Protocol.DELIMITERINFORMATIONFRIENDS + Protocol.NOFRIENDSOFFLINE ;
+				else
+					text = friendsOnline + Protocol.DELIMITERINFORMATIONFRIENDS + friendsOffline ;
+				
 				if(friends_offline.isEmpty() && friends_online.isEmpty())
 					text = Protocol.NOFRIENDS ;
-					
 				
 				sendMessage(Protocol.INFORMATIONFRIENDS);
 				sendMessage(text);
 				
+			}else if(message.equals(Protocol.ADDFRIEND)) {
+				
+				message = read();
+
+				if (message == null)
+					return;
+				
+				String newFriend = message ;
+
+				
+				if(Database.getInstance().getAccount(newFriend) == null)
+				{
+					sendMessage(Protocol.USERNAMEFRIENDDOESNTEXIST);
+				}else {
+					Database.getInstance().insertFriendToUsername(username, newFriend);
+					sendMessage(Protocol.FRIENDADDED);
+				}
+				
+			
 			}else if(message.equals(Protocol.INFORMATIONHISTORY)) {
 				List<DataMatch> dataMatches;
 				
@@ -414,13 +426,9 @@ public class ClientHandler implements Runnable {
 				String text = "" ;
 				
 				String coins = "";
-				try {
-					coins = "" + Database.getInstance().getAccount(username).getCoins();
-				} catch (SQLException e) {
-					sendMessage(Protocol.GENERALERROR);
-					printConnectionLost();
-					return;
-				}
+				
+				coins = "" + Database.getInstance().getAccount(username).getCoins();
+				
 			
 				text = coins ;
 				
@@ -474,13 +482,9 @@ public class ClientHandler implements Runnable {
 				}
 				
 				String coins = "";
-				try {
-					coins = "" + Database.getInstance().getAccount(username).getCoins();
-				} catch (SQLException e) {
-					sendMessage(Protocol.GENERALERROR);
-					printConnectionLost();
-					return;
-				}
+				
+				coins = "" + Database.getInstance().getAccount(username).getCoins();
+				
 				
 				text = skins + Protocol.DELIMITERINFORMATIONSHOP + skin_owned + Protocol.DELIMITERINFORMATIONSHOP + lineups + Protocol.DELIMITERINFORMATIONSHOP + lineup_owned + Protocol.DELIMITERINFORMATIONSHOP + coins; 
 				
@@ -490,12 +494,9 @@ public class ClientHandler implements Runnable {
 			}else  if(message.equals(Protocol.SKININUSE)) {
 				
 				String colorSkin  = "" ;
-				try {
-					colorSkin = Database.getInstance().getAccount(username).getCurrentSkin() ;
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				
+				colorSkin = Database.getInstance().getAccount(username).getCurrentSkin() ;
+				
 				
 				sendMessage(Protocol.SKININUSE);
 				sendMessage(colorSkin);
@@ -503,12 +504,9 @@ public class ClientHandler implements Runnable {
 			}else  if(message.equals(Protocol.LINEUPINUSE)) {
 				
 				int lineup = 0 ;
-				try {
-					lineup = Database.getInstance().getAccount(username).getLineup() ;
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				
+				lineup = Database.getInstance().getAccount(username).getLineup() ;
+				
 				
 				sendMessage(Protocol.LINEUPINUSE);
 				sendMessage(""+lineup);

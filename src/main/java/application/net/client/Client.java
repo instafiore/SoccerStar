@@ -346,6 +346,10 @@ public class Client extends Service<Message>{
 			}
 			message = new Message(protocol,mess);
 			
+		}else if(protocol.equals(Protocol.FRIENDADDED) || protocol.equals(Protocol.USERNAMEFRIENDDOESNTEXIST) ) {
+			
+			message = new Message(protocol);
+			
 		}else {
 			message = new Message();
 			message.setProtocol(Protocol.GENERALERROR);

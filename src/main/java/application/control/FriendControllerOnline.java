@@ -24,7 +24,7 @@ public class FriendControllerOnline {
     @FXML
     public void initialize() {
     	
-    	friend_label.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 26));
+    	friend_label.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 20));
     	friendly_battle_button.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 8));
     	
     	friendly_battle_button.setOnMouseEntered(new HoverButton());

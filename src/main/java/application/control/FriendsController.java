@@ -54,11 +54,14 @@ public class FriendsController {
     private Button add_friend;
 
   
-    
+    @FXML
+    private BorderPane paneOfflineFriends;
+
     private boolean ready = false ;
     
     private static final String FriendsTitle = "Friends";
     
+    private static final String USERNAMEDOESNTEXIST = "This username doesn't exist";
     
     @FXML
     public void initialize() {
@@ -74,6 +77,8 @@ public class FriendsController {
     	back_button_friends_page.setOnMouseEntered(new HoverButton());
     	back_button_friends_page.setOnMouseExited(new HoverButton());
     	
+    	username_field.setOnKeyReleased(new InputFieldController(InputFieldController.USERNAME));
+    	
     	showText(FriendsTitle, 40, Dialog.INFORMATION_WINDOW, 20);
     	
     	Client.getInstance().sendMessage(Protocol.INFORMATIONFRIENDS) ;
@@ -86,14 +91,16 @@ public class FriendsController {
     	box_all_friends.getChildren().clear();
     	box_friends_online.getChildren().clear();
     	
+    	vbox.getChildren().remove(PaneOnlineFriend);
+    	vbox.getChildren().remove(paneOfflineFriends);
+    	
     	if(FriendsHandler.getInstance().getFriendsOnline().isEmpty() && FriendsHandler.getInstance().getFriendsOffline().isEmpty())
-    	{
-    		vbox.getChildren().remove(PaneOnlineFriend);    		
+    	{		
     		box_all_friends.getChildren().add(SceneHandler.getInstance().loadPane("NoFriendYet").getKey());
     		
     	}else if(FriendsHandler.getInstance().getFriendsOnline().isEmpty()){
     		
-    		vbox.getChildren().remove(PaneOnlineFriend);
+    		vbox.getChildren().add(paneOfflineFriends);
     		
     		for(Pair<String, String> pair : FriendsHandler.getInstance().getFriendsOffline())
     		{
@@ -110,7 +117,29 @@ public class FriendsController {
     			box_all_friends.getChildren().add(pane);
     		}
     		
+    	}else if(FriendsHandler.getInstance().getFriendsOffline().isEmpty()){
+    		
+    		vbox.getChildren().add(PaneOnlineFriend);
+    		
+    		for(Pair<String, String> pair : FriendsHandler.getInstance().getFriendsOnline())
+    		{
+    			String username_friend_online = pair.getKey() ;
+    			String skin_friend_online = pair.getValue() ;
+    			
+    			Pane pane = (Pane) SceneHandler.getInstance().loadPane("OnlineFriendPane").getKey() ;
+    			
+    			FriendControllerOnline friendControllerOnline = (FriendControllerOnline) SceneHandler.getInstance().getLoader("OnlineFriendPane").getController() ;
+    			
+    			friendControllerOnline.setFriend_label(username_friend_online);
+    			friendControllerOnline.setSkin_friend(skin_friend_online);
+    			
+    			box_friends_online.getChildren().add(pane);
+    		}
+    		
     	}else {
+    		
+    		vbox.getChildren().add(PaneOnlineFriend);
+        	vbox.getChildren().add(paneOfflineFriends);
     		
     		for(Pair<String, String> pair : FriendsHandler.getInstance().getFriendsOnline())
     		{
@@ -190,6 +219,33 @@ public class FriendsController {
     void onCLickAdd_friend(ActionEvent event) {
     	if(!ready)
     		return ;
+    	
+    	setReady(false);
+    	
+    	if(!Utilities.ruleUsernameRespected(username_field.getText()))
+    	{
+    		showText(USERNAMEDOESNTEXIST, 26, Dialog.ERROR_WINDOW, 4);
+    		return ;
+    	}
+    	
+    	String username_new_friend = username_field.getText() ;
+    	
+    	for(Pair pair : FriendsHandler.getInstance().getFriendsOnline())
+    		if(pair.getKey().equals(username_new_friend))
+    		{
+    			showText(Protocol.ALREADYFRIENDS, 30, Dialog.ATTENTION_WINDOW, 4);
+    			return ;
+    		}
+    	
+    	for(Pair pair : FriendsHandler.getInstance().getFriendsOffline())
+    		if(pair.getKey().equals(username_new_friend))
+    		{
+    			showText(Protocol.ALREADYFRIENDS, 30, Dialog.ATTENTION_WINDOW, 4);
+    			return ;
+    		}
+    	
+    	Client.getInstance().sendMessage(Protocol.ADDFRIEND);
+    	Client.getInstance().sendMessage(username_new_friend);
     }
 
 

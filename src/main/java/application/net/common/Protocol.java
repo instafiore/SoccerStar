@@ -45,6 +45,12 @@ public class Protocol {
 	public static final String DELIMITERFRIEND = "§";
 	public static final String DELIMITERINFORMATIONFRIEND = "£";
 	public static final String NOFRIENDS = "No friends yet :(";
+	public static final String ADDFRIEND = "I want to add this friend" ;
+	public static final String ALREADYFRIENDS = "You are already friend with him " ;
+	public static final String FRIENDADDED = "Friend added";
+	public static final String USERNAMEFRIENDDOESNTEXIST = "This username doesn't exist";
+	public static final String NOFRIENDSONLINE = "No friends online";
+	public static final String NOFRIENDSOFFLINE = "No friends offline";
 	
 	// Shop
 	public static final String INFORMATIONSHOP = "Information shop request";

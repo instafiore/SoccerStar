@@ -43,6 +43,7 @@ public class Database {
 	private static final String UPDATE_CURRENT_SKIN = "update Account set current_skin = ? where username = ? ;" ;
 	private static final String UPDATE_CURRENT_LINEUP = "update Account set current_lineup = ? where username = ? ;" ;
 	private static final String SEARCH_FRIENDS_USER = "select friend from Friends where account  = ? ;";
+	private static final String INSERTFRIEND = "insert into Friends(account,friend) values(?,?); ";
 	
 	private Connection connection;
 	private static Database instance = null;
@@ -64,6 +65,7 @@ public class Database {
 	private PreparedStatement update_current_skin_query ;
 	private PreparedStatement update_current_lineup_query ;
 	private PreparedStatement search_friend_user_query  ;
+	private PreparedStatement insert_friend_query  ;
 	
 	
 	private Database() {
@@ -107,6 +109,7 @@ public class Database {
 		update_current_skin_query = connection.prepareStatement(UPDATE_CURRENT_SKIN);
 		update_current_lineup_query = connection.prepareStatement(UPDATE_CURRENT_LINEUP);
 		search_friend_user_query = connection.prepareStatement(SEARCH_FRIENDS_USER);
+		insert_friend_query = connection.prepareStatement(INSERTFRIEND);
 
 	}
 	
@@ -165,19 +168,26 @@ public class Database {
 		connection = null ;
 	}
 	
-	public synchronized  Account getAccount(String username) throws SQLException {
+	public synchronized  Account getAccount(String username)  {
+		
 		Account account = new Account();
-		search_client_query.setString(1,username);
-		search_client_query.execute();
 		
-		ResultSet result = search_client_query.executeQuery();
+		try {
+			search_client_query.setString(1,username);
+			search_client_query.execute();
+			
+			ResultSet result = search_client_query.executeQuery();
 		
-		account.setUsername(username);
-		account.setPassword(result.getString("password"));
-		account.setCoins(result.getInt("coins"));
-		account.setLineup(result.getInt("current_lineup"));
-		account.setCurrentSkin(result.getString("current_skin"));
-		account.setEmail(result.getString("email"));
+			account.setUsername(username);
+			account.setPassword(result.getString("password"));
+			account.setCoins(result.getInt("coins"));
+			account.setLineup(result.getInt("current_lineup"));
+			account.setCurrentSkin(result.getString("current_skin"));
+			account.setEmail(result.getString("email"));
+			
+		} catch (SQLException e) {
+			return null ;
+		}
 		
 		return account ;
 	}
@@ -276,6 +286,42 @@ public class Database {
 
 	}
 	
+	public synchronized void insertFriendToUsername(String username,String friend) {
+		
+		try {
+			insert_friend_query.setString(1, username);
+			insert_friend_query.setString(2, friend);
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		try {
+			insert_friend_query.executeUpdate() ;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		try {
+			insert_friend_query.setString(1, friend);
+			insert_friend_query.setString(2, username);
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		try {
+			insert_friend_query.executeUpdate() ;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+	
 	private synchronized void insertLineupToUsername(String username,int lineup) {
 		
 		try {
@@ -308,12 +354,12 @@ public class Database {
 		int price = Integer.parseInt(skin.getPrice());
 		
 		Account account = null ;
-		try {
-			account = getAccount(username);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
+		account = getAccount(username);
+		
+		if(account == null)
+			return false ;
+		
 		int coins = account.getCoins() ;
 		
 		int newAmoutOfCoins = coins - price ;
@@ -338,12 +384,12 @@ public class Database {
 		int price = Integer.parseInt(lineup.getPrice());
 		
 		Account account = null ;
-		try {
-			account = getAccount(username);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
+		account = getAccount(username);
+	
+		if(account == null)
+			return false ;
+			
 		int coins = account.getCoins() ;
 		
 		int newAmoutOfCoins = coins - price ;
@@ -376,12 +422,9 @@ public class Database {
 	public synchronized void insertCoins(String username,int coins) {
 		
 		int currentCoins = 0;
-		try {
-			currentCoins = getAccount(username).getCoins();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
+		currentCoins = getAccount(username).getCoins();
+		
 		
 		int newCoins = currentCoins + coins ;
 		
@@ -404,12 +447,9 @@ public class Database {
 	public synchronized void removeCoins(String username,int coins) {
 		
 		int currentCoins = 0;
-		try {
-			currentCoins = getAccount(username).getCoins();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
+		currentCoins = getAccount(username).getCoins();
+		
 		
 		int newCoins = currentCoins - coins ;
 		

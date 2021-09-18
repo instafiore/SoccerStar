@@ -74,10 +74,9 @@ public class SkinControllerShop {
     
     @FXML
     void onClickBuy_button(ActionEvent event) {
-    	ShopController shopController = null ;
+    	ShopController shopController = (ShopController) SceneHandler.getInstance().getLoader("ShopPage").getController() ;
     	if(owned)
     	{
-    		shopController = (ShopController) SceneHandler.getInstance().getLoader("ShopPage").getController() ;
     		shopController.showText(Protocol.ALREADYOWNED, 20, Dialog.INFORMATION_WINDOW, 5);
     		return ;
     	}

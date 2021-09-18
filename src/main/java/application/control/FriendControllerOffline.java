@@ -22,7 +22,7 @@ public class FriendControllerOffline {
     @FXML
     public void initialize() {
     	
-    	friend_label.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 39));
+    	friend_label.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 20));
     	
     }
     

@@ -108,14 +108,9 @@ public class MatchServer implements Runnable {
 			
 			matchHandler.setTurn( new Random().nextBoolean() );
 	
+			typeOfLineup[0] = Database.getInstance().getAccount(username1).getLineup() ;
+			typeOfLineup[1] = Database.getInstance().getAccount(username2).getLineup() ;
 			
-			try {
-				typeOfLineup[0] = Database.getInstance().getAccount(username1).getLineup() ;
-				typeOfLineup[1] = Database.getInstance().getAccount(username2).getLineup() ;
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 			
 			sendMessage(Protocol.USERNAMEGUEST, PLAYER1);
 			sendMessage(username1, PLAYER1);
@@ -124,14 +119,9 @@ public class MatchServer implements Runnable {
 			sendMessage(Protocol.USERNAMEGUEST, PLAYER2);
 			sendMessage(username2, PLAYER2);
 			
-			
-			try {
-				colorPlayer1 = Database.getInstance().getAccount(username1).getCurrentSkin();
-				colorPlayer2 = Database.getInstance().getAccount(username2).getCurrentSkin() ;
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			colorPlayer1 = Database.getInstance().getAccount(username1).getCurrentSkin();
+			colorPlayer2 = Database.getInstance().getAccount(username2).getCurrentSkin() ;
+		
 			
 			sendMessage(Protocol.YOURCOLOR, PLAYER2);
 			sendMessage(colorPlayer1, PLAYER2);

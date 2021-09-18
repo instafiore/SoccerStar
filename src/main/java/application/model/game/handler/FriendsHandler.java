@@ -63,6 +63,9 @@ public class FriendsHandler {
 	
 	public void loadFriends(String string) {
 		
+		clearFriendsOffline();
+		clearFriendsOnline();
+		
 		if(string.equals(Protocol.NOFRIENDS))
 			return ;
 		
@@ -70,11 +73,13 @@ public class FriendsHandler {
 		
 		StringTokenizer stringTokenizer2 = new StringTokenizer(stringTokenizer.nextToken(), Protocol.DELIMITERFRIEND);
 		StringTokenizer stringTokenizer3 = new StringTokenizer(stringTokenizer.nextToken(), Protocol.DELIMITERFRIEND);
-		
+	
 		
 		while(stringTokenizer2.hasMoreTokens())
 		{
 			String token = stringTokenizer2.nextToken() ;
+			if(token.equals(Protocol.NOFRIENDSONLINE))
+				break ;
 			Pair<String,String> pair = new Pair<String, String>(token.split(Protocol.DELIMITERINFORMATIONFRIEND)[0], token.split(Protocol.DELIMITERINFORMATIONFRIEND)[1]);
 			addFriendOnline(pair);
 		}
@@ -82,6 +87,8 @@ public class FriendsHandler {
 		while(stringTokenizer3.hasMoreTokens())
 		{
 			String token = stringTokenizer3.nextToken() ;
+			if(token.equals(Protocol.NOFRIENDSOFFLINE))
+				break ;
 			Pair<String,String> pair = new Pair<String, String>(token.split(Protocol.DELIMITERINFORMATIONFRIEND)[0], token.split(Protocol.DELIMITERINFORMATIONFRIEND)[1]);
 			addFriendOffline(pair);
 		}

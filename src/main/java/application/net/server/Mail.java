@@ -64,12 +64,8 @@ public class Mail {
 				+ "Best regards , Soccer Star.";
 		
 		String emailReceiver = "" ;
-		try {
-			emailReceiver = Database.getInstance().getAccount(receiver).getEmail() ;
-		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+		
+		emailReceiver = Database.getInstance().getAccount(receiver).getEmail() ;
 		
 		Message message = prepareMessage(session,subject ,emailReceiver,text);
 		
