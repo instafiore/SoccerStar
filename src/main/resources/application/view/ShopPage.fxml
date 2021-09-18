@@ -11,20 +11,20 @@
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="749.0" styleClass="pane" stylesheets="@css/stylesheet1.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.control.ShopController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="514.0" prefWidth="765.0" styleClass="pane" stylesheets="@css/stylesheet1.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.control.ShopController">
    <bottom>
       <HBox alignment="CENTER_RIGHT" prefHeight="69.0" prefWidth="600.0" BorderPane.alignment="CENTER">
          <children>
             <Button fx:id="buy_coins_button_shop_page" mnemonicParsing="false" onAction="#onClickBuy_coins_button_shop_page" prefHeight="44.0" prefWidth="104.0" text="BUY COINS" textFill="#a0d709">
                <HBox.margin>
-                  <Insets right="20.0" />
+                  <Insets bottom="20.0" right="20.0" top="10.0" />
                </HBox.margin>
             </Button>
          </children>
       </HBox>
    </bottom>
    <center>
-      <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" prefHeight="187.0" prefWidth="647.0" styleClass="pane" BorderPane.alignment="CENTER">
+      <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" prefHeight="187.0" prefWidth="647.0" styleClass="pane" vbarPolicy="NEVER" BorderPane.alignment="CENTER">
          <BorderPane.margin>
             <Insets left="50.0" right="50.0" />
          </BorderPane.margin>

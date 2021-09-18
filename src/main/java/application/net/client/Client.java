@@ -54,6 +54,7 @@ public class Client extends Service<Message>{
 	
 	public void setCurrentState(int currentState) {
 		this.currentState = currentState;
+		System.out.println("[CLIENT] Change state in -> "+this.currentState);
 	}
 	
 	public void clickButtonLeft() {

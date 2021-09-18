@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+
 import javafx.scene.chart.Axis;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.CategoryAxis;
@@ -30,6 +31,7 @@ public class MatchChart extends BarChart<String, Number>{
 		this.aboutWho = aboutWho ;
 		this.dataMatches = dataMatches ;
 		this.setTitle(TITLE+" "+aboutWho);
+		this.setLegendVisible(true);
 		xAxis.setLabel("Date");
 		yAxis.setLabel("Match");
 		matchesWon = new XYChart.Series<String,Number>();
@@ -66,10 +68,25 @@ public class MatchChart extends BarChart<String, Number>{
 			matchesLost.getData().add(new XYChart.Data<String, Number>(day.split("-")[2]+"-"+day.split("-")[1], lost));
 			++i;
 		}
-		
+
 		this.getData().add(matchesWon);
 		this.getData().add(matchesLost);
 		
+//		ist<DatiVaccinazioni> result = (List<DatiVaccinazioni>) event.getSource().getValue();
+//		XYChart.Series<String, Number> primaDose = new XYChart.Series<String, Number>();
+//		primaDose.setName("Prima dose");
+//		XYChart.Series<String, Number> secondaDose = new XYChart.Series<String, Number>();
+//		secondaDose.setName("Seconda dose");
+//		
+//		Collections.sort(result);				
+//		for(DatiVaccinazioni d : result) {
+//			if(d.getRegione().equalsIgnoreCase(regione.getText()) && d.getData().compareTo(date) <= 0) {
+//				primaDose.getData().add(new XYChart.Data<String, Number>(d.getData(), d.getPrimaDose()));
+//				secondaDose.getData().add(new XYChart.Data<String, Number>(d.getData(), d.getSecondaDose()));
+//			}
+//		}
+//		chart.getData().add(primaDose);
+//		chart.getData().add(secondaDose);			
 	}
 	
 	

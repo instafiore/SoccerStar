@@ -38,6 +38,10 @@ public class SceneHandler {
 		hover_ball_cursor = new Image(getClass().getResourceAsStream("/application/view/tookBallCursor.png"),Settings.CURSORWIDTH , Settings.CURSORHEIGHT , true, true) ;
 	}
 	
+	public Stage getStage() {
+		return stage;
+	}
+	
 	public static SceneHandler instance = null ;
 	
 	public static SceneHandler getInstance() {
@@ -49,6 +53,8 @@ public class SceneHandler {
 	
 	public void initStage(Stage primaryStage) {
 		stage = primaryStage ;
+		Image icon = new Image(getClass().getResourceAsStream("/application/view/icon.png"));
+	    stage.getIcons().add(icon);
 	}
 	
 	// Using existingPane

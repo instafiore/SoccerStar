@@ -4,6 +4,7 @@ import java.io.InputStream;
 
 import com.sun.scenario.effect.Effect;
 
+import application.SceneHandler;
 import application.control.HoverButton;
 import javafx.animation.FadeTransition;
 import javafx.concurrent.Task;
@@ -66,6 +67,7 @@ public class Dialog {
 		scene.getStylesheets().add(getClass().getResource("/application/view/css/stylesheet1.css").toExternalForm());
 		stage.setResizable(false);
 		stage.initModality(Modality.APPLICATION_MODAL);
+		stage.initOwner(SceneHandler.getInstance().getStage());
 		stage.setScene(scene);
 		
 	}
@@ -164,24 +166,6 @@ public class Dialog {
 	
 	
 	public void drawText(AnchorPane glassPane , String text,double x,double y , String type , int font_size) {
-	
-//		x -= font_size / 3 * text.length()  ;
-//	
-//		String color = "" ;
-//		
-//		if(type.equals(ERROR_WINDOW)) {
-//			color = "#ff1313" ;
-//		}else if(type.equals(INFORMATION_WINDOW)) {
-//			color = "#ffffff" ;
-//		}else if(type.equals(ATTENTION_WINDOW)) {
-//			color = "#ff5e28" ;
-//		}
-//		
-//		
-//		canvas.getGraphicsContext2D().setFont(Font.loadFont(inputStreamFont,font_size));
-//		canvas.getGraphicsContext2D().clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-//		canvas.getGraphicsContext2D().setFill(Color.web(color, 0.8));
-//		canvas.getGraphicsContext2D().fillText(text, x, y);
 		
 		Label label = new Label(text);
 		label.setFont(Font.loadFont(inputStreamFont, font_size));

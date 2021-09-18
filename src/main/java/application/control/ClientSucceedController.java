@@ -92,7 +92,7 @@ public class ClientSucceedController implements EventHandler<WorkerStateEvent>{
 			LineupHandler.getInstance().loadOwned(stringTokenizer.nextToken());
 	
 			inventaryController.init();
-			inventaryController.setReady(true);
+
 		}else if(message.getProtocol().equals(Protocol.SKININUSE)) {
 			
 			InventaryController inventaryController = (InventaryController) SceneHandler.getInstance().getLoader("InventaryPage").getController() ;
@@ -110,7 +110,7 @@ public class ClientSucceedController implements EventHandler<WorkerStateEvent>{
 			LineupHandler.getInstance().setUsing(lineupInUse);
 			
 			inventaryController.init();
-			
+			inventaryController.setReady(true);
 		}else if(message.getProtocol().equals(Protocol.ELEMENTSHOPBOUGHT) || message.getProtocol().equals(Protocol.ELEMENTSHOPNOTBOUGHT)) {
 		
 			ShopController shopController = SceneHandler.getInstance().getLoader("ShopPage").getController() ;
