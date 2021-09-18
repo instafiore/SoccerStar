@@ -70,7 +70,7 @@ public class MenuMatchPaneController {
 		}else if(type.equals(Dialog.INFORMATION_WINDOW)) {
 			color = "#008000" ;
 		}else if(type.equals(Dialog.ATTENTION_WINDOW)) {
-			color = "#ff5e28" ;
+			color = "#e59400" ;
 		}
     	
     	information_label.setFont(Font.loadFont(getClass().getResourceAsStream("/application/view/fonts/AzeretMono-Italic-VariableFont_wght.ttf"), fontSize));

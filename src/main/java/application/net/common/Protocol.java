@@ -141,6 +141,7 @@ public class Protocol {
 	public static final String HOVERNOBALL = "I am hover no ball" ;
 	public static final String YOURCOLOR = "This is your color";
 	public static final String COLORGUEST = "This the color of opponent" ;
+	public static final String NOATKICKOFF =" Cannot score at kick off!";
 	
 	public static ArrayList<String> protocolMatch(){
 		
@@ -163,7 +164,7 @@ public class Protocol {
 		strings.add(INFORMATIONMATCHMESSAGE);
 		strings.add(YOUWON);
 		strings.add(YOULOST);
-		
+		strings.add(NOATKICKOFF);
 		return strings ;
 	}
 	

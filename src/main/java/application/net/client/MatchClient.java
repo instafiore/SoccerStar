@@ -317,12 +317,15 @@ public class MatchClient extends Task<String>{
 				return Protocol.NOERRORBUTLEFTMATCH;
 			}
 			else if(message.equals(Protocol.YOUSCORED)){
-				MatchController.getInstance().setTextToShow(message, 13 , Dialog.INFORMATION_WINDOW, 4);
+				MatchController.getInstance().setTextToShow(message, 13 , Dialog.INFORMATION_WINDOW, 7);
 				parseMatchInformation.setHomeScored(true);
 				
 			}else if(message.equals(Protocol.OPPONENTSCORED)){
-				MatchController.getInstance().setTextToShow(message, 13 , Dialog.ATTENTION_WINDOW, 4);
+				MatchController.getInstance().setTextToShow(message, 13 , Dialog.ATTENTION_WINDOW, 7);
 				parseMatchInformation.setGuestScored(true);
+				
+			}else if(message.equals(Protocol.NOATKICKOFF)){
+				MatchController.getInstance().setTextToShow(message, 10 , Dialog.ATTENTION_WINDOW, 7);
 				
 			}else if(message.equals(Protocol.GENERALERROR) || message.equals(Protocol.GENERALERROR)){
 				setMatch_activated(false);

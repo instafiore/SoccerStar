@@ -177,12 +177,18 @@ public class MatchServer implements Runnable {
 					informationMessagePlayer2 = null ;
 					
 					if(scored == MatchHandler.SCOREDHOME) {
+						
 						sendMessage(Protocol.OPPONENTSCORED, PLAYER1);
 						sendMessage(Protocol.YOUSCORED, PLAYER2);
 						
 					}else if(scored == MatchHandler.SCOREDGUEST){
+						
 						sendMessage(Protocol.OPPONENTSCORED, PLAYER2);
 						sendMessage(Protocol.YOUSCORED, PLAYER1);
+						
+					}else if(scored == MatchHandler.SCOREDATKICKOFF){
+						
+						sendMessageAll(Protocol.NOATKICKOFF);
 					}
 					
 					if(dataMatch.isConcluded()) {
@@ -266,16 +272,7 @@ public class MatchServer implements Runnable {
 						
 						x = Double.parseDouble(message.split(Protocol.BALLDELIMITER)[0]);
 						y = Double.parseDouble(message.split(Protocol.BALLDELIMITER)[1]);
-						
-						
-						
-//						
-//						xPos += Settings.DIMENSIONSTANDARDBALL;
-//						yPos += Settings.DIMENSIONSTANDARDBALL;
-//						
-//						if(i == PLAYER2)
-//							xPos = Settings.FIELDWIDTHFRAME - xPos ;
-						
+							
 						
 						x += Settings.DIMENSIONSTANDARDBALL ;
 						y += Settings.DIMENSIONSTANDARDBALL ;
@@ -460,6 +457,9 @@ public class MatchServer implements Runnable {
 							}
 							
 						}while(!matchHandler.allStopped() && scored == MatchHandler.NOSCORED);
+						
+						
+						matchHandler.setKick_off(false);
 						
 					}else {
 						

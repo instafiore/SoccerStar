@@ -21,10 +21,12 @@ public class MatchHandler {
 	private boolean turn ;
 	private DataMatch dataMatch ;
 	private Field field = null ;
+	private boolean kick_off = true ;
 	
 	public static final int NOSCORED = 0 ;
 	public static final int SCOREDHOME = 1 ;
 	public static final int SCOREDGUEST = 2 ;
+	public static final int SCOREDATKICKOFF = 3 ;
 
 	boolean f = true;
 	
@@ -35,7 +37,14 @@ public class MatchHandler {
 		dataMatch.setField(field.getName());
 	}
 	
-
+	
+	public boolean isKick_off() {
+		return kick_off;
+	}
+	
+	public void setKick_off(boolean kick_off) {
+		this.kick_off = kick_off;
+	}
 	
 
 	public int moveBalls() {
@@ -53,6 +62,7 @@ public class MatchHandler {
 				if(b1 != b2 && intersect(b1, b2))
 					collision(b1, b2);
 		}
+		
 		return res ;
 	}
 	
@@ -136,16 +146,24 @@ public class MatchHandler {
 	
 			b.getVelocity().mult(0.30);	
 			b.updatePositionCenter();
-			dataMatch.incGuest();
-			return SCOREDGUEST ;
+			if(!kick_off)
+			{
+				dataMatch.incGuest();
+				return SCOREDGUEST ;
+			}
+			return SCOREDATKICKOFF ;
 		}
 		
 		if(field.goalRight(b)) {
 		
 			b.getVelocity().mult(0.30);
 			b.updatePositionCenter();
-			dataMatch.incHome();
-			return SCOREDHOME ;
+			if(!kick_off)
+			{
+				dataMatch.incHome();
+				return SCOREDHOME ;
+			}
+			return SCOREDATKICKOFF ;
 		}
 		
 		b.updatePositionCenter();
