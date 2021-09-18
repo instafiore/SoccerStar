@@ -121,10 +121,9 @@ public class MatchView extends StackPane{
 		if (matchController == null || matchController.getParseMatchInformation() == null)
 			return;
 		
-		if(!matchController.getParseMatchInformation().getInformationMatchQueue().isEmpty())
-			informationMatch = matchController.getParseMatchInformation().getInformationMatch();
-		else
-			informationMatch = matchController.getParseMatchInformation().getLastInformationMatch();
+		
+		informationMatch = matchController.getParseMatchInformation().getInformationMatch();
+		
 		
 		ArrayList<Ball> balls = informationMatch.getBalls();
 		boolean turn = informationMatch.isTurn();

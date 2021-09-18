@@ -125,7 +125,7 @@ public class MatchController implements EventHandler<MouseEvent>{
 
 	public void handle(MouseEvent event) {
 		
-		if(!parseMatchInformation.isReady())
+		if(!parseMatchInformation.isReady() || !parseMatchInformation.isAllStopped())
 			return ;
 		
 		if(event.getEventType() == MouseEvent.MOUSE_MOVED)

@@ -259,8 +259,8 @@ public class MatchServer implements Runnable {
 						
 						if(ball == null) {
 							System.out.println("[MATCHSERVER] Player 1 -> "+ Protocol.LEFTGAME);
-							sendMessage(Protocol.LEFTGAME, i);
-							notifyClients(NOONEISDISCONNETED);
+							sendMessage(Protocol.CONNECTION_LOST, i);
+							notifyClients(DISCONNECTEDPLAYER1);
 							dataMatch.forfeitOnTheBooks(PLAYER1);
 							Database.getInstance().insertMatch(dataMatch);
 							return ;
@@ -277,18 +277,19 @@ public class MatchServer implements Runnable {
 						x += Settings.DIMENSIONSTANDARDBALL ;
 						y += Settings.DIMENSIONSTANDARDBALL ;
 						
-						x = Settings.FIELDWIDTHFRAME - x  ;
+						x = Settings.FIELDWIDTHFRAME - x - Settings.DIMENSIONSTANDARDBALL ; 
 					
 						Ball ball = matchHandler.tookBall(x, y);
 						
-						x -= Settings.DIMENSIONSTANDARDBALL ;
-						y -= Settings.DIMENSIONSTANDARDBALL ;
+						
+						y -= Settings.DIMENSIONSTANDARDBALL ; 
+						
 						
 						if(ball == null) {
 							System.out.println(x+" "+y);
 							System.out.println("[MATCHSERVER] Player 2 -> "+ Protocol.LEFTGAME);
-							sendMessage(Protocol.LEFTGAME, i);
-							notifyClients(NOONEISDISCONNETED);
+							sendMessage(Protocol.CONNECTION_LOST, i);
+							notifyClients(DISCONNECTEDPLAYER2);
 							dataMatch.forfeitOnTheBooks(PLAYER2);
 							Database.getInstance().insertMatch(dataMatch);
 							return ;
@@ -458,8 +459,10 @@ public class MatchServer implements Runnable {
 							
 						}while(!matchHandler.allStopped() && scored == MatchHandler.NOSCORED);
 						
-						
-						matchHandler.setKick_off(false);
+						if(scored == MatchHandler.NOSCORED)
+							matchHandler.setKick_off(false);
+						else
+							matchHandler.setKick_off(true);
 						
 					}else {
 						

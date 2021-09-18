@@ -39,6 +39,13 @@ public class Protocol {
 	public static final String INITIALINFORMATION = "Initial information";
 	public static final String DELIMITERINITIALINFORMATION = "&" ;
 	
+	// FRIENDS
+	public static final String INFORMATIONFRIENDS = "Initial information friends";
+	public static final String DELIMITERINFORMATIONFRIENDS = "&" ;
+	public static final String DELIMITERFRIEND = "§";
+	public static final String DELIMITERINFORMATIONFRIEND = "£";
+	public static final String NOFRIENDS = "No friends yet :(";
+	
 	// Shop
 	public static final String INFORMATIONSHOP = "Information shop request";
 	public static final String DELIMITERINFORMATIONSHOP = "&" ;
@@ -142,6 +149,8 @@ public class Protocol {
 	public static final String YOURCOLOR = "This is your color";
 	public static final String COLORGUEST = "This the color of opponent" ;
 	public static final String NOATKICKOFF =" Cannot score at kick off!";
+
+	
 	
 	public static ArrayList<String> protocolMatch(){
 		

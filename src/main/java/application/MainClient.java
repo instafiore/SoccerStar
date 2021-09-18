@@ -7,8 +7,8 @@ public class MainClient {
 	// Cambiare tutti i Inventary in Inventory (mannaia a dio )
 	// Codice temporaneo
 	// I suoniiiii
-	// VEDERE PERCHE NEL GRAIFICO NON SI VEDE LA LEGENDA
-	// Riposizionare l'alert sopra la tua finestra
+	// Cambiare i nomi ai colori e alle formazioni , anche nel database ;
+
 	
 	public static void main(String[] args) {
 		MainApplication.main(args);

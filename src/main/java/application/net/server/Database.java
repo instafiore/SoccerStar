@@ -42,6 +42,7 @@ public class Database {
 	private static final String UPDATE_COINS = "update Account set coins = ? where username = ? ;" ;
 	private static final String UPDATE_CURRENT_SKIN = "update Account set current_skin = ? where username = ? ;" ;
 	private static final String UPDATE_CURRENT_LINEUP = "update Account set current_lineup = ? where username = ? ;" ;
+	private static final String SEARCH_FRIENDS_USER = "select friend from Friends where account  = ? ;";
 	
 	private Connection connection;
 	private static Database instance = null;
@@ -62,6 +63,7 @@ public class Database {
 	private PreparedStatement update_coins_query ;
 	private PreparedStatement update_current_skin_query ;
 	private PreparedStatement update_current_lineup_query ;
+	private PreparedStatement search_friend_user_query  ;
 	
 	
 	private Database() {
@@ -104,6 +106,7 @@ public class Database {
 		update_coins_query = connection.prepareStatement(UPDATE_COINS);
 		update_current_skin_query = connection.prepareStatement(UPDATE_CURRENT_SKIN);
 		update_current_lineup_query = connection.prepareStatement(UPDATE_CURRENT_LINEUP);
+		search_friend_user_query = connection.prepareStatement(SEARCH_FRIENDS_USER);
 
 	}
 	
@@ -177,6 +180,41 @@ public class Database {
 		account.setEmail(result.getString("email"));
 		
 		return account ;
+	}
+	
+	
+	public synchronized ArrayList<String> getFriends(String username){
+		
+		ArrayList<String> friends = new ArrayList<String>();
+		
+		try {
+			search_friend_user_query.setString(1, username);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		ResultSet resultSet = null ;
+		
+		try {
+			resultSet = search_friend_user_query.executeQuery() ;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null ;
+		}
+		
+		try {
+			
+			while(resultSet.next())
+				friends.add(resultSet.getString("friend"));
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return friends ;
 	}
 	
 	

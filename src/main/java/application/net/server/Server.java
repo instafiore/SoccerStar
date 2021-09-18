@@ -55,6 +55,10 @@ public class Server implements Runnable{
 	public boolean isOnline(String user) {
 		return usersOnline.contains(user);
 	}
+	
+	public ArrayList<String> getUsersOnline() {
+		return usersOnline;
+	}
 
 	public void run() {
 		

@@ -327,7 +327,7 @@ public class MatchClient extends Task<String>{
 			}else if(message.equals(Protocol.NOATKICKOFF)){
 				MatchController.getInstance().setTextToShow(message, 10 , Dialog.ATTENTION_WINDOW, 7);
 				
-			}else if(message.equals(Protocol.GENERALERROR) || message.equals(Protocol.GENERALERROR)){
+			}else if(message.equals(Protocol.GENERALERROR)){
 				setMatch_activated(false);
 				return Protocol.ERRORMATCH;
 			}

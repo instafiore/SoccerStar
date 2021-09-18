@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="72.0" prefWidth="456.0" styleClass="no_match_yet" stylesheets="@css/stylesheet1.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.control.FriendControllerOnline">
+   <center>
+      <Label fx:id="friend_label" alignment="CENTER" prefHeight="74.0" prefWidth="572.0" text="INSTAFIORE" BorderPane.alignment="CENTER">
+         <font>
+            <Font size="39.0" />
+         </font></Label>
+   </center>
+   <left>
+      <Circle fx:id="skin_friend" fill="DODGERBLUE" onMouseEntered="#onMouseEnteredSkin" onMouseExited="#onMouseExitedSkin" radius="27.0" stroke="BLACK" strokeType="INSIDE" BorderPane.alignment="CENTER">
+         <BorderPane.margin>
+            <Insets left="20.0" right="20.0" />
+         </BorderPane.margin>
+      </Circle>
+   </left>
+</BorderPane>

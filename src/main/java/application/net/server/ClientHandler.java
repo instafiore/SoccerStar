@@ -313,6 +313,7 @@ public class ClientHandler implements Runnable {
 					return;
 				}
 			}else if(message.equals(Protocol.INFORMATIONACCOUNT)) {
+				
 				Account account;
 				try {
 					account = Database.getInstance().getAccount(username);
@@ -327,6 +328,51 @@ public class ClientHandler implements Runnable {
 						account.getLineup() ;
 				sendMessage(Protocol.INFORMATIONACCOUNT);
 				sendMessage(string);
+				
+			}else if(message.equals(Protocol.INFORMATIONFRIENDS)) {
+				
+				ArrayList<String> friends = Database.getInstance().getFriends(username);
+				
+				ArrayList<String> friends_online = new ArrayList<String>();
+				ArrayList<String> friends_offline =  new ArrayList<String>(); 
+				
+				String friendsOnline = "" ;
+				String friendsOffline = "" ;
+				
+				for(String friend : friends)
+					if(server.getUsersOnline().contains(friend))
+						friends_online.add(friend);
+					else
+						friends_offline.add(friend);
+				
+				for(String friend : friends_online)
+					try {
+						friendsOnline += friend + Protocol.DELIMITERINFORMATIONFRIEND + Database.getInstance().getAccount(friend).getCurrentSkin() ;
+						friendsOnline += Protocol.DELIMITERFRIEND ;
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				
+				for(String friend : friends_offline)
+					try {
+						friendsOffline += friend + Protocol.DELIMITERINFORMATIONFRIEND + Database.getInstance().getAccount(friend).getCurrentSkin() ;
+						friendsOffline += Protocol.DELIMITERFRIEND ;
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				
+				
+				String text = friendsOnline + Protocol.DELIMITERINFORMATIONFRIENDS + friendsOffline ;
+						
+				if(friends_offline.isEmpty() && friends_online.isEmpty())
+					text = Protocol.NOFRIENDS ;
+					
+				
+				sendMessage(Protocol.INFORMATIONFRIENDS);
+				sendMessage(text);
+				
 			}else if(message.equals(Protocol.INFORMATIONHISTORY)) {
 				List<DataMatch> dataMatches;
 				

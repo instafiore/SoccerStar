@@ -8,6 +8,7 @@ import application.SceneHandler;
 import application.model.game.entity.Account;
 import application.model.game.entity.DataMatch;
 import application.model.game.entity.Message;
+import application.model.game.handler.FriendsHandler;
 import application.model.game.handler.LineupHandler;
 import application.model.game.handler.SkinHandler;
 import application.net.client.Client;
@@ -54,6 +55,15 @@ public class ClientSucceedController implements EventHandler<WorkerStateEvent>{
 			mainPageController.setCoins_main_page_label(message.getMessage());
 			mainPageController.setReady(true);
 			
+		}else if(message.getProtocol().equals(Protocol.INFORMATIONFRIENDS)) {
+			
+			FriendsController friendsController = (FriendsController) SceneHandler.getInstance().getLoader("FriendsPage").getController() ;
+			
+			FriendsHandler.getInstance().loadFriends(message.getMessage());
+			
+			friendsController.init();
+			friendsController.setReady(true);
+		
 		}else if(message.getProtocol().equals(Protocol.INFORMATIONACCOUNT)) {
 			
 			AccountController accountController =  SceneHandler.getInstance().getLoader("AccountPage").getController() ;

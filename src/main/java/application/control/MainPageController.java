@@ -258,6 +258,8 @@ public class MainPageController {
     	}
     	if(!isReady())
     		return ;
+    	
+    	SceneHandler.getInstance().loadScene("FriendsPage", true, true);
     }
 
     @FXML

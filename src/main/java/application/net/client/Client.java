@@ -38,13 +38,12 @@ public class Client extends Service<Message>{
 	public static final int HISTORY = 7 ;
 	public static final int SHOP = 8;
 	public static final int INVENTARY = 9;
+	public static final int FRIENDS = 10;
 	
 	public static final int FIELD1 = 1 ;
 	public static final int FIELD2 = 2 ;
 	public static final int FIELD3 = 3 ;
-	
 
-	
 	
 	private int currentState = STEP_LOGIN;
 	private MatchClient currentMatch = null ;
@@ -165,6 +164,8 @@ public class Client extends Service<Message>{
 			return readShop(message);
 		case INVENTARY:
 			return readInventary(message);
+		case FRIENDS:
+			return readFriends(message);
 		default:
 			return new Message(Protocol.GENERALERROR);
 		}
@@ -320,6 +321,30 @@ public class Client extends Service<Message>{
 		}else if(protocol.equals(Protocol.ELEMENTSHOPBOUGHT) || protocol.equals(Protocol.ELEMENTSHOPNOTBOUGHT)) {
 			
 			message = new Message(protocol);
+			
+		}else {
+			message = new Message();
+			message.setProtocol(Protocol.GENERALERROR);
+		}
+		return message ;
+	}
+	
+	
+	public Message readFriends(String protocol) throws IOException {
+		
+		Message message = null ;
+		String mess = null ;
+		
+		if(protocol.equals(Protocol.INFORMATIONFRIENDS)) {
+			
+			mess = in.readLine();
+			if(mess == null )
+			{
+				closeStreams();
+				message = new Message(Protocol.GENERALERROR);
+				return message ;
+			}
+			message = new Message(protocol,mess);
 			
 		}else {
 			message = new Message();

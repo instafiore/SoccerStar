@@ -18,6 +18,7 @@ public class ParseMatchInformation {
 	private boolean ready = false ;
 	private boolean homeScored = false ;
 	private boolean guestScored = false ;
+	private boolean allStopped = false ;
 	
 	public ParseMatchInformation() {
 		informationMatchQueue = new ArrayList<Frame>();
@@ -47,6 +48,8 @@ public class ParseMatchInformation {
 	}
 	
 	public void addNewInformation(String string) {
+		
+		setAllStopped(false);
 		
 		ArrayList<Ball> balls ;
 		boolean turn ;
@@ -137,6 +140,13 @@ public class ParseMatchInformation {
 		
 	}
 	
+	public void setAllStopped(boolean allStopped) {
+		this.allStopped = allStopped;
+	}
+	
+	public boolean isAllStopped() {
+		return allStopped;
+	}
 	
 	public ArrayList<Frame> getInformationMatchQueue() {
 		return informationMatchQueue;
@@ -147,7 +157,10 @@ public class ParseMatchInformation {
 			return null ;
 		
 		if(informationMatchQueue.isEmpty())
+		{
+			setAllStopped(true);
 			return getLastInformationMatch();
+		}
 		
 		lastInformationMatch = informationMatchQueue.get(0);
 		informationMatchQueue.remove(0);
@@ -157,6 +170,7 @@ public class ParseMatchInformation {
 	public Frame getLastInformationMatch() {
 		if(lastInformationMatch == null && !informationMatchQueue.isEmpty())
 			lastInformationMatch = informationMatchQueue.get(0);
+		setAllStopped(true);
 		return lastInformationMatch;
 	}
 	
@@ -185,6 +199,7 @@ public class ParseMatchInformation {
 			}
 
 	}
+
 	
 	private boolean intersect(Ball b1,double x,double y) {
 

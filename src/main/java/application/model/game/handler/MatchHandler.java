@@ -43,6 +43,7 @@ public class MatchHandler {
 	}
 	
 	public void setKick_off(boolean kick_off) {
+		System.out.println(kick_off);
 		this.kick_off = kick_off;
 	}
 	
@@ -148,9 +149,11 @@ public class MatchHandler {
 			b.updatePositionCenter();
 			if(!kick_off)
 			{
+				kick_off = true ;
 				dataMatch.incGuest();
 				return SCOREDGUEST ;
 			}
+			kick_off = true ;
 			return SCOREDATKICKOFF ;
 		}
 		
@@ -160,9 +163,11 @@ public class MatchHandler {
 			b.updatePositionCenter();
 			if(!kick_off)
 			{
+				kick_off = true ;
 				dataMatch.incHome();
 				return SCOREDHOME ;
 			}
+			kick_off = true ;
 			return SCOREDATKICKOFF ;
 		}
 		
@@ -281,10 +286,11 @@ public class MatchHandler {
 	
 	private boolean intersect(Ball b1,double x,double y) {
 		
+		double tolerance = 15 ;
 		VectorFioreNoSync position = new VectorFioreNoSync(x, y);
 		VectorFioreNoSync dist = VectorFioreNoSync.sub(b1.getPositionCenter(), position);
 		
-		return dist.getMagnitude() <= b1.getRadius();
+		return dist.getMagnitude() <= b1.getRadius() + tolerance;
 	}
 	
 	public void add(Ball ball) {
