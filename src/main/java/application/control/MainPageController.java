@@ -4,6 +4,7 @@ package application.control;
 import application.SceneHandler;
 import application.Settings;
 import application.Utilities;
+import application.model.game.handler.SoundHandler;
 import application.net.client.Client;
 import application.net.common.Protocol;
 import application.view.Dialog;
@@ -198,6 +199,9 @@ public class MainPageController {
 
     @FXML
     void onClick_account_button_main_page(ActionEvent event) {
+    	SoundHandler.getInstance().startHit();
+    	
+    	
     	if(cancel_attive)
     	{
     		showText(Protocol.LEAVEWITHOUTCANCEL, 20, Dialog.ERROR_WINDOW,2);
@@ -219,6 +223,8 @@ public class MainPageController {
 
     @FXML
     void onClickButtonField(MouseEvent event) {
+    	SoundHandler.getInstance().startHit();
+    	
     	
     	if(Client.getInstance().getCurrentState() != Client.MAINPAGE || !isReady())
     		return ;
@@ -251,6 +257,8 @@ public class MainPageController {
 
     @FXML
     void onClick_friends_button_main_page(ActionEvent event) {
+    	SoundHandler.getInstance().startHit();
+    	
     	if(cancel_attive)
     	{
     		showText(Protocol.LEAVEWITHOUTCANCEL, 20, Dialog.ERROR_WINDOW,2);
@@ -264,6 +272,8 @@ public class MainPageController {
 
     @FXML
     void onClick_leave_button_main_page(ActionEvent event) {
+    	SoundHandler.getInstance().startHit();
+    	
     	if(cancel_attive)
     	{
     		showText(Protocol.LEAVEWITHOUTCANCEL, 20, Dialog.ERROR_WINDOW,2);
@@ -278,6 +288,8 @@ public class MainPageController {
 
     @FXML
     void onClick_shop_button_main_page(ActionEvent event) {
+    	SoundHandler.getInstance().startHit();
+    	
     	if(cancel_attive)
     	{
     		showText(Protocol.LEAVEWITHOUTCANCEL, 20, Dialog.ERROR_WINDOW,2);
@@ -334,6 +346,8 @@ public class MainPageController {
     
     @FXML
     void onClickLeftTriangleButton(ActionEvent event) {
+    	SoundHandler.getInstance().startHit();
+    	
     	if(cancel_attive)
     	{
     		showText(Protocol.LEAVEWITHOUTCANCEL, 20, Dialog.ERROR_WINDOW,2);
@@ -349,6 +363,8 @@ public class MainPageController {
 
     @FXML
     void onClickRightTriangleButton(ActionEvent event) {
+    	SoundHandler.getInstance().startHit();
+    	
     	if(cancel_attive)
     	{
     		showText(Protocol.LEAVEWITHOUTCANCEL, 20, Dialog.ERROR_WINDOW,2);

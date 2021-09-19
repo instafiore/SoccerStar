@@ -3,6 +3,7 @@ package application.control;
 import application.SceneHandler;
 import application.Settings;
 import application.Utilities;
+import application.model.game.handler.SoundHandler;
 import application.net.client.Client;
 import application.net.common.Protocol;
 import application.view.Dialog;
@@ -154,6 +155,8 @@ public class ChooseFieldController {
     
 	@FXML
     void onClickLeftButton(ActionEvent event) {
+		SoundHandler.getInstance().startHit();
+    	
     	if(isCancel_attive())
     	{
     		showText(Protocol.LEAVEWITHOUTCANCEL, 10, Dialog.ERROR_WINDOW,2);
@@ -167,6 +170,8 @@ public class ChooseFieldController {
 
     @FXML
     void onClickRightButton(ActionEvent event) {
+    	SoundHandler.getInstance().startHit();
+    	
     	if(isCancel_attive())
     	{
     		showText(Protocol.LEAVEWITHOUTCANCEL, 10, Dialog.ERROR_WINDOW,2);

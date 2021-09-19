@@ -3,6 +3,7 @@ package application;
 import application.control.ChooseFieldController;
 import application.control.MatchController;
 import application.control.MenuMatchPaneController;
+import application.model.game.handler.SoundHandler;
 import application.net.client.Client;
 import javafx.animation.AnimationTimer;
 
@@ -35,10 +36,14 @@ public class Updater extends AnimationTimer{
 		this.start();
 		this.friendly_battle = friendly_battle ;
 		this.field = field ;
+		SoundHandler.getInstance().stopBackground();
+		SoundHandler.getInstance().startBackgroundMatch();
 	}
 	
 	public void stopUpdater() {
 		this.stop();
+		SoundHandler.getInstance().startBackground();
+		SoundHandler.getInstance().stopBackgroundMatch();
 	}
 	
 	public boolean isFirstTime() {

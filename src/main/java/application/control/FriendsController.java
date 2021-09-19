@@ -3,6 +3,7 @@ package application.control;
 import application.SceneHandler;
 import application.Utilities;
 import application.model.game.handler.FriendsHandler;
+import application.model.game.handler.SoundHandler;
 import application.net.client.Client;
 import application.net.common.Protocol;
 import application.view.Dialog;
@@ -211,6 +212,8 @@ public class FriendsController {
 
     @FXML
     void onClickBack_button_friends_page(ActionEvent event) {
+    	SoundHandler.getInstance().startHit();
+    	
     	if(!ready)
     		return ;
     	SceneHandler.getInstance().loadScene("MainPage", true, true);	
@@ -218,10 +221,7 @@ public class FriendsController {
     
     @FXML
     void onCLickAdd_friend(ActionEvent event) {
-    	if(!ready)
-    		return ;
     	
-    	setReady(false);
     	
     	if(!Utilities.ruleUsernameRespected(username_field.getText()))
     	{

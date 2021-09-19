@@ -4,6 +4,7 @@ package application.control;
 
 import application.SceneHandler;
 import application.Utilities;
+import application.model.game.handler.SoundHandler;
 import application.net.client.Client;
 import application.net.common.Protocol;
 import application.view.Dialog;
@@ -74,6 +75,8 @@ public class SkinControllerShop {
     
     @FXML
     void onClickBuy_button(ActionEvent event) {
+    	SoundHandler.getInstance().startHit();
+    	
     	ShopController shopController = (ShopController) SceneHandler.getInstance().getLoader("ShopPage").getController() ;
     	if(owned)
     	{

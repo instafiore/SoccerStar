@@ -6,6 +6,7 @@ import application.model.game.entity.Lineup;
 import application.model.game.entity.Skin;
 import application.model.game.handler.LineupHandler;
 import application.model.game.handler.SkinHandler;
+import application.model.game.handler.SoundHandler;
 import application.net.client.Client;
 import application.net.common.Protocol;
 import application.view.Dialog;
@@ -118,6 +119,8 @@ public class ShopController {
 
 	@FXML
     void onClickBack_button_shop_page(ActionEvent event) {
+		SoundHandler.getInstance().startHit();
+    	
 		if(!ready)
 			return ;
 		SceneHandler.getInstance().loadScene("MainPage", true, true);
@@ -125,6 +128,8 @@ public class ShopController {
 
     @FXML
     void onClickBuy_coins_button_shop_page(ActionEvent event) {
+    	SoundHandler.getInstance().startHit();
+    	
     	if(!ready)
 			return ;
     }

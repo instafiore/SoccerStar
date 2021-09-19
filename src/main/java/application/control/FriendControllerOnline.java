@@ -1,6 +1,7 @@
 package application.control;
 
 import application.Utilities;
+import application.model.game.handler.SoundHandler;
 import application.net.client.Client;
 import application.net.common.Protocol;
 import application.view.Dialog;
@@ -46,6 +47,8 @@ public class FriendControllerOnline {
     
     @FXML
     void onClickFriendly_battle_button(ActionEvent event) {
+    	SoundHandler.getInstance().startHit();
+    	
     	Client.getInstance().sendMessage(Protocol.CHALLENGEHIM);
     	Client.getInstance().sendMessage(friend_label.getText());
 

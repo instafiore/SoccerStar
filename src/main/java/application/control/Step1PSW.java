@@ -2,6 +2,7 @@ package application.control;
 
 import application.SceneHandler;
 import application.Utilities;
+import application.model.game.handler.SoundHandler;
 import application.net.client.Client;
 import application.net.common.Protocol;
 import javafx.animation.FadeTransition;
@@ -46,6 +47,8 @@ public class Step1PSW {
 
     @FXML
     void onClickBack_button_step1PSW(ActionEvent event) {
+    	SoundHandler.getInstance().startHit();
+    	
     	Client.getInstance().setCurrentState(Client.STEP_LOGIN);
     	SceneHandler.getInstance().loadScene("LoginPage", false, true);
     }
@@ -93,6 +96,7 @@ public class Step1PSW {
     
     @FXML
     void onClickSend_username_button_step1psw(ActionEvent event) {
+    	SoundHandler.getInstance().startHit();
     	
     	if(pressed)
     		return;

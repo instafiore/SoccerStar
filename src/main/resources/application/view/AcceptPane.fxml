@@ -1,48 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.String?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.text.Font?>
 
 <BorderPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="231.0" prefWidth="524.0" styleClass="pane" stylesheets="@css/stylesheet1.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.control.ChooseFieldController">
-   <center>
-      <BorderPane fx:id="container_field" onMouseReleased="#onMouseReleadesField" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-         <center>
-            <Label fx:id="name_field" alignment="CENTER" prefHeight="142.0" prefWidth="227.0" text="FIELD 1" textFill="#f5f0f0" BorderPane.alignment="CENTER">
-               <font>
-                  <Font size="23.0" />
-               </font>
-            </Label>
-         </center>
-         <styleClass>
-            <String fx:value="field2" />
-            <String fx:value="button" />
-         </styleClass>
-         <BorderPane.margin>
-            <Insets left="20.0" right="20.0" />
-         </BorderPane.margin>
-      </BorderPane>
-   </center>
    <top>
       <Label fx:id="information_label" alignment="CENTER" prefHeight="47.0" prefWidth="524.0" BorderPane.alignment="CENTER" />
    </top>
-   <left>
-      <Button fx:id="left_button" mnemonicParsing="false" onAction="#onClickLeftButton" prefHeight="50.0" prefWidth="50.0" styleClass="triangle_button1" BorderPane.alignment="CENTER">
-         <BorderPane.margin>
-            <Insets left="50.0" right="20.0" />
-         </BorderPane.margin>
-      </Button>
-   </left>
-   <right>
-      <Button fx:id="right_button" mnemonicParsing="false" onAction="#onClickRightButton" prefHeight="50.0" prefWidth="50.0" styleClass="triangle_button2" BorderPane.alignment="CENTER">
-         <BorderPane.margin>
-            <Insets left="20.0" right="50.0" />
-         </BorderPane.margin>
-      </Button>
-   </right>
    <bottom>
       <Button fx:id="cancel_button" mnemonicParsing="false" prefHeight="28.0" prefWidth="82.0" styleClass="leave_button" text="CANCEL" BorderPane.alignment="CENTER">
          <BorderPane.margin>

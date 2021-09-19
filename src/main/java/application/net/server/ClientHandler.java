@@ -539,7 +539,7 @@ public class ClientHandler implements Runnable {
 				else
 				{
 					Database.getInstance().changePassword(username, newPassword);
-					sendMessage(Protocol.PASSWORDCHANGED);
+					sendMessage(Protocol.PASSWORDCHANGEDACCOUNTSTATE);
 				}
 					
 				

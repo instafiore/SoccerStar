@@ -5,6 +5,7 @@ import application.Utilities;
 import application.model.game.entity.Lineup;
 import application.model.game.handler.LineupHandler;
 import application.model.game.handler.SkinHandler;
+import application.model.game.handler.SoundHandler;
 import application.net.client.Client;
 import application.net.common.Protocol;
 import application.view.Dialog;
@@ -60,6 +61,7 @@ public class LineupControllerInventory {
 
     @FXML
     void onClickUse_button(ActionEvent event) {
+    	SoundHandler.getInstance().startHit();
     	
     	InventoryController inventaryController = (InventoryController) SceneHandler.getInstance().getLoader("InventoryPage").getController()  ;
     	if(!inventaryController.isReady())

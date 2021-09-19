@@ -4,6 +4,7 @@ import java.io.InputStream;
 
 import application.SceneHandler;
 import application.Utilities;
+import application.model.game.handler.SoundHandler;
 import application.net.client.Client;
 import application.net.common.Protocol;
 import application.view.Dialog;
@@ -138,6 +139,8 @@ public class AccountController {
     @FXML
     void onClickChange_password_button(ActionEvent event) {
     	
+    	SoundHandler.getInstance().startHit();
+    	
     	if(!ready)
     		return ;
     	
@@ -197,11 +200,14 @@ public class AccountController {
     
     @FXML
     void onClickAdd_payment_method_button(ActionEvent event) {
-
+    	SoundHandler.getInstance().startHit();
+    	
     }
 
     @FXML
     void onClickBack_button_account(ActionEvent event) {
+    	SoundHandler.getInstance().startHit();
+    	
     	if(!ready)
     		return ;
     	SceneHandler.getInstance().loadScene("MainPage", true, true);
@@ -209,11 +215,14 @@ public class AccountController {
 
     @FXML
     void onClickBuy_coins_button_account(ActionEvent event) {
-
+    	SoundHandler.getInstance().startHit();
+    	
     }
 
     @FXML
     void onClickFriends_button_account(ActionEvent event) {
+    	SoundHandler.getInstance().startHit();
+    	
     	if(!ready)
     		return ;
     	SceneHandler.getInstance().loadScene("FriendsPage", true, true);
@@ -221,6 +230,8 @@ public class AccountController {
 
     @FXML
     void onClickHistory_button_account(ActionEvent event) {
+    	SoundHandler.getInstance().startHit();
+    	
     	if(!ready)
     		return ;
     	SceneHandler.getInstance().loadScene("HistoryPage", true, true);
@@ -228,6 +239,8 @@ public class AccountController {
     
     @FXML
     void onClickInventory_button_account(ActionEvent event) {
+    	SoundHandler.getInstance().startHit();
+    	
     	if(!ready)
     		return ;
     	SceneHandler.getInstance().loadScene("InventoryPage", true, true);

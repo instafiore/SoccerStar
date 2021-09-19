@@ -4,6 +4,7 @@ import application.SceneHandler;
 import application.Utilities;
 import application.model.game.entity.Lineup;
 import application.model.game.handler.LineupHandler;
+import application.model.game.handler.SoundHandler;
 import application.net.client.Client;
 import application.net.common.Protocol;
 import application.view.Dialog;
@@ -65,6 +66,8 @@ public class LineupControllerShop {
     
     @FXML
     void onClickBuy_button(ActionEvent event) {
+    	SoundHandler.getInstance().startHit();
+    	
     	ShopController shopController = (ShopController) SceneHandler.getInstance().getLoader("ShopPage").getController()  ;
     	if(owned)
     	{

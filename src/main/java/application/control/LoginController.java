@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
 
 import application.SceneHandler;
 import application.Utilities;
+import application.model.game.handler.SoundHandler;
 import application.net.client.Client;
 import application.net.common.Protocol;
 import application.view.Dialog;
@@ -22,6 +23,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseDragEvent;
 import javafx.scene.input.MouseEvent;
@@ -69,6 +71,8 @@ public class LoginController {
     @FXML
     void onClick_password_forgot_button(MouseEvent event) {
     	SceneHandler.getInstance().loadScene("Step1PSW", false, true);
+    	SoundHandler.getInstance().startHit();
+    	
     }
  
     private boolean pressed = false ;
@@ -109,6 +113,8 @@ public class LoginController {
     @FXML
     void onClick_sign_in_button_login(ActionEvent event) {
 
+    	SoundHandler.getInstance().startHit();
+    	
     	if(pressed)
     		return;
     	
@@ -166,6 +172,8 @@ public class LoginController {
     @FXML
     void onClick_sign_up_button_login(ActionEvent event) {
 
+    	SoundHandler.getInstance().startHit();
+    	
     	SceneHandler.getInstance().loadScene("RegistrationPage", false , true);
     	Client.getInstance().setCurrentState(Client.STEP_REGISTRATION);
     }
@@ -179,10 +187,9 @@ public class LoginController {
     
     }
     
-    @FXML
-    void onKeyPressed(KeyEvent event) {
+   
+    	
+    
 
-    	
-    	
-    }
+ 
 }

@@ -4,6 +4,7 @@ import java.io.File;
 import application.control.ClientSucceedController;
 import application.control.MatchController;
 import application.control.WindowController;
+import application.model.game.handler.SoundHandler;
 import application.net.client.Client;
 import application.net.server.Mail;
 import application.view.MatchView;
@@ -19,6 +20,7 @@ public class MainApplication extends Application{
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
+		
 		
 		BorderPane mainMatchView = new BorderPane();
 		
@@ -50,7 +52,7 @@ public class MainApplication extends Application{
 		Client.getInstance().setCurrentState(Client.STEP_LOGIN);
 		Client.getInstance().setOnSucceeded(new ClientSucceedController());
 		
-		
+		SoundHandler.getInstance().startBackground();
 		
 	}
 

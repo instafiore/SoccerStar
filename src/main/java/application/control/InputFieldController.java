@@ -32,6 +32,7 @@ public class InputFieldController implements EventHandler<KeyEvent>{
 		TextField textField = (TextField) event.getSource() ;
 		
 		String text = textField.getText() ;
+	
 		
 		if(event.getEventType().equals(KeyEvent.KEY_RELEASED)) {
 			

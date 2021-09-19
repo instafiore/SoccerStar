@@ -3,6 +3,7 @@ package application.control;
 import application.SceneHandler;
 import application.Settings;
 import application.Utilities;
+import application.model.game.handler.SoundHandler;
 import application.net.client.Client;
 import application.net.common.Protocol;
 import application.view.Dialog;
@@ -95,6 +96,7 @@ public class MenuMatchPaneController {
     
     @FXML
     void OnClick_leave_button_match(ActionEvent event) {
+    	SoundHandler.getInstance().startHit();
     	
     	if(Dialog.getInstance().showConfirmDialog(Dialog.CONFIRMLEFT) != Dialog.YES)
     		return ;

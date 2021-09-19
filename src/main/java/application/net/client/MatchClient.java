@@ -17,6 +17,7 @@ import application.model.game.entity.Ball;
 import application.model.game.entity.GeneratorLineup;
 import application.model.game.entity.ParseMatchInformation;
 import application.model.game.handler.MatchHandler;
+import application.model.game.handler.SoundHandler;
 import application.model.game.physics.VectorFioreNoSync;
 import application.model.game.physics.VelocityNoSync;
 import application.net.common.Protocol;
@@ -283,7 +284,8 @@ public class MatchClient extends Task<String>{
 				return Protocol.ERRORMATCH;
 				
 			}else if(message.equals(Protocol.INFORMATIONMATCHMESSAGE)) {
-				
+				SoundHandler.getInstance().startHit();
+		    	
 				message = read() ;
 				parseMatchInformation.addNewInformation(message);
 				
@@ -326,10 +328,12 @@ public class MatchClient extends Task<String>{
 				return Protocol.NOERRORBUTLEFTMATCH;
 			}
 			else if(message.equals(Protocol.YOUSCORED)){
+				SoundHandler.getInstance().startGoalHome();
 				MatchController.getInstance().setTextToShow(message, 13 , Dialog.INFORMATION_WINDOW, 7);
 				parseMatchInformation.setHomeScored(true);
 				
 			}else if(message.equals(Protocol.OPPONENTSCORED)){
+				SoundHandler.getInstance().startGolGuest();
 				MatchController.getInstance().setTextToShow(message, 13 , Dialog.ATTENTION_WINDOW, 7);
 				parseMatchInformation.setGuestScored(true);
 				

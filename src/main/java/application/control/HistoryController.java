@@ -6,6 +6,7 @@ import application.SceneHandler;
 import application.Utilities;
 import application.model.game.entity.DataMatch;
 import application.model.game.entity.MatchChart;
+import application.model.game.handler.SoundHandler;
 import application.net.client.Client;
 import application.net.common.Protocol;
 import application.view.Dialog;
@@ -123,6 +124,8 @@ public class HistoryController {
     
     @FXML
     void onClickBack_button_history(ActionEvent event) {
+    	SoundHandler.getInstance().startHit();
+    	
     	if(!ready)
     		return;
     	SceneHandler.getInstance().loadScene("MainPage", true, true);

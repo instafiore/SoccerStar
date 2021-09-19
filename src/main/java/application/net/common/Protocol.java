@@ -31,7 +31,7 @@ public class Protocol {
 	public static final String OLDPASSOWORDNOTCORRECT = "Your old password is incorrect";
 	public static final String NEWPASSOWORDISNOTVALID = "New password isn't valid";
 	public static final String SAMEPASSWORD = "You typed the same password ;) ";
-
+	public static final String PASSWORDCHANGEDACCOUNTSTATE = "Password changed" ;
 	// Card
 	public static final String NOTINSERTED = "Not inserted yet";
 	
@@ -112,7 +112,7 @@ public class Protocol {
 			+ "\t Maximum 18 characters \n"
 			+ "\t Cannot have caracter -> ' "+DELIMITERREGISTRATION+" '\n"
 			+ "\t Must to start with a letter \n"
-			+ "Passoword: \n"
+			+ "Password: \n"
 			+ "\t At least 6 characters \n"
 			+ "\t Maximum 20 characters \n"
 			+ "\t Cannot have caracters -> ' & '\n"

@@ -66,14 +66,15 @@ public class ClientSucceedController implements EventHandler<WorkerStateEvent>{
 			friendsController.init();
 			friendsController.setReady(true);
 		
-		}else if(message.getProtocol().equals(Protocol.FRIENDADDED)) {
+		}else if(message.getProtocol().equals(Protocol.FRIENDADDED) || message.getProtocol().equals(Protocol.ALREADYFRIENDS)) {
 			
 			FriendsController friendsController = (FriendsController) SceneHandler.getInstance().getLoader("FriendsPage").getController() ;
 			
 			friendsController.showText(message.getProtocol(), 30, Dialog.INFORMATION_WINDOW, 5);
 			
 			Client.getInstance().sendMessage(Protocol.INFORMATIONFRIENDS);
-			
+		
+			friendsController.setReady(true);
 		}else if(message.getProtocol().equals(Protocol.ISNOTINAGAME)) {
 			
 			Dialog.getInstance().showSelectField(message.getMessage());
@@ -228,7 +229,7 @@ public class ClientSucceedController implements EventHandler<WorkerStateEvent>{
 			HistoryController historyController =  SceneHandler.getInstance().getLoader("HistoryPage").getController() ;
 			historyController.init(DataMatch.getMatches(message.getMessage()));
 			historyController.setReady(true);
-		}else if(message.getProtocol().equals(Protocol.PASSWORDCHANGED) || message.getProtocol().equals(Protocol.OLDPASSOWORDNOTCORRECT)) {
+		}else if(message.getProtocol().equals(Protocol.PASSWORDCHANGEDACCOUNTSTATE) || message.getProtocol().equals(Protocol.OLDPASSOWORDNOTCORRECT)) {
 			
 			AccountController accountController =  SceneHandler.getInstance().getLoader("AccountPage").getController() ;
 			
@@ -262,6 +263,7 @@ public class ClientSucceedController implements EventHandler<WorkerStateEvent>{
 			LoginController loginController = SceneHandler.getInstance().getLoader("LoginPage").getController() ;
 			loginController.showText(message.getProtocol(),15,Dialog.INFORMATION_WINDOW,4);
 			loginController.setPressed(false);
+			
 		}else if(message.getProtocol().equals(Protocol.GENERALERROR)) {
 			
 			Dialog.getInstance().showInformationDialog(Dialog.ERROR_WINDOW,message.getProtocol());

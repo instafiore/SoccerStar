@@ -7,6 +7,7 @@ import application.Settings;
 import application.model.game.entity.Ball;
 import application.model.game.entity.ParseMatchInformation;
 import application.model.game.handler.MatchHandler;
+import application.model.game.handler.SoundHandler;
 import application.model.game.physics.VectorFioreNoSync;
 import application.model.game.physics.VelocityNoSync;
 import application.net.client.Client;
@@ -239,6 +240,8 @@ public class MatchController implements EventHandler<MouseEvent>{
 			initialY = null;
 			ballTook = null;
 			matchView.setLine(null);
+			SoundHandler.getInstance().startHit();
+	    	
 			
 		}
 	}
