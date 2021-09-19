@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="515.0" prefWidth="752.0" styleClass="pane" stylesheets="@css/stylesheet1.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.control.InventaryController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="515.0" prefWidth="752.0" styleClass="pane" stylesheets="@css/stylesheet1.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.control.InventoryController">
    <bottom>
       <HBox alignment="CENTER_RIGHT" prefHeight="69.0" prefWidth="600.0" BorderPane.alignment="CENTER" />
    </bottom>

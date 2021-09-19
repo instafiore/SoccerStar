@@ -51,6 +51,17 @@ public class Protocol {
 	public static final String USERNAMEFRIENDDOESNTEXIST = "This username doesn't exist";
 	public static final String NOFRIENDSONLINE = "No friends online";
 	public static final String NOFRIENDSOFFLINE = "No friends offline";
+	public static final String CHALLENGEHIM = "I want to challenge him";
+	public static final String ISINAGAME = "Right now he is playing" ;
+	public static final String ISNOTINAGAME = "Right now he is in app , you can challenge him" ;
+	public static final String NOLONGERONLINE = "He is no longer online" ;
+	public static final String FRIENDLYREQUESTFIELD1 = "It's a friendly request for field 1" ;
+	public static final String FRIENDLYREQUESTFIELD2 = "It's a friendly request for field 2" ;
+	public static final String FRIENDLYREQUESTFIELD3 = "It's a friendly request for field 3" ;
+	public static final String IACCEPTEDTHEFRIENDLYBATTLE = "Friendly battle accepted" ;
+	public static final String IDECLINEDFRIENDLYBATTLE = "Friendly battle declined" ;
+	public static final String REQUESTACCEPTED = "Request accepted" ;
+	public static final String REQUESTEDECLINED = "Request declined" ;
 	
 	// Shop
 	public static final String INFORMATIONSHOP = "Information shop request";
@@ -116,6 +127,7 @@ public class Protocol {
 	
 	// Match
 	public static final String PREPARINGMATCH = "Let's prepare the match" ;
+	public static final String PREPARINGFRIENDLYMATCH = "Preparing friendly match" ;
 	public static final String NEWGAMEREQUESTFIELD1 = "A new game request on field 1" ;
 	public static final String NEWGAMEREQUESTFIELD2 = "A new game request on field 2" ;
 	public static final String NEWGAMEREQUESTFIELD3 = "A new game request on field 3" ;
@@ -123,7 +135,8 @@ public class Protocol {
 	public static final String SCORED = "The player scored" ;
 	public static final String LEFTGAME = "The player left the game" ;
 	public static final String GAMEOVER = "The game is over" ;
-	public static final String GAMESTARTED = "The game has started" ;
+	public static final String MATCHSTARTED = "The match has started" ;
+	public static final String FRIENDLYMATCHSTARTED = "The friendly match has started" ;
 	public static final String REQUESTCANCELED = "Request canceled" ;
 	public static final String MYUSERNAMEIS = "Username is:";
 	public static final String USERNAMEGUEST = "The username guest is" ;

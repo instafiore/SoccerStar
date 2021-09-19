@@ -246,7 +246,7 @@ public class MatchView extends StackPane{
 			// Right door
 			canvas.getGraphicsContext2D().setStroke(Color.web(colorLine, 1));
 			canvas.getGraphicsContext2D().setLineWidth(4);
-			canvas.getGraphicsContext2D().strokeRect(0,field.getHeight()/3,field.getBorderVertical(),field.getHeight()/3);
+			canvas.getGraphicsContext2D().strokeRect(field.getWidth()-field.getBorderVertical(),field.getHeight()/3,field.getBorderVertical(),field.getHeight()/3);
 			canvas.getGraphicsContext2D().fillRect(field.getWidth()-field.getBorderVertical(),field.getHeight()/3,field.getBorderVertical(),field.getHeight()/3);
 			
 	}

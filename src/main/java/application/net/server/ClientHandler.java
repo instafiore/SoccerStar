@@ -18,11 +18,13 @@ import com.sun.scenario.effect.impl.prism.PrTexture;
 import application.Settings;
 import application.model.game.entity.Account;
 import application.model.game.entity.DataMatch;
+import application.model.game.entity.Field;
 import application.model.game.entity.Lineup;
 import application.model.game.entity.LoginClient;
 import application.model.game.entity.RegistrationClient;
 import application.model.game.entity.Skin;
 import application.net.common.Protocol;
+
 
 public class ClientHandler implements Runnable {
 
@@ -36,11 +38,11 @@ public class ClientHandler implements Runnable {
 	private Server server;
 	private String currentField = Settings.FIELD1 ;
 
+	
 	public String getUsername() {
 		return username;
 	}
 
-	
 	public void setCurrentField(String currentField) {
 		this.currentField = currentField;
 	}
@@ -209,7 +211,8 @@ public class ClientHandler implements Runnable {
 		}
 
 		server.addUserOnline(username);
-
+		server.addClientHandler(username, this);
+		Database.getInstance().updateInAGame(username, false);
 		while (!Thread.interrupted()) {
 
 			System.out.println("[CLIENTHANDLER] CLIENT HANDLER IS RUNNING FOR " + username);
@@ -223,12 +226,15 @@ public class ClientHandler implements Runnable {
 
 				RequestMatchHandler.getInstace().addPlayerField1(this);
 				
+				
 				message = read();
 
 				if (message == null)
 					return;
 				
-				if(message.equals(Protocol.GAMESTARTED)) {
+				if(message.equals(Protocol.MATCHSTARTED)) {
+					Database.getInstance().updateInAGame(username, true);
+					
 					try {
 						synchronized (this) {
 							wait();
@@ -238,8 +244,10 @@ public class ClientHandler implements Runnable {
 						e.printStackTrace();
 					}
 				}else if(message.equals(Protocol.REQUESTCANCELED)){
+					Database.getInstance().updateInAGame(username, false);
 					RequestMatchHandler.getInstace().removePlayer(this);
 				}else if(message.equals(Protocol.CONNECTION_LOST)) {
+					Database.getInstance().updateInAGame(username, false);
 					RequestMatchHandler.getInstace().removePlayer(this);
 					Server.getInstance().removeUserOnline(username);
 					return ;
@@ -252,14 +260,16 @@ public class ClientHandler implements Runnable {
 			} else if (message.equals(Protocol.NEWGAMEREQUESTFIELD2)) {
 
 				RequestMatchHandler.getInstace().addPlayerField2(this);
-				
+	
 				
 				message = read();
 
 				if (message == null)
 					return;
 				
-				if(message.equals(Protocol.GAMESTARTED)) {
+				if(message.equals(Protocol.MATCHSTARTED)) {
+					Database.getInstance().updateInAGame(username, true);
+					
 					try {
 						synchronized (this) {
 							wait();
@@ -269,8 +279,10 @@ public class ClientHandler implements Runnable {
 						e.printStackTrace();
 					}
 				}else if(message.equals(Protocol.REQUESTCANCELED)){
+					Database.getInstance().updateInAGame(username, false);
 					RequestMatchHandler.getInstace().removePlayer(this);
 				}else if(message.equals(Protocol.CONNECTION_LOST)) {
+					Database.getInstance().updateInAGame(username, false);
 					RequestMatchHandler.getInstace().removePlayer(this);
 					Server.getInstance().removeUserOnline(username);
 					return ;
@@ -282,14 +294,16 @@ public class ClientHandler implements Runnable {
 			} else if (message.equals(Protocol.NEWGAMEREQUESTFIELD3)) {
 
 				RequestMatchHandler.getInstace().addPlayerField3(this);
-		
+
 				
 				message = read();
 
 				if (message == null)
 					return;
 				
-				if(message.equals(Protocol.GAMESTARTED)) {
+				if(message.equals(Protocol.MATCHSTARTED)) {
+					Database.getInstance().updateInAGame(username, true);
+					
 					try {
 						synchronized (this) {
 							wait();
@@ -299,8 +313,10 @@ public class ClientHandler implements Runnable {
 						e.printStackTrace();
 					}
 				}else if(message.equals(Protocol.REQUESTCANCELED)){
+					Database.getInstance().updateInAGame(username, false);
 					RequestMatchHandler.getInstace().removePlayer(this);
 				}else if(message.equals(Protocol.CONNECTION_LOST)) {
+					Database.getInstance().updateInAGame(username, false);
 					RequestMatchHandler.getInstace().removePlayer(this);
 					Server.getInstance().removeUserOnline(username);
 					return ;
@@ -339,11 +355,11 @@ public class ClientHandler implements Runnable {
 						friends_offline.add(friend);
 				
 				for(String friend : friends_online)
-					
+				{
 					friendsOnline += friend + Protocol.DELIMITERINFORMATIONFRIEND + Database.getInstance().getAccount(friend).getCurrentSkin() ;
 					friendsOnline += Protocol.DELIMITERFRIEND ;
-				
-				
+				}
+					
 				for(String friend : friends_offline)
 				{
 					friendsOffline += friend + Protocol.DELIMITERINFORMATIONFRIEND + Database.getInstance().getAccount(friend).getCurrentSkin() ;
@@ -385,6 +401,112 @@ public class ClientHandler implements Runnable {
 				}
 				
 			
+			}else if(message.equals(Protocol.CHALLENGEHIM)) {
+				
+				message = read();
+
+				if (message == null)
+					return;
+				
+				String friendToChallenge = message ;
+				
+				if(!Server.getInstance().getUsersOnline().contains(friendToChallenge))
+				{
+					sendMessage(Protocol.NOLONGERONLINE);
+					return ;
+				}
+
+				Account accountFriend = Database.getInstance().getAccount(friendToChallenge) ;
+				if(accountFriend == null)
+				{
+					sendMessage(Protocol.GENERALERROR);
+					printConnectionLost();
+					return;
+				}else if(accountFriend.isIn_a_game())
+					sendMessage(Protocol.ISINAGAME);
+				else
+				{
+					sendMessage(Protocol.ISNOTINAGAME);
+					sendMessage(friendToChallenge);
+				}
+			
+				
+			}else if(message.equals(Protocol.FRIENDLYREQUESTFIELD1) || message.equals(Protocol.FRIENDLYREQUESTFIELD2) || message.equals(Protocol.FRIENDLYREQUESTFIELD3)) {
+				
+				String request = message ;
+				
+				message = read();
+
+				if (message == null)
+					return;
+				
+				String friendToChallenge = message;
+				
+				
+				ClientHandler handlerFriendToChallenge =  server.getClientHandler(friendToChallenge);
+				handlerFriendToChallenge.sendMessage(request);
+				handlerFriendToChallenge.sendMessage(username);
+						
+			}else if(message.equals(Protocol.IACCEPTEDTHEFRIENDLYBATTLE) ) {
+				
+				message = read();
+
+				if (message == null)
+					return;
+				
+				String friendToDoFriendlyBattle = message.split(Protocol.DELIMITERFRIEND)[0] ;
+				String fieldToPlay = message.split(Protocol.DELIMITERFRIEND)[1] ;
+				
+				ClientHandler handlerFriendToDoFriendlyBattle = server.getClientHandler(friendToDoFriendlyBattle);
+				
+				handlerFriendToDoFriendlyBattle.sendMessage(Protocol.REQUESTACCEPTED);
+				
+				Field field = null ;
+				
+				if(fieldToPlay.equals(Settings.FIELD1)) 
+					field =  new Field(Settings.FIELD1 , Settings.BORDERHORIZONTAL,Settings.BORDERVERTICAL , Settings.FIELDWIDTHFRAME, Settings.FIELDHEIGHTFRAME,  Settings.FRICTIONFIELD1);
+				else if(fieldToPlay.equals(Settings.FIELD2 )) 
+					field =  new Field(Settings.FIELD2 , Settings.BORDERHORIZONTAL,Settings.BORDERVERTICAL , Settings.FIELDWIDTHFRAME, Settings.FIELDHEIGHTFRAME,  Settings.FRICTIONFIELD2);
+				else 
+					field =  new Field(Settings.FIELD3 , Settings.BORDERHORIZONTAL,Settings.BORDERVERTICAL , Settings.FIELDWIDTHFRAME, Settings.FIELDHEIGHTFRAME,  Settings.FRICTIONFIELD3);
+					
+				
+				
+				// Start friendly battle 
+				sendMessage(Protocol.PREPARINGFRIENDLYMATCH);
+				sendMessage(fieldToPlay);
+				handlerFriendToDoFriendlyBattle.sendMessage(Protocol.PREPARINGFRIENDLYMATCH);
+				handlerFriendToDoFriendlyBattle.sendMessage(fieldToPlay);
+				
+				MatchServer matchServer = new MatchServer(this, handlerFriendToDoFriendlyBattle, field, true);
+				Thread t = new Thread(matchServer);
+				t.start();
+			
+			}else if(message.equals(Protocol.FRIENDLYMATCHSTARTED)) {
+				
+				Database.getInstance().updateInAGame(username, true);
+		
+				try {
+					synchronized (this) {
+						wait();
+					}	
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			} else if(message.equals(Protocol.IDECLINEDFRIENDLYBATTLE) ) {
+				
+				message = read();
+
+				if (message == null)
+					return;
+				
+				String friendWantedToDoFriendlyBattle = message ;
+				
+				ClientHandler handlerFriendWantedToDoFriendlyBattle = server.getClientHandler(friendWantedToDoFriendlyBattle);
+						
+				handlerFriendWantedToDoFriendlyBattle.sendMessage(Protocol.REQUESTEDECLINED);
+				
 			}else if(message.equals(Protocol.INFORMATIONHISTORY)) {
 				List<DataMatch> dataMatches;
 				
@@ -506,8 +628,7 @@ public class ClientHandler implements Runnable {
 				int lineup = 0 ;
 				
 				lineup = Database.getInstance().getAccount(username).getLineup() ;
-				
-				
+			
 				sendMessage(Protocol.LINEUPINUSE);
 				sendMessage(""+lineup);
 				
@@ -649,7 +770,7 @@ public class ClientHandler implements Runnable {
 
 				if (Protocol.protocolMatch().contains(message) && !throwMessagesMatch) {
 					// ERROR
-					System.out.println("[CLIENTHANDLER] Received a unexpected: " + Protocol.GENERALERROR+message);
+					System.out.println("[CLIENTHANDLER] Received a unexpected: " + Protocol.GENERALERROR+" : "+message);
 					printConnectionLost();
 					return null;
 				}
@@ -682,6 +803,7 @@ public class ClientHandler implements Runnable {
 			if (client != null && !client.isClosed())
 				client.close();
 			client = null;
+			Database.getInstance().updateInAGame(username, false);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

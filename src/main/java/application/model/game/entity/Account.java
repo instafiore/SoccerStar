@@ -12,9 +12,10 @@ public class Account {
 	private String email = "" ;
 	private String current_skin = "" ;
 	private int lineup ;
+	private boolean in_a_game = false ;
 	
 	public Account(String username, String password, int coins, String email, String color_balls,
-			String color_ball_to_play, int lineup) {
+			String color_ball_to_play, int lineup,boolean in_a_game) {
 		super();
 		this.username = username;
 		this.password = password;
@@ -22,10 +23,19 @@ public class Account {
 		this.email = email;
 		this.current_skin = color_balls;
 		this.lineup = lineup;
+		this.in_a_game = in_a_game ;
 	}
 	
 	public Account() {}
 
+	public void setIn_a_game(boolean in_a_game) {
+		this.in_a_game = in_a_game;
+	}
+	
+	public boolean isIn_a_game() {
+		return in_a_game;
+	}
+	
 	public String getUsername() {
 		return username;
 	}

@@ -96,7 +96,7 @@ public class AccountController {
     	inventory_button_account.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 17));
     	buy_coins_button_account.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 17));
     	friends_button_account.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 17));
-    	username_field_account.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 15));
+    	username_field_account.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 25));
     	email_label_account.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 15));
     	card_label_account.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 15));
     	card_field_account.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 15));

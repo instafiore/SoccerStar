@@ -40,6 +40,8 @@ public class MenuMatchPaneController {
     
     private int goalHome = 0 ;
     private int goalGuest = 0 ;
+    
+
 
     @FXML
     public void initialize() {
@@ -144,6 +146,29 @@ public class MenuMatchPaneController {
 			break;
 		default:
 			name_field.setText(Settings.FIELD1);
+			name_field.setStyle("-fx-background-color: "+Settings.COLORFIELD1+";-fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.8), 10, 0, 0, 0)");
+			break;
+		}
+    }
+    
+    public void setFieldFriendlyBattle(int field) {
+    			
+    	name_field.setText(Dialog.FRIENDLY_BATTLE);
+    	
+    	++field ;
+    	
+    	switch (field) {
+		case Client.FIELD1:
+			name_field.setStyle("-fx-background-color: "+Settings.COLORFIELD1+";-fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.8), 10, 0, 0, 0)");
+			break;
+		case Client.FIELD2:
+
+			name_field.setStyle("-fx-background-color: "+Settings.COLORFIELD2+";-fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.8), 10, 0, 0, 0)");
+					break;
+		case Client.FIELD3:
+			name_field.setStyle("-fx-background-color: "+Settings.COLORFIELD3+";-fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.8), 10, 0, 0, 0)");
+			break;
+		default:
 			name_field.setStyle("-fx-background-color: "+Settings.COLORFIELD1+";-fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.8), 10, 0, 0, 0)");
 			break;
 		}

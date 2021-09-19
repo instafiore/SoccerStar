@@ -213,8 +213,8 @@ public class FriendsController {
     void onClickBack_button_friends_page(ActionEvent event) {
     	if(!ready)
     		return ;
-    	SceneHandler.getInstance().loadScene("MainPage", true, true);
-    }
+    	SceneHandler.getInstance().loadScene("MainPage", true, true);	
+   }
     
     @FXML
     void onCLickAdd_friend(ActionEvent event) {

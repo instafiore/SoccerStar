@@ -76,7 +76,7 @@ public class RequestMatchHandler {
 		
 		player1.setCurrentField(Settings.FIELD1);
 		player2.setCurrentField(Settings.FIELD1);
-		MatchServer match = new MatchServer(player1, player2,field1);
+		MatchServer match = new MatchServer(player1, player2,field1,false);
 		executorService.submit(match);
 
 	}
@@ -113,7 +113,7 @@ public class RequestMatchHandler {
 		System.out.println("[SERVER] SENT GAME BY SERVER");
 		player1.setCurrentField(Settings.FIELD2);
 		player2.setCurrentField(Settings.FIELD2);
-		MatchServer match = new MatchServer(player1, player2,field2);
+		MatchServer match = new MatchServer(player1, player2,field2,false);
 		executorService.submit(match);
 
 	}
@@ -150,7 +150,7 @@ public class RequestMatchHandler {
 		System.out.println("[SERVER] SENT GAME BY SERVER");
 		player1.setCurrentField(Settings.FIELD3);
 		player2.setCurrentField(Settings.FIELD3);
-		MatchServer match = new MatchServer(player1, player2,field3);
+		MatchServer match = new MatchServer(player1, player2,field3,false);
 		executorService.submit(match);
 
 	}

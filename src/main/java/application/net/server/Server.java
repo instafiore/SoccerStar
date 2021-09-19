@@ -6,6 +6,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import application.Settings;
 
@@ -13,6 +14,7 @@ public class Server implements Runnable{
 
 	private ServerSocket server ;
 	private ArrayList<String> usersOnline =  new ArrayList<String>();
+	private HashMap<String, ClientHandler> clientsHandler = new HashMap<String,ClientHandler>() ;
 	private static Server instance = null ;
 	
 	public static Server getInstance() {
@@ -50,6 +52,7 @@ public class Server implements Runnable{
 	
 	public void removeUserOnline(String user) {
 		usersOnline.remove(user);
+		Database.getInstance().updateInAGame(user, false);
 	}
 	
 	public boolean isOnline(String user) {
@@ -60,6 +63,14 @@ public class Server implements Runnable{
 		return usersOnline;
 	}
 
+	public void addClientHandler(String username , ClientHandler clientHandler) {
+		clientsHandler.put(username, clientHandler);
+	}
+	
+	public ClientHandler getClientHandler(String username) {
+		return clientsHandler.get(username);
+	}
+	
 	public void run() {
 		
 		while(!Thread.interrupted()){

@@ -1,6 +1,9 @@
 package application.control;
 
 import application.Utilities;
+import application.net.client.Client;
+import application.net.common.Protocol;
+import application.view.Dialog;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -43,6 +46,8 @@ public class FriendControllerOnline {
     
     @FXML
     void onClickFriendly_battle_button(ActionEvent event) {
+    	Client.getInstance().sendMessage(Protocol.CHALLENGEHIM);
+    	Client.getInstance().sendMessage(friend_label.getText());
 
     }
     

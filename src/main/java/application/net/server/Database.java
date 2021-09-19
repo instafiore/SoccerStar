@@ -40,6 +40,7 @@ public class Database {
 	private static final String INSERT_SKIN = "insert into Inventary_Skin(account,skin) values(?,?);";
 	private static final String INSERT_LINEUP = "insert into Inventary_Lineup(account,lineup) values(?,?);";
 	private static final String UPDATE_COINS = "update Account set coins = ? where username = ? ;" ;
+	private static final String UPDATE_IN_A_GAME = "update Account set in_a_game = ? where username = ? ;" ;
 	private static final String UPDATE_CURRENT_SKIN = "update Account set current_skin = ? where username = ? ;" ;
 	private static final String UPDATE_CURRENT_LINEUP = "update Account set current_lineup = ? where username = ? ;" ;
 	private static final String SEARCH_FRIENDS_USER = "select friend from Friends where account  = ? ;";
@@ -62,6 +63,7 @@ public class Database {
 	private PreparedStatement insert_skin_query ;
 	private PreparedStatement insert_lineup_query ;
 	private PreparedStatement update_coins_query ;
+	private PreparedStatement update_in_a_game_query ;
 	private PreparedStatement update_current_skin_query ;
 	private PreparedStatement update_current_lineup_query ;
 	private PreparedStatement search_friend_user_query  ;
@@ -106,6 +108,7 @@ public class Database {
 		insert_skin_query = connection.prepareStatement(INSERT_SKIN);
 		insert_lineup_query = connection.prepareStatement(INSERT_LINEUP);
 		update_coins_query = connection.prepareStatement(UPDATE_COINS);
+		update_in_a_game_query = connection.prepareStatement(UPDATE_IN_A_GAME);
 		update_current_skin_query = connection.prepareStatement(UPDATE_CURRENT_SKIN);
 		update_current_lineup_query = connection.prepareStatement(UPDATE_CURRENT_LINEUP);
 		search_friend_user_query = connection.prepareStatement(SEARCH_FRIENDS_USER);
@@ -184,6 +187,7 @@ public class Database {
 			account.setLineup(result.getInt("current_lineup"));
 			account.setCurrentSkin(result.getString("current_skin"));
 			account.setEmail(result.getString("email"));
+			account.setIn_a_game(result.getBoolean("in_a_game"));
 			
 		} catch (SQLException e) {
 			return null ;
@@ -413,6 +417,23 @@ public class Database {
 		
 		try {
 			update_coins_query.executeUpdate();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public synchronized void updateInAGame(String username , boolean in_a_game) {
+		
+		try {
+			update_in_a_game_query.setBoolean(1, in_a_game);
+			update_in_a_game_query.setString(2, username);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		try {
+			update_in_a_game_query.executeUpdate();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

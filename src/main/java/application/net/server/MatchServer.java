@@ -61,13 +61,14 @@ public class MatchServer implements Runnable {
 	private DataMatch dataMatch = null ;
 	private String colorPlayer1 = "" ;
 	private String colorPlayer2 = "" ;
+	private boolean friendlyBattle = false ;
 	
-	public MatchServer(ClientHandler player1, ClientHandler player2 , Field field) {
+	public MatchServer(ClientHandler player1, ClientHandler player2 , Field field , boolean friendlyBattle) {
 		super();
 		this.field = field ;
 		this.player1 = player1;
 		this.player2 = player2;
-		
+		this.friendlyBattle  = friendlyBattle ;
 		
 		username1 = player1.getUsername();
 		username2 = player2.getUsername();
@@ -91,391 +92,387 @@ public class MatchServer implements Runnable {
 		out2 = player2.getOut();
 			
 		matchActive = true ;
+		
+
 	}
 
+	
+	public boolean isFriendlyBattle() {
+		return friendlyBattle;
+	}
 	
 	public void run() {
 		
 		
-		try {	
-			
+		if(!isFriendlyBattle()) {
 			Database.getInstance().removeCoins(username1, Utilities.getPriceField(player1.getCurrentField()));
 			Database.getInstance().removeCoins(username2, Utilities.getPriceField(player2.getCurrentField()));
-			
+		}
+		
+		if(!isFriendlyBattle())
 			sendMessageAll(Protocol.PREPARINGMATCH);
 		
-			String message = null ;
-			
-			matchHandler.setTurn( new Random().nextBoolean() );
 	
-			typeOfLineup[0] = Database.getInstance().getAccount(username1).getLineup() ;
-			typeOfLineup[1] = Database.getInstance().getAccount(username2).getLineup() ;
-			
-			
-			sendMessage(Protocol.USERNAMEGUEST, PLAYER1);
-			sendMessage(username1, PLAYER1);
-			
-			
-			sendMessage(Protocol.USERNAMEGUEST, PLAYER2);
-			sendMessage(username2, PLAYER2);
-			
-			colorPlayer1 = Database.getInstance().getAccount(username1).getCurrentSkin();
-			colorPlayer2 = Database.getInstance().getAccount(username2).getCurrentSkin() ;
+		String message = null ;
 		
-			
-			sendMessage(Protocol.YOURCOLOR, PLAYER2);
-			sendMessage(colorPlayer1, PLAYER2);
-			sendMessage(Protocol.COLORGUEST, PLAYER2);
-			sendMessage(colorPlayer2, PLAYER2);
-			
-			sendMessage(Protocol.YOURCOLOR, PLAYER1);
-			sendMessage(colorPlayer2, PLAYER1);
-			sendMessage(Protocol.COLORGUEST, PLAYER1);
-			sendMessage(colorPlayer1, PLAYER1);
-			
-			
+		matchHandler.setTurn( new Random().nextBoolean() );
+
+		typeOfLineup[0] = Database.getInstance().getAccount(username1).getLineup() ;
+		typeOfLineup[1] = Database.getInstance().getAccount(username2).getLineup() ;
 		
-			matchHandler.addBalls(GeneratorLineup.getInstace().getLineup(typeOfLineup[0],colorPlayer1));
-			matchHandler.addBalls(GeneratorLineup.getInstace().getLineupMirrored(typeOfLineup[1],colorPlayer2));
-			matchHandler.add(GeneratorLineup.getInstace().getBallToPlay());
+		
+		sendMessage(Protocol.USERNAMEGUEST, PLAYER1);
+		sendMessage(username1, PLAYER1);
+		
+		
+		sendMessage(Protocol.USERNAMEGUEST, PLAYER2);
+		sendMessage(username2, PLAYER2);
+		
+		colorPlayer1 = Database.getInstance().getAccount(username1).getCurrentSkin();
+		colorPlayer2 = Database.getInstance().getAccount(username2).getCurrentSkin() ;
+	
+		
+		sendMessage(Protocol.YOURCOLOR, PLAYER2);
+		sendMessage(colorPlayer1, PLAYER2);
+		sendMessage(Protocol.COLORGUEST, PLAYER2);
+		sendMessage(colorPlayer2, PLAYER2);
+		
+		sendMessage(Protocol.YOURCOLOR, PLAYER1);
+		sendMessage(colorPlayer2, PLAYER1);
+		sendMessage(Protocol.COLORGUEST, PLAYER1);
+		sendMessage(colorPlayer1, PLAYER1);
+		
+		
+	
+		matchHandler.addBalls(GeneratorLineup.getInstace().getLineup(typeOfLineup[0],colorPlayer1));
+		matchHandler.addBalls(GeneratorLineup.getInstace().getLineupMirrored(typeOfLineup[1],colorPlayer2));
+		matchHandler.add(GeneratorLineup.getInstace().getBallToPlay());
+		
+		System.out.println("[MATCHSERVER] "+Protocol.MATCHSTARTED+" -> Player1: "+username1+" , Player2: "+username2);
+		
+		sendMessageAll(Protocol.INFORMATIONMATCHMESSAGE);
+		
+		sendMessage(ParseMatchInformation.getString(matchHandler.getBalls() , matchHandler.getTurn() , PLAYER1) + Protocol.STRINGINFORMATIONDELIMITER, PLAYER2 );
+		sendMessage(ParseMatchInformation.getString(matchHandler.getBalls() , !matchHandler.getTurn(), PLAYER2) + Protocol.STRINGINFORMATIONDELIMITER, PLAYER1 );
+
+		sendMessageAll(Protocol.MATCHSTARTED);
+		
+		int scored = matchHandler.NOSCORED;
+
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		while(whoIsDisconnected().equals(NOONEISDISCONNETED)) {
 			
-			System.out.println("[MATCHSERVER] "+Protocol.GAMESTARTED+" -> Player1: "+username1+" , Player2: "+username2);
+			int i ; 
 			
-			sendMessageAll(Protocol.INFORMATIONMATCHMESSAGE);
-			
-			sendMessage(ParseMatchInformation.getString(matchHandler.getBalls() , matchHandler.getTurn() , PLAYER1) + Protocol.STRINGINFORMATIONDELIMITER, PLAYER2 );
-			sendMessage(ParseMatchInformation.getString(matchHandler.getBalls() , !matchHandler.getTurn(), PLAYER2) + Protocol.STRINGINFORMATIONDELIMITER, PLAYER1 );
-			
-			sendMessageAll(Protocol.GAMESTARTED);
-			
-			int scored = matchHandler.NOSCORED;
-			
-			while(whoIsDisconnected().equals(NOONEISDISCONNETED)) {
-					
-				int i ; 
+			Pair<String, Integer> p = getAction();
+
+			if(p == null && informationMessagePlayer1 != null && informationMessagePlayer2 != null) {
 				
-				Pair<String, Integer> p = getAction();
+				sendMessageAll(Protocol.INFORMATIONMATCHMESSAGE);
 				
-				if(p == null && informationMessagePlayer1 != null && informationMessagePlayer2 != null) {
+				sendMessage(informationMessagePlayer1, PLAYER2 );
+				sendMessage(informationMessagePlayer2, PLAYER1 );
+				
+				informationMessagePlayer1 = null ;
+				informationMessagePlayer2 = null ;
+				
+				if(scored == MatchHandler.SCOREDHOME) {
 					
-					sendMessageAll(Protocol.INFORMATIONMATCHMESSAGE);
+					sendMessage(Protocol.OPPONENTSCORED, PLAYER1);
+					sendMessage(Protocol.YOUSCORED, PLAYER2);
 					
-					sendMessage(informationMessagePlayer1, PLAYER2 );
-					sendMessage(informationMessagePlayer2, PLAYER1 );
+				}else if(scored == MatchHandler.SCOREDGUEST){
 					
-					informationMessagePlayer1 = null ;
-					informationMessagePlayer2 = null ;
+					sendMessage(Protocol.OPPONENTSCORED, PLAYER2);
+					sendMessage(Protocol.YOUSCORED, PLAYER1);
 					
-					if(scored == MatchHandler.SCOREDHOME) {
+				}else if(scored == MatchHandler.SCOREDATKICKOFF){
+					
+					sendMessageAll(Protocol.NOATKICKOFF);
+				}
+				
+				if(dataMatch.isConcluded()) {
+					int whoWon = dataMatch.whoWon() ;
+					
+					if(whoWon == DataMatch.HOME) {
 						
-						sendMessage(Protocol.OPPONENTSCORED, PLAYER1);
-						sendMessage(Protocol.YOUSCORED, PLAYER2);
+						sendMessage(Protocol.YOUWON, PLAYER2);
+						sendMessage(Protocol.YOULOST, PLAYER1);
 						
-					}else if(scored == MatchHandler.SCOREDGUEST){
+					}else {
+					
+						sendMessage(Protocol.YOULOST, PLAYER2);
+						sendMessage(Protocol.YOUWON, PLAYER1);
 						
-						sendMessage(Protocol.OPPONENTSCORED, PLAYER2);
-						sendMessage(Protocol.YOUSCORED, PLAYER1);
-						
-					}else if(scored == MatchHandler.SCOREDATKICKOFF){
-						
-						sendMessageAll(Protocol.NOATKICKOFF);
 					}
+					notifyClients(NOONEISDISCONNETED);	
+					Database.getInstance().insertMatch(dataMatch);
+					return ;
+				}
+				
+			}else if(p == null) 
+				continue ;
+			else if(p.getKey() == null) {
+				
+				i = p.getValue();
+				
+				if(i == PLAYER1) 
+				{
+					System.out.println("[MATCHSERVER] Player 1 -> "+ Protocol.CONNECTION_LOST);
+					sendMessage(Protocol.YOUWON, i);
+					notifyClients(DISCONNECTEDPLAYER1);
+					dataMatch.forfeitOnTheBooks(PLAYER1);
+					Database.getInstance().insertMatch(dataMatch);
+				}
+				else if( i == PLAYER2)
+				{
+					System.out.println("[MATCHSERVER] Player 2 -> "+ Protocol.CONNECTION_LOST);
+					sendMessage(Protocol.YOUWON, i);
+					notifyClients(DISCONNECTEDPLAYER2);
+					dataMatch.forfeitOnTheBooks(PLAYER2);
+					Database.getInstance().insertMatch(dataMatch);
+				}
+				
+				return ;
+				
+			}else if(p.getKey().equals(Protocol.HOVERBALL)) {
+				
+				i = p.getValue();
+				
+				double x = 0 ;
+				double y = 0 ;
+				
+				
+				if(i == PLAYER1) 
+				{
+					message = read1() ;
+					x = Double.parseDouble(message.split(Protocol.BALLDELIMITER)[0]);
+					y = Double.parseDouble(message.split(Protocol.BALLDELIMITER)[1]);
 					
-					if(dataMatch.isConcluded()) {
-						int whoWon = dataMatch.whoWon() ;
+					x += Settings.DIMENSIONSTANDARDBALL ;
+					y += Settings.DIMENSIONSTANDARDBALL ;
+					
+					Ball ball = matchHandler.tookBall(x, y);
+					
+					x  = Settings.FIELDWIDTHFRAME - x  - Settings.DIMENSIONSTANDARDBALL;
+					y -= Settings.DIMENSIONSTANDARDBALL ;
+					
+					if(ball == null) {
+						System.out.println("[MATCHSERVER] Player 1 -> "+ Protocol.LEFTGAME);
+						sendMessage(Protocol.CONNECTION_LOST, i);
+						notifyClients(DISCONNECTEDPLAYER1);
+						dataMatch.forfeitOnTheBooks(PLAYER1);
+						Database.getInstance().insertMatch(dataMatch);
+						return ;
+					}
+				}
+				else 
+				{
+					message = read2() ;
+					
+					x = Double.parseDouble(message.split(Protocol.BALLDELIMITER)[0]);
+					y = Double.parseDouble(message.split(Protocol.BALLDELIMITER)[1]);
 						
-						if(whoWon == DataMatch.HOME) {
-							
-							sendMessage(Protocol.YOUWON, PLAYER2);
-							sendMessage(Protocol.YOULOST, PLAYER1);
-							
-						}else {
-						
-							sendMessage(Protocol.YOULOST, PLAYER2);
-							sendMessage(Protocol.YOUWON, PLAYER1);
-							
-						}
-						notifyClients(NOONEISDISCONNETED);	
+					
+					x += Settings.DIMENSIONSTANDARDBALL ;
+					y += Settings.DIMENSIONSTANDARDBALL ;
+					
+					x = Settings.FIELDWIDTHFRAME - x - Settings.DIMENSIONSTANDARDBALL ; 
+				
+					Ball ball = matchHandler.tookBall(x, y);
+					
+					
+					y -= Settings.DIMENSIONSTANDARDBALL ; 
+					
+					
+					if(ball == null) {
+						System.out.println(x+" "+y);
+						System.out.println("[MATCHSERVER] Player 2 -> "+ Protocol.LEFTGAME);
+						sendMessage(Protocol.CONNECTION_LOST, i);
+						notifyClients(DISCONNECTEDPLAYER2);
+						dataMatch.forfeitOnTheBooks(PLAYER2);
 						Database.getInstance().insertMatch(dataMatch);
 						return ;
 					}
 					
-				}else if(p == null) 
-					continue ;
-				else if(p.getKey() == null) {
+				}
+				
+				sendMessage(Protocol.HOVERBALL, i);
+				sendMessage(x+Protocol.BALLDELIMITER+y, i);
+				
+			}else if(p.getKey().equals(Protocol.HOVERNOBALL)) {
+				
+				i = p.getValue();
+				
+				sendMessage(Protocol.HOVERNOBALL, i);
+				
+			}else if(p.getKey().equals(Protocol.LEFTGAME)) {
+				
+				i = p.getValue();
+				
+				if(i == PLAYER1) 
+				{
+					System.out.println("[MATCHSERVER] Player 1 -> "+ Protocol.LEFTGAME);
+					sendMessage(Protocol.LEFTGAME, i);
+					notifyClients(NOONEISDISCONNETED);
+					if(!isFriendlyBattle())
+						Database.getInstance().insertCoins(username2, Utilities.getRewardField(player2.getCurrentField()));
+					dataMatch.forfeitOnTheBooks(PLAYER1);
+					Database.getInstance().insertMatch(dataMatch);
+				}
+				else 
+				{
+					System.out.println("[MATCHSERVER] Player 2 -> "+ Protocol.LEFTGAME);
+					sendMessage(Protocol.LEFTGAME, i);
+					notifyClients(NOONEISDISCONNETED);
+					if(!isFriendlyBattle())
+						Database.getInstance().insertCoins(username1, Utilities.getRewardField(player1.getCurrentField()));
+					dataMatch.forfeitOnTheBooks(PLAYER2);
+					Database.getInstance().insertMatch(dataMatch);
+				}
+				
+				// The game is over	
+				return ;
+				
+			}else if(p.getKey().equals(Protocol.MOVEBALL)) {
+				
+				i = p.getValue();
+				
+				if(i == PLAYER1) {
+					message = read1();
+					if(message == null )
+					{
+						sendMessage(Protocol.CONNECTION_LOST, PLAYER1);
+						sendMessage(Protocol.GENERALERROR, PLAYER2);
+						notifyClients(DISCONNECTEDPLAYER1);
+						dataMatch.forfeitOnTheBooks(PLAYER1);
+						Database.getInstance().insertMatch(dataMatch);
+						return ;
 					
-					i = p.getValue();
+					}
+					System.out.println("[MATCHSERVER] "+Protocol.MOVEBALL+ " player: "+username1+" -> " +message);
+					
+				}else {
+					message = read2();
+					if(message == null)
+					{
+						sendMessage(Protocol.CONNECTION_LOST, PLAYER2);
+						sendMessage(Protocol.GENERALERROR, PLAYER1);
+						notifyClients(DISCONNECTEDPLAYER2);
+						dataMatch.forfeitOnTheBooks(PLAYER2);
+						Database.getInstance().insertMatch(dataMatch);
+						return ;
+					
+					}
+					System.out.println("[MATCHSERVER] "+Protocol.MOVEBALL+ " player: "+username2+" -> " +message);
+				}
+				
+				
+				
+				String[] stringa = message.split(";");
+				
+				double xPos = Protocol.parseCoordinates(stringa[0])[0];
+				double yPos = Protocol.parseCoordinates(stringa[0])[1];
+				
+				double xVel = Protocol.parseCoordinates(stringa[1])[0];
+				double yVel = Protocol.parseCoordinates(stringa[1])[1];
+			
+				
+				xPos += Settings.DIMENSIONSTANDARDBALL;
+				yPos += Settings.DIMENSIONSTANDARDBALL;
+				
+				if(i == PLAYER2)
+					xPos = Settings.FIELDWIDTHFRAME - xPos ;
+				
+				Ball b = matchHandler.tookBall(xPos, yPos);
+				
+				if(b == null) {
 					
 					if(i == PLAYER1) 
 					{
 						System.out.println("[MATCHSERVER] Player 1 -> "+ Protocol.CONNECTION_LOST);
-						sendMessage(Protocol.YOUWON, i);
+						sendMessage(Protocol.CONNECTION_LOST, PLAYER1);
+						sendMessage(Protocol.GENERALERROR, PLAYER2);
 						notifyClients(DISCONNECTEDPLAYER1);
 						dataMatch.forfeitOnTheBooks(PLAYER1);
 						Database.getInstance().insertMatch(dataMatch);
 					}
-					else if( i == PLAYER2)
+					else 
 					{
 						System.out.println("[MATCHSERVER] Player 2 -> "+ Protocol.CONNECTION_LOST);
-						sendMessage(Protocol.YOUWON, i);
+						sendMessage(Protocol.CONNECTION_LOST, PLAYER2);
+						sendMessage(Protocol.GENERALERROR, PLAYER1);
+						dataMatch.forfeitOnTheBooks(PLAYER2);
+						Database.getInstance().insertMatch(dataMatch);
 						notifyClients(DISCONNECTEDPLAYER2);
-						dataMatch.forfeitOnTheBooks(PLAYER2);
-						Database.getInstance().insertMatch(dataMatch);
 					}
-					
 					return ;
-					
-				}else if(p.getKey().equals(Protocol.HOVERBALL)) {
-					
-					i = p.getValue();
-					
-					double x = 0 ;
-					double y = 0 ;
-					
-					
-					if(i == PLAYER1) 
-					{
-						message = read1() ;
-						x = Double.parseDouble(message.split(Protocol.BALLDELIMITER)[0]);
-						y = Double.parseDouble(message.split(Protocol.BALLDELIMITER)[1]);
-						
-						x += Settings.DIMENSIONSTANDARDBALL ;
-						y += Settings.DIMENSIONSTANDARDBALL ;
-						
-						Ball ball = matchHandler.tookBall(x, y);
-						
-						x  = Settings.FIELDWIDTHFRAME - x  - Settings.DIMENSIONSTANDARDBALL;
-						y -= Settings.DIMENSIONSTANDARDBALL ;
-						
-						if(ball == null) {
-							System.out.println("[MATCHSERVER] Player 1 -> "+ Protocol.LEFTGAME);
-							sendMessage(Protocol.CONNECTION_LOST, i);
-							notifyClients(DISCONNECTEDPLAYER1);
-							dataMatch.forfeitOnTheBooks(PLAYER1);
-							Database.getInstance().insertMatch(dataMatch);
-							return ;
-						}
-					}
-					else 
-					{
-						message = read2() ;
-						
-						x = Double.parseDouble(message.split(Protocol.BALLDELIMITER)[0]);
-						y = Double.parseDouble(message.split(Protocol.BALLDELIMITER)[1]);
-							
-						
-						x += Settings.DIMENSIONSTANDARDBALL ;
-						y += Settings.DIMENSIONSTANDARDBALL ;
-						
-						x = Settings.FIELDWIDTHFRAME - x - Settings.DIMENSIONSTANDARDBALL ; 
-					
-						Ball ball = matchHandler.tookBall(x, y);
-						
-						
-						y -= Settings.DIMENSIONSTANDARDBALL ; 
-						
-						
-						if(ball == null) {
-							System.out.println(x+" "+y);
-							System.out.println("[MATCHSERVER] Player 2 -> "+ Protocol.LEFTGAME);
-							sendMessage(Protocol.CONNECTION_LOST, i);
-							notifyClients(DISCONNECTEDPLAYER2);
-							dataMatch.forfeitOnTheBooks(PLAYER2);
-							Database.getInstance().insertMatch(dataMatch);
-							return ;
-						}
-						
-					}
-					
-					sendMessage(Protocol.HOVERBALL, i);
-					sendMessage(x+Protocol.BALLDELIMITER+y, i);
-					
-				}else if(p.getKey().equals(Protocol.HOVERNOBALL)) {
-					
-					i = p.getValue();
-					
-					sendMessage(Protocol.HOVERNOBALL, i);
-					
-				}else if(p.getKey().equals(Protocol.LEFTGAME)) {
-					
-					i = p.getValue();
-					
-					if(i == PLAYER1) 
-					{
-						System.out.println("[MATCHSERVER] Player 1 -> "+ Protocol.LEFTGAME);
-						sendMessage(Protocol.LEFTGAME, i);
-						notifyClients(NOONEISDISCONNETED);
-						Database.getInstance().insertCoins(username2, Utilities.getRewardField(player2.getCurrentField()));
-						dataMatch.forfeitOnTheBooks(PLAYER1);
-						Database.getInstance().insertMatch(dataMatch);
-					}
-					else 
-					{
-						System.out.println("[MATCHSERVER] Player 2 -> "+ Protocol.LEFTGAME);
-						sendMessage(Protocol.LEFTGAME, i);
-						notifyClients(NOONEISDISCONNETED);
-						Database.getInstance().insertCoins(username1, Utilities.getRewardField(player1.getCurrentField()));
-						dataMatch.forfeitOnTheBooks(PLAYER2);
-						Database.getInstance().insertMatch(dataMatch);
-					}
-					
-					// The game is over	
-					return ;
-					
-				}else if(p.getKey().equals(Protocol.MOVEBALL)) {
-					
-					i = p.getValue();
-					
-					if(i == PLAYER1) {
-						message = read1();
-						if(message == null )
-						{
-							sendMessage(Protocol.CONNECTION_LOST, PLAYER1);
-							sendMessage(Protocol.GENERALERROR, PLAYER2);
-							notifyClients(DISCONNECTEDPLAYER1);
-							dataMatch.forfeitOnTheBooks(PLAYER1);
-							Database.getInstance().insertMatch(dataMatch);
-							return ;
-						
-						}
-						System.out.println("[MATCHSERVER] "+Protocol.MOVEBALL+ " player: "+username1+" -> " +message);
-						
-					}else {
-						message = read2();
-						if(message == null)
-						{
-							sendMessage(Protocol.CONNECTION_LOST, PLAYER2);
-							sendMessage(Protocol.GENERALERROR, PLAYER1);
-							notifyClients(DISCONNECTEDPLAYER2);
-							dataMatch.forfeitOnTheBooks(PLAYER2);
-							Database.getInstance().insertMatch(dataMatch);
-							return ;
-						
-						}
-						System.out.println("[MATCHSERVER] "+Protocol.MOVEBALL+ " player: "+username2+" -> " +message);
-					}
-					
-					
-					
-					String[] stringa = message.split(";");
-					
-					double xPos = Protocol.parseCoordinates(stringa[0])[0];
-					double yPos = Protocol.parseCoordinates(stringa[0])[1];
-					
-					double xVel = Protocol.parseCoordinates(stringa[1])[0];
-					double yVel = Protocol.parseCoordinates(stringa[1])[1];
+				}
 				
-					
-					xPos += Settings.DIMENSIONSTANDARDBALL;
-					yPos += Settings.DIMENSIONSTANDARDBALL;
+				if(b.getPlayer() == i && ( i == PLAYER1 && matchHandler.getTurn() || i == PLAYER2 && !matchHandler.getTurn() ) )
+				{
+					matchHandler.setTurn(!matchHandler.getTurn());
 					
 					if(i == PLAYER2)
-						xPos = Settings.FIELDWIDTHFRAME - xPos ;
+						xVel *= -1 ;
 					
-					Ball b = matchHandler.tookBall(xPos, yPos);
+					b.setVelocity(new VelocityNoSync(xVel, yVel));
+
+					informationMessagePlayer1 = "";
+					informationMessagePlayer2 = "";
+				
 					
-					if(b == null) {
+					do {
 						
-						if(i == PLAYER1) 
-						{
-							System.out.println("[MATCHSERVER] Player 1 -> "+ Protocol.CONNECTION_LOST);
-							sendMessage(Protocol.CONNECTION_LOST, PLAYER1);
-							sendMessage(Protocol.GENERALERROR, PLAYER2);
-							notifyClients(DISCONNECTEDPLAYER1);
-							dataMatch.forfeitOnTheBooks(PLAYER1);
-							Database.getInstance().insertMatch(dataMatch);
-						}
-						else 
-						{
-							System.out.println("[MATCHSERVER] Player 2 -> "+ Protocol.CONNECTION_LOST);
-							sendMessage(Protocol.CONNECTION_LOST, PLAYER2);
-							sendMessage(Protocol.GENERALERROR, PLAYER1);
-							dataMatch.forfeitOnTheBooks(PLAYER2);
-							Database.getInstance().insertMatch(dataMatch);
-							notifyClients(DISCONNECTEDPLAYER2);
-						}
-						return ;
-					}
-					
-					if(b.getPlayer() == i && ( i == PLAYER1 && matchHandler.getTurn() || i == PLAYER2 && !matchHandler.getTurn() ) )
-					{
-						matchHandler.setTurn(!matchHandler.getTurn());
-						
-						if(i == PLAYER2)
-							xVel *= -1 ;
-						
-						b.setVelocity(new VelocityNoSync(xVel, yVel));
-	
-						informationMessagePlayer1 = "";
-						informationMessagePlayer2 = "";
-					
-						
-						do {
+						scored = matchHandler.moveBalls() ;
+						if(scored == MatchHandler.NOSCORED) {
+							informationMessagePlayer1 += ParseMatchInformation.getString(matchHandler.getBalls(), matchHandler.getTurn(), PLAYER1);
+							informationMessagePlayer1 += Protocol.STRINGINFORMATIONDELIMITER ;
+							informationMessagePlayer2 += ParseMatchInformation.getString(matchHandler.getBalls(), !matchHandler.getTurn(), PLAYER2);
+							informationMessagePlayer2 += Protocol.STRINGINFORMATIONDELIMITER ;
+						}else {
 							
-							scored = matchHandler.moveBalls() ;
-							if(scored == MatchHandler.NOSCORED) {
-								informationMessagePlayer1 += ParseMatchInformation.getString(matchHandler.getBalls(), matchHandler.getTurn(), PLAYER1);
-								informationMessagePlayer1 += Protocol.STRINGINFORMATIONDELIMITER ;
-								informationMessagePlayer2 += ParseMatchInformation.getString(matchHandler.getBalls(), !matchHandler.getTurn(), PLAYER2);
-								informationMessagePlayer2 += Protocol.STRINGINFORMATIONDELIMITER ;
-							}else {
-								
-								modifyVelocityToReplaceBalls() ;
-								
-								for(int j = 0 ; j < Settings.WAITFORGOAL ; ++j)
-								{
-									informationMessagePlayer1 += ParseMatchInformation.getString(matchHandler.getBalls(), matchHandler.getTurn(), PLAYER1);
-									informationMessagePlayer1 += Protocol.STRINGINFORMATIONDELIMITER ;
-									informationMessagePlayer2 += ParseMatchInformation.getString(matchHandler.getBalls(), !matchHandler.getTurn(), PLAYER2);
-									informationMessagePlayer2 += Protocol.STRINGINFORMATIONDELIMITER ;
-								}
-								
-								for(int j = 0 ; j  <Settings.STEPTOREPLACEBALLS ; ++j) {
-									
-									for(Ball ball : matchHandler.getBalls())
-										ball.move(field,false);
-									
-									informationMessagePlayer1 += ParseMatchInformation.getString(matchHandler.getBalls(), matchHandler.getTurn(), PLAYER1);
-									informationMessagePlayer1 += Protocol.STRINGINFORMATIONDELIMITER ;
-									informationMessagePlayer2 += ParseMatchInformation.getString(matchHandler.getBalls(), !matchHandler.getTurn(), PLAYER2);
-									informationMessagePlayer2 += Protocol.STRINGINFORMATIONDELIMITER ;
-								}
-								resetLineups();
+							modifyVelocityToReplaceBalls() ;
+							
+							for(int j = 0 ; j < Settings.WAITFORGOAL ; ++j)
+							{
 								informationMessagePlayer1 += ParseMatchInformation.getString(matchHandler.getBalls(), matchHandler.getTurn(), PLAYER1);
 								informationMessagePlayer1 += Protocol.STRINGINFORMATIONDELIMITER ;
 								informationMessagePlayer2 += ParseMatchInformation.getString(matchHandler.getBalls(), !matchHandler.getTurn(), PLAYER2);
 								informationMessagePlayer2 += Protocol.STRINGINFORMATIONDELIMITER ;
 							}
 							
-						}while(!matchHandler.allStopped() && scored == MatchHandler.NOSCORED);
-						
-						if(scored == MatchHandler.NOSCORED)
-							matchHandler.setKick_off(false);
-						else
-							matchHandler.setKick_off(true);
-						
-					}else {
-						
-						if(i == PLAYER1) {
-							
-							sendMessage(Protocol.CONNECTION_LOST, PLAYER1);
-							sendMessage(Protocol.GENERALERROR, PLAYER2);
-							notifyClients(DISCONNECTEDPLAYER1);
-							dataMatch.forfeitOnTheBooks(PLAYER1);
-							Database.getInstance().insertMatch(dataMatch);
-							
-						}else {
-							sendMessage(Protocol.CONNECTION_LOST, PLAYER2);
-							sendMessage(Protocol.GENERALERROR, PLAYER1);
-							notifyClients(DISCONNECTEDPLAYER2);
-							dataMatch.forfeitOnTheBooks(PLAYER2);
-							Database.getInstance().insertMatch(dataMatch);
+							for(int j = 0 ; j  <Settings.STEPTOREPLACEBALLS ; ++j) {
+								
+								for(Ball ball : matchHandler.getBalls())
+									ball.move(field,false);
+								
+								informationMessagePlayer1 += ParseMatchInformation.getString(matchHandler.getBalls(), matchHandler.getTurn(), PLAYER1);
+								informationMessagePlayer1 += Protocol.STRINGINFORMATIONDELIMITER ;
+								informationMessagePlayer2 += ParseMatchInformation.getString(matchHandler.getBalls(), !matchHandler.getTurn(), PLAYER2);
+								informationMessagePlayer2 += Protocol.STRINGINFORMATIONDELIMITER ;
+							}
+							resetLineups();
+							informationMessagePlayer1 += ParseMatchInformation.getString(matchHandler.getBalls(), matchHandler.getTurn(), PLAYER1);
+							informationMessagePlayer1 += Protocol.STRINGINFORMATIONDELIMITER ;
+							informationMessagePlayer2 += ParseMatchInformation.getString(matchHandler.getBalls(), !matchHandler.getTurn(), PLAYER2);
+							informationMessagePlayer2 += Protocol.STRINGINFORMATIONDELIMITER ;
 						}
-					}
-				}else if(p.getKey().equals(Protocol.MYUSERNAMEIS)) {
+						
+					}while(!matchHandler.allStopped() && scored == MatchHandler.NOSCORED);
 					
+					if(scored == MatchHandler.NOSCORED)
+						matchHandler.setKick_off(false);
+					else
+						matchHandler.setKick_off(true);
 					
-					i = p.getValue();
+				}else {
 					
 					if(i == PLAYER1) {
 						
@@ -492,21 +489,40 @@ public class MatchServer implements Runnable {
 						dataMatch.forfeitOnTheBooks(PLAYER2);
 						Database.getInstance().insertMatch(dataMatch);
 					}
+				}
+			}else if(p.getKey().equals(Protocol.MYUSERNAMEIS)) {
+				
+				
+				i = p.getValue();
+				
+				if(i == PLAYER1) {
 					
-					return ; 
+					sendMessage(Protocol.CONNECTION_LOST, PLAYER1);
+					sendMessage(Protocol.GENERALERROR, PLAYER2);
+					notifyClients(DISCONNECTEDPLAYER1);
+					dataMatch.forfeitOnTheBooks(PLAYER1);
+					Database.getInstance().insertMatch(dataMatch);
+					
+				}else {
+					sendMessage(Protocol.CONNECTION_LOST, PLAYER2);
+					sendMessage(Protocol.GENERALERROR, PLAYER1);
+					notifyClients(DISCONNECTEDPLAYER2);
+					dataMatch.forfeitOnTheBooks(PLAYER2);
+					Database.getInstance().insertMatch(dataMatch);
 				}
 				
-
-				
+				return ; 
 			}
 			
-			sendMessageAll(Protocol.GAMEOVER);
-			System.out.println("[MATCHSERVER] "+Protocol.GAMEOVER);
-			notifyClients(NOONEISDISCONNETED);
-					
-		} catch (IOException e) {
-			e.printStackTrace();
-		} 
+
+			
+		}
+		
+		sendMessageAll(Protocol.GAMEOVER);
+		System.out.println("[MATCHSERVER] "+Protocol.GAMEOVER);
+		notifyClients(NOONEISDISCONNETED);
+				
+	
 		
 		
 	}
@@ -611,29 +627,34 @@ public class MatchServer implements Runnable {
 	}
 	
 	
-	private Pair<String, Integer> getAction() throws IOException{
-		
+	private Pair<String, Integer> getAction() {
+	
 		String mess ;
 		Integer i ;
 		
-		if(in1.ready()) {
+		try {
+			if(in1.ready()) {
+				
+				mess = in1.readLine();
+				i = PLAYER1 ;
+				if(mess == null || mess.equals(Protocol.CONNECTION_LOST))
+					return new Pair<String, Integer>(null, i);
+				
+				System.out.println("[MATCHSERVER] Message: "+mess+" from "+username1);
+				return new Pair<String, Integer>(mess, i);
 			
-			mess = in1.readLine();
-			i = PLAYER1 ;
-			if(mess == null || mess.equals(Protocol.CONNECTION_LOST))
-				return new Pair<String, Integer>(null, i);
-			
-			System.out.println("[MATCHSERVER] Message: "+mess+" from "+username2);
-			return new Pair<String, Integer>(mess, i);
-		
-		}else if(in2.ready()) {
-			mess = in2.readLine();
-			i = PLAYER2 ;
-			if(mess == null || mess.equals(Protocol.CONNECTION_LOST))
-				return new Pair<String, Integer>(null, i);
-			
-			System.out.println("[MATCHSERVER] Message: "+mess+" from "+username2);
-			return new Pair<String, Integer>(mess, i);
+			}else if(in2.ready()) {
+				mess = in2.readLine();
+				i = PLAYER2 ;
+				if(mess == null || mess.equals(Protocol.CONNECTION_LOST))
+					return new Pair<String, Integer>(null, i);
+				
+				System.out.println("[MATCHSERVER] Message: "+mess+" from "+username2);
+				return new Pair<String, Integer>(mess, i);
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		
 		return null ;
@@ -822,16 +843,22 @@ public class MatchServer implements Runnable {
 	}
 	
 	private void notifyClients(String whoIsDisconnected) {
+		
+		Database.getInstance().updateInAGame(username1, false);
+		Database.getInstance().updateInAGame(username2, false);
+		
 		player1.notifyEndMatch();
 		player2.notifyEndMatch();
 		
 		if(whoIsDisconnected.equals(DISCONNECTEDBOTH)) {
 			closeStreams();
 		}else if(whoIsDisconnected.equals(DISCONNECTEDPLAYER1)){
-			Database.getInstance().insertCoins(username2, Utilities.getRewardField(player2.getCurrentField()));
+			if(!isFriendlyBattle())
+				Database.getInstance().insertCoins(username2, Utilities.getRewardField(player2.getCurrentField()));
 			closeStream1();
 		}else if(whoIsDisconnected.equals(DISCONNECTEDPLAYER2)){
-			Database.getInstance().insertCoins(username1, Utilities.getRewardField(player2.getCurrentField()));
+			if(!isFriendlyBattle())
+				Database.getInstance().insertCoins(username1, Utilities.getRewardField(player2.getCurrentField()));
 			closeStream2();
 		}
 	}

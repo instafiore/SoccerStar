@@ -79,7 +79,7 @@ public class InventoryController {
     	box_skins.getChildren().clear();
     	
 		for(Skin skin : SkinHandler.getInstance().getSkinsOwned()) {
-			Pair<Pane, Object> pair = SceneHandler.getInstance().loadPane("InformationSkinInventaryPane");
+			Pair<Pane, Object> pair = SceneHandler.getInstance().loadPane("InformationSkinInventoryPane");
 			SkinControllerInventory skinController = (SkinControllerInventory) pair.getValue() ;
 			
 			skinController.setName(skin.getName());
@@ -89,7 +89,7 @@ public class InventoryController {
 		}
 		
 		for(Lineup lineup : LineupHandler.getInstance().getLineupsOwned()) {
-			Pair<Pane, Object> pair = SceneHandler.getInstance().loadPane("InformationLineupInventaryPane");
+			Pair<Pane, Object> pair = SceneHandler.getInstance().loadPane("InformationLineupInventoryPane");
 			LineupControllerInventory lineupController = (LineupControllerInventory) pair.getValue() ;
 			lineupController.setName(lineup.getName());
 			lineupController.setUsing(lineup.isUsing());

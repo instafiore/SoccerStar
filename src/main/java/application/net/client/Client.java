@@ -39,7 +39,7 @@ public class Client extends Service<Message>{
 	public static final int SHOP = 8;
 	public static final int INVENTARY = 9;
 	public static final int FRIENDS = 10;
-	public static final int FRIENDLYBATTLE = 11;
+
 	
 	public static final int FIELD1 = 1 ;
 	public static final int FIELD2 = 2 ;
@@ -144,6 +144,21 @@ public class Client extends Service<Message>{
 			
 		}
 		
+		if(message.equals(Protocol.FRIENDLYREQUESTFIELD1) || message.equals(Protocol.FRIENDLYREQUESTFIELD2) 
+				|| message.equals(Protocol.FRIENDLYREQUESTFIELD3) || message.equals(Protocol.PREPARINGFRIENDLYMATCH)) {
+			Message messageObject = null ;
+			String protocol = message ;
+			message = in.readLine();
+			if(message == null || currentState == STEP_REGISTRATION || currentState == STEP_LOGIN || currentState == IN_GAME)
+			{
+				closeStreams();
+				messageObject = new Message(Protocol.GENERALERROR);
+				return messageObject ;
+			}
+			messageObject = new Message(protocol,message);
+			return messageObject ;
+		}
+		
 		switch (currentState) {
 	
 		case STEP_REGISTRATION:
@@ -167,8 +182,6 @@ public class Client extends Service<Message>{
 		case INVENTARY:
 			return readInventary(message);
 		case FRIENDS:
-			return readFriends(message);
-		case FRIENDLYBATTLE:
 			return readFriends(message);
 		default:
 			return new Message(Protocol.GENERALERROR);
@@ -339,7 +352,7 @@ public class Client extends Service<Message>{
 		Message message = null ;
 		String mess = null ;
 		
-		if(protocol.equals(Protocol.INFORMATIONFRIENDS)) {
+		if(protocol.equals(Protocol.INFORMATIONFRIENDS) || protocol.equals(Protocol.ISNOTINAGAME) ){
 			
 			mess = in.readLine();
 			if(mess == null )
@@ -350,7 +363,9 @@ public class Client extends Service<Message>{
 			}
 			message = new Message(protocol,mess);
 			
-		}else if(protocol.equals(Protocol.FRIENDADDED) || protocol.equals(Protocol.USERNAMEFRIENDDOESNTEXIST) ) {
+		}else if(protocol.equals(Protocol.FRIENDADDED) || protocol.equals(Protocol.USERNAMEFRIENDDOESNTEXIST) ||
+				protocol.equals(Protocol.ISINAGAME)  || protocol.equals(Protocol.NOLONGERONLINE) ||
+				protocol.equals(Protocol.REQUESTACCEPTED)  || protocol.equals(Protocol.REQUESTEDECLINED)) {
 			
 			message = new Message(protocol);
 			
@@ -361,32 +376,6 @@ public class Client extends Service<Message>{
 		return message ;
 	}
 	
-	public Message readFriendlyBattle(String protocol) throws IOException {
-		
-		Message message = null ;
-		String mess = null ;
-		
-		if(protocol.equals(Protocol.INFORMATIONFRIENDS)) {
-			
-			mess = in.readLine();
-			if(mess == null )
-			{
-				closeStreams();
-				message = new Message(Protocol.GENERALERROR);
-				return message ;
-			}
-			message = new Message(protocol,mess);
-			
-		}else if(protocol.equals(Protocol.FRIENDADDED) || protocol.equals(Protocol.USERNAMEFRIENDDOESNTEXIST) ) {
-			
-			message = new Message(protocol);
-			
-		}else {
-			message = new Message();
-			message.setProtocol(Protocol.GENERALERROR);
-		}
-		return message ;
-	}
 
 	public Message readInventary(String protocol) throws IOException {
 		
@@ -512,7 +501,7 @@ public class Client extends Service<Message>{
 			setCurrentState(IN_GAME);
 			sendMessage(Protocol.NEWGAMEREQUESTFIELD2);
 		
-		}
+	}
 	
 	public void startMatchField3() {
 		

@@ -64,7 +64,7 @@ public class SkinControllerInventory {
 
     @FXML
     void onClickUse_button(ActionEvent event) {
-    	InventoryController inventaryController = (InventoryController) SceneHandler.getInstance().getLoader("InventaryPage").getController() ;
+    	InventoryController inventaryController = (InventoryController) SceneHandler.getInstance().getLoader("InventoryPage").getController() ;
     	if(using)
     	{
     		inventaryController.showText(Protocol.ALREADYUSING, 20, Dialog.INFORMATION_WINDOW, 5);

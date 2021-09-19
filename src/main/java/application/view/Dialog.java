@@ -5,10 +5,13 @@ import java.io.InputStream;
 import com.sun.scenario.effect.Effect;
 
 import application.SceneHandler;
+import application.control.ChooseFieldController;
 import application.control.HoverButton;
+import application.net.common.Protocol;
 import javafx.animation.FadeTransition;
 import javafx.concurrent.Task;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
@@ -45,8 +48,10 @@ public class Dialog {
 	private static final String NO_BUTTON = "NO";
 	private static final String OK_BUTTON = "OK";
 	private static final String YES_BUTTON = "YES";
-	private static final String FRIENDLY_BATTLE = "FRIENDLY BATTLE";
-	private static final String CANCEL = "CANCEL" ;
+	public static final String FRIENDLY_BATTLE = "FRIENDLY BATTLE";
+	private static final String CLOSE = "CLOSE" ;
+	private static final String ACCEPT ="ACCEPT";
+	private static final String DECLINE ="DECLINE";
 
 	private static Dialog instance = null;
 	private Stage stage = null;
@@ -172,61 +177,123 @@ public class Dialog {
 		return res;
 	}
 	
-	public int showSelectField() {
+	public int showSelectField(String friendToChallenge) {
 		
 		stage.close();
 		res = -1;
 		root.getChildren().clear();
 		stage.setTitle(FRIENDLY_BATTLE);
 		
+		Pane pane = SceneHandler.getInstance().loadPane("ChooseFieldPane").getKey() ;
 		
-		Button friendly_battle = new Button(FRIENDLY_BATTLE);
-		Button cancel = new Button(CANCEL);
+		ChooseFieldController chooseFieldController = (ChooseFieldController) SceneHandler.getInstance().getLoader("ChooseFieldPane").getController() ;
+		chooseFieldController.setFriendToChallenge(friendToChallenge);
 		
-		friendly_battle.setOnMouseEntered(new HoverButton());
-		friendly_battle.setOnMouseExited(new HoverButton());
-		friendly_battle.setTextFill(Color.web("#ffffff"));
-		friendly_battle.setFont(Font.loadFont(getClass().getResourceAsStream("/application/view/fonts/AzeretMono-Italic-VariableFont_wght.ttf"), 14));
-		
-		cancel.getStyleClass().add("leave_button");
-		cancel.setOnMouseEntered(new HoverButton());
-		cancel.setOnMouseExited(new HoverButton());
-		cancel.setTextFill(Color.web("#ffffff"));
-		cancel.setFont(Font.loadFont(getClass().getResourceAsStream("/application/view/fonts/AzeretMono-Italic-VariableFont_wght.ttf"), 14));
+		Button closeButton = new Button(CLOSE);
+			
+		closeButton.getStyleClass().add("leave_button");
+		closeButton.setOnMouseEntered(new HoverButton());
+		closeButton.setOnMouseExited(new HoverButton());
+		closeButton.setTextFill(Color.web("#ffffff"));
+		closeButton.setFont(Font.loadFont(getClass().getResourceAsStream("/application/view/fonts/AzeretMono-Italic-VariableFont_wght.ttf"), 14));
 		
 		BorderPane borderPane = new BorderPane();
 		
-		HBox container = new HBox(cancel,friendly_battle);
+		HBox container = new HBox(closeButton);
 		
-		container.setMargin(cancel, new Insets(0,10,0,0));
-		container.setMargin(friendly_battle, new Insets(0,10,0,0));
+		container.setAlignment(Pos.CENTER);
+		container.setMargin(closeButton, new Insets(0,10,0,0));
 		
 		borderPane.setCenter(container);
 		borderPane.setMargin(container, new Insets(0,0,10,0));
 		
-		friendly_battle.setOnAction(ev ->{
-			res = YES ;
-			stage.close();
-		});
 		
-		cancel.setOnAction(ev ->{
+		closeButton.setOnAction(ev ->{
+			
+			if(chooseFieldController.isCancel_attive()) {
+				chooseFieldController.showText(Protocol.LEAVEWITHOUTCANCEL, 10, Dialog.ERROR_WINDOW,2);
+	    		return;
+			}
+			
 			res = NO ;
 			stage.close();
 		});
 		
-		Pane pane = SceneHandler.getInstance().loadPane("ChooseFieldPane").getKey() ;
+		
 		
 		root.getChildren().add(pane);
 		root.getChildren().add(borderPane);
 		
-		root.setMargin(pane, new Insets(40));
+		root.setMargin(pane, new Insets(20));
+		
+		stage.show();
+		
+		return res ;
+	}
+	
+	public int showRequestFriendlyBattle(String text_message) {
+		
+		stage.close();
+		
+		res = -1;
+		root.getChildren().clear();
+		stage.setTitle(FRIENDLY_BATTLE);
+		
+		Label textLabel = new Label(text_message);
+		textLabel.setWrapText(true);
+		textLabel.setFont(Font.loadFont(getClass().getResourceAsStream("/application/view/fonts/AzeretMono-Italic-VariableFont_wght.ttf"), 17));
+		textLabel.setTextFill(Color.web("#ffffff"));
+		textLabel.setAlignment(Pos.CENTER) ;
+		
+		Button yes_button = new Button(ACCEPT);
+		Button no_button = new Button(DECLINE);
+		
+		yes_button.setOnMouseEntered(new HoverButton());
+		yes_button.setOnMouseExited(new HoverButton());
+		yes_button.setTextFill(Color.web("#ffffff"));
+		yes_button.setFont(Font.loadFont(getClass().getResourceAsStream("/application/view/fonts/AzeretMono-Italic-VariableFont_wght.ttf"), 20));
+		
+		no_button.getStyleClass().add("leave_button");
+		no_button.setOnMouseEntered(new HoverButton());
+		no_button.setOnMouseExited(new HoverButton());
+		no_button.setTextFill(Color.web("#ffffff"));
+		no_button.setFont(Font.loadFont(getClass().getResourceAsStream("/application/view/fonts/AzeretMono-Italic-VariableFont_wght.ttf"), 20));
+		
+		BorderPane borderPane = new BorderPane();
+		
+		HBox container = new HBox(no_button,yes_button);
+		
+		container.setAlignment(Pos.CENTER);
+		
+		container.setMargin(no_button, new Insets(0,10,0,0));
+		container.setMargin(yes_button, new Insets(0,10,0,0));
+		
+		borderPane.setCenter(container);
+		borderPane.setMargin(container, new Insets(0,0,10,0));
+		
+		yes_button.setOnAction(ev ->{
+			res = YES ;
+			stage.close();
+		});
+		
+		no_button.setOnAction(ev ->{
+			res = NO ;
+			stage.close();
+		});
+		
+		root.getChildren().add(textLabel);
+		root.getChildren().add(borderPane);
+		
+		root.setMargin(textLabel, new Insets(20));
 		
 		stage.showAndWait();
 		
 		return res ;
 	}
 	
-	
+	public void closeDialog() {
+		stage.close();
+	}
 	
 	public void drawText(AnchorPane glassPane , String text,double x,double y , String type , int font_size) {
 		

@@ -1,5 +1,6 @@
 package application;
 
+import application.control.ChooseFieldController;
 import application.control.MatchController;
 import application.control.MenuMatchPaneController;
 import application.net.client.Client;
@@ -12,10 +13,12 @@ public class Updater extends AnimationTimer{
 	private static Updater instance = null;
 	
 	private boolean firstTime = true;
-	
+	private int field;
 	private Updater(){
 		super();	
 	}
+	
+	private boolean friendly_battle = false ;
 	
 	public static Updater getInstance() {
 		
@@ -28,8 +31,10 @@ public class Updater extends AnimationTimer{
 		this.matchController = matchController;
 	}
 	
-	public void startUpdater() {
+	public void startUpdater(boolean friendly_battle,int field) {
 		this.start();
+		this.friendly_battle = friendly_battle ;
+		this.field = field ;
 	}
 	
 	public void stopUpdater() {
@@ -56,7 +61,11 @@ public class Updater extends AnimationTimer{
 			menuMatchPaneController.setUsernameHome( Client.getInstance().getUsername(), colorHome);
 			menuMatchPaneController.setUsernameGuest( MatchController.getInstance().getUsernameGuest(), colorGuest);
 			menuMatchPaneController.initGoals();
-			menuMatchPaneController.setField();
+			
+			if(!friendly_battle)
+				menuMatchPaneController.setField();
+			else
+				menuMatchPaneController.setFieldFriendlyBattle(field);
 			firstTime = false ;
 		}
 		long time = now - previousTime;

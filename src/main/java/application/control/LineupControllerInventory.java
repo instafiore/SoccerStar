@@ -61,7 +61,7 @@ public class LineupControllerInventory {
     @FXML
     void onClickUse_button(ActionEvent event) {
     	
-    	InventoryController inventaryController = (InventoryController) SceneHandler.getInstance().getLoader("InventaryPage").getController()  ;
+    	InventoryController inventaryController = (InventoryController) SceneHandler.getInstance().getLoader("InventoryPage").getController()  ;
     	if(!inventaryController.isReady())
     		return ;
     	if(using)

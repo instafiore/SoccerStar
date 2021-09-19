@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import application.SceneHandler;
 import application.Settings;
 import application.Updater;
+import application.control.FriendControllerOffline;
 import application.control.MainPageController;
 import application.control.MatchController;
 import application.model.game.entity.Ball;
@@ -33,16 +34,18 @@ public class MatchClient extends Task<String>{
 	private boolean match_activated = false ;
 	private String colorHome = "" ;
 	private String colorGuest = "" ;
+	public boolean friendlyBattle = false ;
 	
 	private ParseMatchInformation parseMatchInformation ;
 	private int field ;
 	
-	public MatchClient(Client client ) {
+	public MatchClient(Client client , boolean friendlyBattle,int field) {
 		super();
 		this.client = client;
+		this.friendlyBattle = friendlyBattle ;
 		in = client.getIn();
 		parseMatchInformation = new ParseMatchInformation();
-		
+		this.field = field ;
 		MatchController.getInstance().setParseMatchInformation(parseMatchInformation);
 		
 		Thread t = new Thread(this);
@@ -50,12 +53,18 @@ public class MatchClient extends Task<String>{
 		t.start();
 	}
 
+	public boolean isFriendlyBattle() {
+		return friendlyBattle;
+	}
 	
 	public String initalSettings() throws IOException {
 		
 		String message = null ;
 		
-		client.sendMessage(Protocol.GAMESTARTED);
+		if(isFriendlyBattle())
+			client.sendMessage(Protocol.FRIENDLYMATCHSTARTED);
+		else
+			client.sendMessage(Protocol.MATCHSTARTED);
 		
 		
 		message = read() ;
@@ -217,10 +226,10 @@ public class MatchClient extends Task<String>{
 			return Protocol.ERRORMATCH;
 		}
 		
-		if(!message.equals(Protocol.GAMESTARTED))
+		if(!message.equals(Protocol.MATCHSTARTED))
 			return Protocol.ERRORMATCH;
 
-		showView();
+		showView(friendlyBattle,field);
 		setMatch_activated(true);
 		parseMatchInformation.setReady(true);
 		
@@ -336,8 +345,8 @@ public class MatchClient extends Task<String>{
 		
 	}
 
-	public void showView() {
-		Updater.getInstance().startUpdater();
+	public void showView(boolean friendly_battle,int field) {
+		Updater.getInstance().startUpdater(friendly_battle,field);
 	}
 
 
