@@ -4,10 +4,15 @@ import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.nio.charset.Charset;
+import java.sql.Blob;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -586,7 +591,7 @@ public class ClientHandler implements Runnable {
 				
 				try {
 					for(Lineup lineup : Database.getInstance().getLineups()) {
-						lineups += lineup.getId() + Protocol.DELIMITERINFORMATIONELEMENTSHOP + lineup.getName() + Protocol.DELIMITERINFORMATIONELEMENTSHOP + lineup.getPrice() + Protocol.DELIMITERINFORMATIONELEMENTSHOP + lineup.getImage() ;
+						lineups += lineup.getId() + Protocol.DELIMITERINFORMATIONELEMENTSHOP + lineup.getName() + Protocol.DELIMITERINFORMATIONELEMENTSHOP + lineup.getPrice() + Protocol.DELIMITERINFORMATIONELEMENTSHOP + lineup.getModulo() ;
 						lineups += Protocol.DELIMITERELEMENTSHOP ;
 					}
 				} catch (SQLException e) {
@@ -603,12 +608,14 @@ public class ClientHandler implements Runnable {
 					return;
 				}
 				
+			
 				String coins = "";
 				
 				coins = "" + Database.getInstance().getAccount(username).getCoins();
 				
 				
-				text = skins + Protocol.DELIMITERINFORMATIONSHOP + skin_owned + Protocol.DELIMITERINFORMATIONSHOP + lineups + Protocol.DELIMITERINFORMATIONSHOP + lineup_owned + Protocol.DELIMITERINFORMATIONSHOP + coins; 
+				text = skins + Protocol.DELIMITERINFORMATIONSHOP + skin_owned + Protocol.DELIMITERINFORMATIONSHOP + lineups + Protocol.DELIMITERINFORMATIONSHOP + lineup_owned  
+						+  Protocol.DELIMITERINFORMATIONSHOP + coins  ; 
 				
 				sendMessage(message);
 				sendMessage(text);

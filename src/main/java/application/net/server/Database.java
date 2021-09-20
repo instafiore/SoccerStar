@@ -1,5 +1,6 @@
 package application.net.server;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -12,6 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 
 
 import application.Settings;
+import application.Utilities;
 import application.model.game.entity.Account;
 import application.model.game.entity.DataMatch;
 import application.model.game.entity.Lineup;
@@ -23,7 +25,7 @@ import application.net.common.Protocol;
 public class Database {
 	
 	
-	private static final String DEFAULTCOLOR = "color1";
+	private static final String DEFAULTCOLOR = "blue";
 	private static final int    DEFAULTLINEUP = 1 ;
 	private static final String QUERY_INSERT_REGISTRATIONCLIENT = "insert into Account(username,password,email) values(?,?,?);";
 	private static final String SEARCH_CLIENT = "select * from Account where username = ? ;";
@@ -45,6 +47,9 @@ public class Database {
 	private static final String UPDATE_CURRENT_LINEUP = "update Account set current_lineup = ? where username = ? ;" ;
 	private static final String SEARCH_FRIENDS_USER = "select friend from Friends where account  = ? ;";
 	private static final String INSERTFRIEND = "insert into Friends(account,friend) values(?,?); ";
+	
+	
+	
 	
 	private Connection connection;
 	private static Database instance = null;
@@ -68,9 +73,11 @@ public class Database {
 	private PreparedStatement update_current_lineup_query ;
 	private PreparedStatement search_friend_user_query  ;
 	private PreparedStatement insert_friend_query  ;
+
 	
 	
 	private Database() {
+		
 		
 	}
 	
@@ -88,6 +95,7 @@ public class Database {
 			System.out.println("[SERVER] Database connected!");
 		
 		initializeQuery();
+	
 	}
 	
 	
@@ -113,6 +121,7 @@ public class Database {
 		update_current_lineup_query = connection.prepareStatement(UPDATE_CURRENT_LINEUP);
 		search_friend_user_query = connection.prepareStatement(SEARCH_FRIENDS_USER);
 		insert_friend_query = connection.prepareStatement(INSERTFRIEND);
+
 
 	}
 	
@@ -264,9 +273,9 @@ public class Database {
 		lineup.setId(result.getInt("id"));
 		lineup.setName(result.getString("name"));
 		lineup.setPrice(result.getString("price"));
-		lineup.setImage(result.getString("image"));
-		// TODO IMAGE
-		
+		lineup.setModulo(result.getString("modulo"));
+
+
 		return lineup ;
 	}
 	
@@ -345,7 +354,7 @@ public class Database {
 		}
 
 	}
-	
+
 	public synchronized boolean buySkin(String username ,Skin skin) {
 			
 		Skin skinDatabase = null ;
@@ -569,7 +578,7 @@ public class Database {
 			lineup.setId(result.getInt("id"));
 			lineup.setName(result.getString("name"));
 			lineup.setPrice(result.getString("price"));
-			lineup.setImage(result.getString("image"));
+			lineup.setModulo(result.getString("modulo"));
 			lineups.add(lineup);
 		}
 	

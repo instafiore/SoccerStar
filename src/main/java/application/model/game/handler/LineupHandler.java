@@ -1,8 +1,10 @@
 package application.model.game.handler;
 
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
+import application.Utilities;
 import application.model.game.entity.Lineup;
 import application.model.game.entity.Skin;
 import application.net.common.Protocol;
@@ -95,5 +97,7 @@ public class LineupHandler {
 		}
 		
 	}
+	
+
 	
 }

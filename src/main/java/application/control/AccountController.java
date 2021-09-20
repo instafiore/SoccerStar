@@ -181,6 +181,9 @@ public class AccountController {
     }
     
     public void setUsername_field_account(String username_field_account) {
+    	if(username_field_account.length() > 10)
+    		this.username_field_account.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 20));
+    	
 		this.username_field_account.setText(username_field_account);
 	}
     

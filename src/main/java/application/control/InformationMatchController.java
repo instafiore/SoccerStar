@@ -61,6 +61,8 @@ public class InformationMatchController {
 
     
     public void setHome(String home,String color) {
+    	if(home.length() > 10)
+    		this.home.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 12));
     	
 		this.home.setText(home);
 		this.home.setStyle("-fx-background-color:"+color+";");
@@ -68,7 +70,8 @@ public class InformationMatchController {
 	}
     
     public void setGuest(String guest,String color) {
-    	
+    	if(guest.length() > 10)
+    		this.guest.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 12));
 		this.guest.setText(guest);
 		this.guest.setStyle("-fx-background-color:"+color+";");
 		

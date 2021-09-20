@@ -108,11 +108,20 @@ public class MenuMatchPaneController {
     }
     
     public void setUsernameHome(String username , String color ) {
+    	if(username.length() > 8)
+    		username_home.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 20));
+    	else
+    		username_home.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 26));
     	username_home.setText(username);
     	username_home.setStyle(" -fx-background-color: "+color+"; -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.8), 10, 0, 0, 0);  -fx-text-fill: #000000;-fx-opacity : 0.8 ;");
     }
     
     public void setUsernameGuest(String username , String color ) {
+    	if(username.length() > 8)
+    		username_guest.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 20));
+    	else
+    		username_guest.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 26));
+    	
     	username_guest.setText(username);
     	username_guest.setStyle(" -fx-background-color: "+color+"; -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.8), 10, 0, 0, 0);  -fx-text-fill: #000000;-fx-opacity : 0.8 ;");
     }

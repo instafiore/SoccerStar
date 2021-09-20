@@ -107,6 +107,9 @@ public class Client extends Service<Message>{
 		return instance ;
 	}
 	
+	public Socket getSocket() {
+		return socket;
+	}
 	
 	@Override
 	protected Task<Message> createTask() {
@@ -285,7 +288,7 @@ public class Client extends Service<Message>{
 				return message ;
 			}
 			message = new Message(protocol,mess);
-		}else if(protocol.equals(Protocol.PASSWORDCHANGED) || protocol.equals(Protocol.OLDPASSOWORDNOTCORRECT)) {
+		}else if(protocol.equals(Protocol.PASSWORDCHANGEDACCOUNTSTATE) || protocol.equals(Protocol.OLDPASSOWORDNOTCORRECT)) {
 			
 			message = new Message(protocol);
 			
@@ -335,7 +338,7 @@ public class Client extends Service<Message>{
 			}
 			message = new Message(protocol,mess);
 			
-		}else if(protocol.equals(Protocol.ELEMENTSHOPBOUGHT) || protocol.equals(Protocol.ELEMENTSHOPNOTBOUGHT)) {
+		}else if(protocol.equals(Protocol.ELEMENTSHOPBOUGHT) || protocol.equals(Protocol.ELEMENTSHOPNOTBOUGHT) ) {
 			
 			message = new Message(protocol);
 			

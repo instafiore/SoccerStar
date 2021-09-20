@@ -73,6 +73,7 @@ public class Protocol {
 	public static final String ELEMENTSHOPBOUGHT = "Element bought" ;
 	public static final String ELEMENTSHOPNOTBOUGHT = "You don't have enough coins" ;
 	public static final String ALREADYOWNED = "You already own this element" ;
+
 	
 	// Inventory
 	public static final String INFORMATIONINVENTARY = "Information inventary request";
@@ -169,6 +170,7 @@ public class Protocol {
 	public static final String COLORGUEST = "This the color of opponent" ;
 	public static final String NOATKICKOFF =" Cannot score at kick off!";
 
+	
 	
 	
 	public static ArrayList<String> protocolMatch(){

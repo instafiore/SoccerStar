@@ -1,5 +1,7 @@
 package application.model.game.entity;
 
+import java.nio.charset.Charset;
+import java.sql.Blob;
 import java.util.StringTokenizer;
 
 import com.sun.javafx.image.impl.ByteIndexed.Getter;
@@ -11,18 +13,17 @@ public class Lineup {
 	private int id  ;
 	private String name = "" ;
 	private String price = "" ;
-	private String image = "" ;
+	private String modulo = "";
 	private boolean owned = false ;
 	private boolean using = false ;
 	
 	public Lineup() {}
 
 	
-	public Lineup(String name, String price, String image) {
+	public Lineup(String name, String price) {
 		super();
 		this.name = name;
 		this.price = price;
-		this.image = image;
 	}
 	
 	public void setUsing(boolean using) {
@@ -49,7 +50,14 @@ public class Lineup {
 		return owned;
 	}
 
-
+	public void setModulo(String modulo) {
+		this.modulo = modulo;
+	}
+	
+	public String getModulo() {
+		return modulo;
+	}
+	
 	public String getName() {
 		return name;
 	}
@@ -62,21 +70,14 @@ public class Lineup {
 	public void setPrice(String price) {
 		this.price = price;
 	}
-	public String getImage() {
-		return image;
-	}
-	public void setImage(String image) {
-		this.image = image;
-	}
-	
-	
+
 	public void loadLineup(String string) {
 		StringTokenizer stringTokenizer = new StringTokenizer(string, Protocol.DELIMITERINFORMATIONELEMENTSHOP) ;
 		
 		setId(Integer.parseInt(stringTokenizer.nextToken()));
 		setName(stringTokenizer.nextToken());
 		setPrice(stringTokenizer.nextToken());
-		setImage(stringTokenizer.nextToken());
+		setModulo(stringTokenizer.nextToken());
 	}
 
 	

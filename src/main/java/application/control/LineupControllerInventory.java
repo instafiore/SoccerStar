@@ -13,6 +13,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Font;
@@ -29,7 +30,8 @@ public class LineupControllerInventory {
     private Button use_button;
 
     @FXML
-    private ImageView image_lineup;
+    private Label modulo;
+
     
     private boolean using = false ;
     
@@ -57,8 +59,11 @@ public class LineupControllerInventory {
     public void setName(String name) {
 		this.name.setText(name);
 	}
-   
-
+    
+    public void setModulo(String modulo) {
+ 	   this.modulo.setText(modulo);
+    }
+     
     @FXML
     void onClickUse_button(ActionEvent event) {
     	SoundHandler.getInstance().startHit();
@@ -84,14 +89,14 @@ public class LineupControllerInventory {
 
     @FXML
     void onMouseEnteredImage(MouseEvent event) {
-    	image_lineup.setScaleX(1.2);
-    	image_lineup.setScaleY(1.2);
+    	modulo.setScaleX(1.2);
+    	modulo.setScaleY(1.2);
     }
 
     @FXML
     void onMouseExitedImage(MouseEvent event) {
-    	image_lineup.setScaleX(1);
-    	image_lineup.setScaleY(1);
+    	modulo.setScaleX(1);
+    	modulo.setScaleY(1);
     }
 
 }

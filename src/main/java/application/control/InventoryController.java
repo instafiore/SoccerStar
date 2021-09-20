@@ -93,7 +93,7 @@ public class InventoryController {
 			LineupControllerInventory lineupController = (LineupControllerInventory) pair.getValue() ;
 			lineupController.setName(lineup.getName());
 			lineupController.setUsing(lineup.isUsing());
-			// TODO IMAGE
+			lineupController.setModulo(lineup.getModulo());
 			
 			box_lineups.getChildren().add(pair.getKey());
 		}

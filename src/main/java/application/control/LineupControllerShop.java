@@ -12,6 +12,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Font;
@@ -27,7 +28,8 @@ public class LineupControllerShop {
     private Button buy_button;
 
     @FXML
-    private ImageView image_lineup;
+    private Label modulo;
+
     
     private boolean owned = false;
     
@@ -64,11 +66,16 @@ public class LineupControllerShop {
 		}
     }
     
+   public void setModulo(String modulo) {
+	   this.modulo.setText(modulo);
+   }
+    
     @FXML
     void onClickBuy_button(ActionEvent event) {
-    	SoundHandler.getInstance().startHit();
     	
+    	SoundHandler.getInstance().startHit();
     	ShopController shopController = (ShopController) SceneHandler.getInstance().getLoader("ShopPage").getController()  ;
+    	
     	if(owned)
     	{
     		shopController.showText(Protocol.ALREADYOWNED, 20, Dialog.INFORMATION_WINDOW, 5);
@@ -77,21 +84,22 @@ public class LineupControllerShop {
     	if(!shopController.isReady())
     		return ;
     	Lineup lineup = LineupHandler.getInstance().getLineup(name.getText());
-    	String text = lineup.getId() + Protocol.DELIMITERINFORMATIONELEMENTSHOP + lineup.getName() + Protocol.DELIMITERINFORMATIONELEMENTSHOP + lineup.getPrice() + Protocol.DELIMITERINFORMATIONELEMENTSHOP + lineup.getImage() ;
+    	String text = lineup.getId() + Protocol.DELIMITERINFORMATIONELEMENTSHOP + lineup.getName() + Protocol.DELIMITERINFORMATIONELEMENTSHOP + lineup.getPrice() + Protocol.DELIMITERINFORMATIONELEMENTSHOP ;
     	Client.getInstance().sendMessage(Protocol.BUYLINEUP);
     	Client.getInstance().sendMessage(text);
+    	
     }
 
     @FXML
     void onMouseEnteredImage(MouseEvent event) {
-    	image_lineup.setScaleX(1.2);
-    	image_lineup.setScaleY(1.2);
+    	modulo.setScaleX(1.2);
+    	modulo.setScaleY(1.2);
     }
    
     @FXML
     void onMouseExitedImage(MouseEvent event) {
-    	image_lineup.setScaleX(1);
-    	image_lineup.setScaleY(1);
+    	modulo.setScaleX(1);
+    	modulo.setScaleY(1);
     }
 
 }

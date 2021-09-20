@@ -133,8 +133,7 @@ public class HistoryController {
     
     @FXML
     void onMouseEnteredBoxChartMatch(MouseEvent event) {
-    	if(!ready)
-    		return;
+   
     	FadeTransition trans = new FadeTransition(Duration.seconds(2),boxChartMatches);
 		
 		trans.setFromValue(0.85);
@@ -144,8 +143,7 @@ public class HistoryController {
 
     @FXML
     void onMouseEnteredBoxMatches(MouseEvent event) {
-    	if(!ready)
-    		return;
+    
     	FadeTransition trans = new FadeTransition(Duration.seconds(2),box_history_match);
 		
 		trans.setFromValue(0.85);
@@ -155,8 +153,7 @@ public class HistoryController {
 
     @FXML
     void onMouseExitedBoxChartMatch(MouseEvent event) {
-    	if(!ready)
-    		return;
+    	
     	FadeTransition trans = new FadeTransition(Duration.seconds(2),boxChartMatches);
 		
 		trans.setFromValue(1.0);
@@ -166,8 +163,7 @@ public class HistoryController {
 
     @FXML
     void onMouseExitedBoxMatches(MouseEvent event) {
-    	if(!ready)
-    		return;
+    	
     	FadeTransition trans = new FadeTransition(Duration.seconds(2),box_history_match);
 		
 		trans.setFromValue(1.0);

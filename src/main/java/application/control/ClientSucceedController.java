@@ -1,5 +1,8 @@
 package application.control;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.util.ArrayList;
 import java.util.StringTokenizer;
 
 import com.sun.scenario.effect.Effect.AccelType;
@@ -176,12 +179,12 @@ public class ClientSucceedController implements EventHandler<WorkerStateEvent>{
 			SkinHandler.getInstance().loadOwned(stringTokenizer.nextToken());
 			LineupHandler.getInstance().loadLineups(stringTokenizer.nextToken());
 			LineupHandler.getInstance().loadOwned(stringTokenizer.nextToken());
-			
 			String coins = stringTokenizer.nextToken() ;
 			shopController.setCoins(coins);
 			
 			shopController.init();
 			shopController.setReady(true);
+			
 		}else if(message.getProtocol().equals(Protocol.INFORMATIONINVENTARY)) {
 			
 			InventoryController inventoryController = (InventoryController) SceneHandler.getInstance().getLoader("InventoryPage").getController() ;
@@ -191,7 +194,6 @@ public class ClientSucceedController implements EventHandler<WorkerStateEvent>{
 			SkinHandler.getInstance().loadOwned(stringTokenizer.nextToken());
 			LineupHandler.getInstance().loadLineups(stringTokenizer.nextToken());
 			LineupHandler.getInstance().loadOwned(stringTokenizer.nextToken());
-	
 			inventoryController.init();
 
 		}else if(message.getProtocol().equals(Protocol.SKININUSE)) {
@@ -233,7 +235,7 @@ public class ClientSucceedController implements EventHandler<WorkerStateEvent>{
 			
 			AccountController accountController =  SceneHandler.getInstance().getLoader("AccountPage").getController() ;
 			
-			if(message.getProtocol().equals(Protocol.PASSWORDCHANGED))
+			if(message.getProtocol().equals(Protocol.PASSWORDCHANGEDACCOUNTSTATE))
 				accountController.showText(message.getProtocol(), 14, Dialog.INFORMATION_WINDOW, 3);
 			else
 				accountController.showText(message.getProtocol(), 14, Dialog.ERROR_WINDOW, 3);

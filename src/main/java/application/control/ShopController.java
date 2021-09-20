@@ -83,6 +83,7 @@ public class ShopController {
     	
     	Client.getInstance().sendMessage(Protocol.INFORMATIONSHOP);
 
+
     }
     
     public void setCoins(String coins) {
@@ -111,8 +112,7 @@ public class ShopController {
 			lineupController.setName(lineup.getName());
 			lineupController.setOwn(lineup.isOwned());
 			lineupController.setPrice(lineup.getPrice());
-			// TODO IMAGE
-			
+			lineupController.setModulo(lineup.getModulo());
 			box_lineups.getChildren().add(pair.getKey());
 		}
 	}

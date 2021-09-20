@@ -42,6 +42,9 @@ public class FriendControllerOnline {
 	}
     
     public void setFriend_label(String username) {
+    	if(username.length() > 10 )
+    		friend_label.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 14));
+    	
 		this.friend_label.setText(username);
 	}
     

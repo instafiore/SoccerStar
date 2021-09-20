@@ -1,11 +1,21 @@
 package application;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.regex.Pattern;
+
+import javax.imageio.ImageIO;
+
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
 public class Utilities {
 	
@@ -113,5 +123,37 @@ public class Utilities {
     		return Settings.REWARDFIELD3;
     	return 0 ;
     }
+    
+    public static byte[] getByteArrFromFile(File file) {
+		if(file == null)
+			return null;
+		
+		ByteArrayOutputStream bos = null;
+		        
+        try {
+            FileInputStream fis = new FileInputStream(file);
+            byte[] buffer = new byte[1024];
+            bos = new ByteArrayOutputStream();
+            for (int len; (len = fis.read(buffer)) != -1;) {
+                bos.write(buffer, 0, len);
+            }
+            fis.close();
+        } catch (Exception e) {
+            return null;
+        } 
+        
+        return bos != null ? bos.toByteArray() : null;
+	}
+    
+    
+    public static ImageView getImageFromByteArray(byte[] array) {
 
+    	Image img = new Image(new ByteArrayInputStream(array),50,50,true,true);
+    	
+        return  new ImageView(img);
+    }
+    
+
+    
+    
 }

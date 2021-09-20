@@ -11,7 +11,8 @@ public class SoundHandler {
 	private Sound hit = new Sound("hit.wav");
 	
 	private SoundHandler() {
-		
+		background.reduceVolume();
+		background_match.reduceVolume();
 	}
 	private static SoundHandler instance = null ;
 	
@@ -23,12 +24,12 @@ public class SoundHandler {
 	
 	public void startBackground() {
 		background.loop();
-		background.reduceVolume();
+		
 	}
 	
 	public void startBackgroundMatch() {
 		background_match.loop();
-		background_match.reduceVolume();
+		
 	}
 	
 
@@ -50,7 +51,6 @@ public class SoundHandler {
 	}
 	
 	public void startHit() {
-		
 		hit.start();
 	}
 	
