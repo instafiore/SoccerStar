@@ -124,36 +124,4 @@ public class Utilities {
     	return 0 ;
     }
     
-    public static byte[] getByteArrFromFile(File file) {
-		if(file == null)
-			return null;
-		
-		ByteArrayOutputStream bos = null;
-		        
-        try {
-            FileInputStream fis = new FileInputStream(file);
-            byte[] buffer = new byte[1024];
-            bos = new ByteArrayOutputStream();
-            for (int len; (len = fis.read(buffer)) != -1;) {
-                bos.write(buffer, 0, len);
-            }
-            fis.close();
-        } catch (Exception e) {
-            return null;
-        } 
-        
-        return bos != null ? bos.toByteArray() : null;
-	}
-    
-    
-    public static ImageView getImageFromByteArray(byte[] array) {
-
-    	Image img = new Image(new ByteArrayInputStream(array),50,50,true,true);
-    	
-        return  new ImageView(img);
-    }
-    
-
-    
-    
 }

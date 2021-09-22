@@ -84,7 +84,7 @@ public class LineupControllerShop {
     	if(!shopController.isReady())
     		return ;
     	Lineup lineup = LineupHandler.getInstance().getLineup(name.getText());
-    	String text = lineup.getId() + Protocol.DELIMITERINFORMATIONELEMENTSHOP + lineup.getName() + Protocol.DELIMITERINFORMATIONELEMENTSHOP + lineup.getPrice() + Protocol.DELIMITERINFORMATIONELEMENTSHOP ;
+    	String text = lineup.getId() + Protocol.DELIMITERINFORMATIONELEMENTSHOP + lineup.getName() + Protocol.DELIMITERINFORMATIONELEMENTSHOP + lineup.getPrice() + Protocol.DELIMITERINFORMATIONELEMENTSHOP + lineup.getModulo() ;
     	Client.getInstance().sendMessage(Protocol.BUYLINEUP);
     	Client.getInstance().sendMessage(text);
     	
