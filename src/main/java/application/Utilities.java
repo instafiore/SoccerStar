@@ -50,6 +50,34 @@ public class Utilities {
     private static Pattern patternPassword = Pattern.compile(REGEXPASSWORD);
     private static Pattern patternEmail = Pattern.compile(REGEXEMAIL);
 	
+    
+    public static byte[] getByteArrayFromFile(File file) {
+    	
+    	if(file == null)
+    		return null ;
+    	
+    	ByteArrayOutputStream bos = null ;
+    	
+    	try {
+    		FileInputStream fis = new FileInputStream(file);
+    		byte[] buffer = new byte[1024] ;
+    		bos = new ByteArrayOutputStream() ;
+    		for(int len ; (len = fis.read(buffer)) != -1; )
+    			bos.write(buffer, 0, len);
+    		fis.close();
+    	}catch ( Exception e) {
+			return null ;
+		}
+    	return bos != null ? bos.toByteArray() : null ;
+    }
+    
+    
+    public static Image getImageFromByteArray(byte[] bytes,double width , double height) {
+    	
+    	return new Image(new ByteArrayInputStream(bytes),width,height,true,true);
+    	
+    }
+    		
 	public static String getCurrentISODate() {
 		return ZonedDateTime.now(ZoneOffset.UTC).format(DateTimeFormatter.ISO_DATE_TIME);
 	}

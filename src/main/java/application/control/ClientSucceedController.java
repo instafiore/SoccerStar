@@ -11,6 +11,7 @@ import application.SceneHandler;
 import application.Settings;
 import application.model.game.entity.Account;
 import application.model.game.entity.DataMatch;
+import application.model.game.entity.Lineup;
 import application.model.game.entity.Message;
 import application.model.game.handler.FriendsHandler;
 import application.model.game.handler.LineupHandler;
@@ -22,6 +23,7 @@ import application.view.Dialog;
 import application.view.MatchView;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
+import javafx.fxml.FXMLLoader;
 
 public class ClientSucceedController implements EventHandler<WorkerStateEvent>{
 
@@ -57,14 +59,14 @@ public class ClientSucceedController implements EventHandler<WorkerStateEvent>{
 			
 			MainPageController mainPageController =  SceneHandler.getInstance().getLoader("MainPage").getController() ;
 			
-			mainPageController.setCoins_main_page_label(message.getMessage());
+			mainPageController.setCoins_main_page_label((String)(String) message.getMessage());
 			mainPageController.setReady(true);
 			
 		}else if(message.getProtocol().equals(Protocol.INFORMATIONFRIENDS)) {
 			
 			FriendsController friendsController = (FriendsController) SceneHandler.getInstance().getLoader("FriendsPage").getController() ;
 			
-			FriendsHandler.getInstance().loadFriends(message.getMessage());
+			FriendsHandler.getInstance().loadFriends((String)(String) message.getMessage());
 			
 			friendsController.init();
 			friendsController.setReady(true);
@@ -80,7 +82,7 @@ public class ClientSucceedController implements EventHandler<WorkerStateEvent>{
 			friendsController.setReady(true);
 		}else if(message.getProtocol().equals(Protocol.ISNOTINAGAME)) {
 			
-			Dialog.getInstance().showSelectField(message.getMessage());
+			Dialog.getInstance().showSelectField((String)(String) message.getMessage());
 			
 		}else if(message.getProtocol().equals(Protocol.ISINAGAME) || message.getProtocol().equals(Protocol.NOLONGERONLINE)) {
 			
@@ -99,7 +101,7 @@ public class ClientSucceedController implements EventHandler<WorkerStateEvent>{
 				
 		}else if(message.getProtocol().equals(Protocol.FRIENDLYREQUESTFIELD1) || message.getProtocol().equals(Protocol.FRIENDLYREQUESTFIELD2) || message.getProtocol().equals(Protocol.FRIENDLYREQUESTFIELD3)){
 			 
-			String whoWantToChallengeYou = message.getMessage() ;
+			String whoWantToChallengeYou = (String) (String) message.getMessage() ;
 			
 			String text = whoWantToChallengeYou + " would like to challenge \n you to a friendly match on the pitch " ;
 			
@@ -134,7 +136,7 @@ public class ClientSucceedController implements EventHandler<WorkerStateEvent>{
 			
 			
 			Client.getInstance().setCurrentState(Client.IN_GAME);
-			String field = message.getMessage() ;
+			String field = (String) message.getMessage() ;
 			
 			int nField = MatchView.FIELD1;
 			
@@ -162,7 +164,7 @@ public class ClientSucceedController implements EventHandler<WorkerStateEvent>{
 			
 			AccountController accountController =  SceneHandler.getInstance().getLoader("AccountPage").getController() ;
 			Account account = new Account();
-			account.loadAccount(message.getMessage());
+			account.loadAccount((String) message.getMessage());
 			accountController.setCard_field_account(Protocol.NOTINSERTED);
 			accountController.setUsername_field_account(account.getUsername());
 			accountController.setEmail_field_account(account.getEmail());
@@ -174,7 +176,7 @@ public class ClientSucceedController implements EventHandler<WorkerStateEvent>{
 			
 			ShopController shopController = (ShopController) SceneHandler.getInstance().getLoader("ShopPage").getController() ;
 			
-			StringTokenizer stringTokenizer = new StringTokenizer(message.getMessage(), Protocol.DELIMITERINFORMATIONSHOP);
+			StringTokenizer stringTokenizer = new StringTokenizer((String) message.getMessage(), Protocol.DELIMITERINFORMATIONSHOP);
 			SkinHandler.getInstance().loadSkins(stringTokenizer.nextToken());
 			SkinHandler.getInstance().loadOwned(stringTokenizer.nextToken());
 			LineupHandler.getInstance().loadLineups(stringTokenizer.nextToken());
@@ -182,38 +184,70 @@ public class ClientSucceedController implements EventHandler<WorkerStateEvent>{
 			String coins = stringTokenizer.nextToken() ;
 			shopController.setCoins(coins);
 			
-			shopController.init();
-			shopController.setReady(true);
+			
+			
+			
+		}else if(message.getProtocol().equals(Protocol.IMAGESLINEUP)) {
+			
+			FXMLLoader loadShop = SceneHandler.getInstance().getLoader("ShopPage") ;
+			
+			if(loadShop != null) {
+				ShopController shopController = loadShop.getController() ;
+				
+				ArrayList<byte[]> imagesLineups = (ArrayList<byte[]>) message.getMessage() ;
+				
+				int i = 0 ;
+				for(Lineup lineup : LineupHandler.getInstance().getLineups())
+					lineup.setImage(imagesLineups.get(i++));
+				
+				shopController.init();
+				shopController.setReady(true);
+			}
+			
+			
+			FXMLLoader loadInvetory = SceneHandler.getInstance().getLoader("InventoryPage") ;
+			
+			if(loadInvetory != null) {
+				InventoryController inventoryController = loadInvetory.getController() ;
+				
+				ArrayList<byte[]> imagesLineups = (ArrayList<byte[]>) message.getMessage() ;
+				
+				int i = 0 ;
+				for(Lineup lineup : LineupHandler.getInstance().getLineups())
+					lineup.setImage(imagesLineups.get(i++));
+				
+				inventoryController.init();
+				inventoryController.setReady(true);
+			}
 			
 		}else if(message.getProtocol().equals(Protocol.INFORMATIONINVENTARY)) {
 			
 			InventoryController inventoryController = (InventoryController) SceneHandler.getInstance().getLoader("InventoryPage").getController() ;
 			
-			StringTokenizer stringTokenizer = new StringTokenizer(message.getMessage(), Protocol.DELIMITERINFORMATIONSHOP);
+			StringTokenizer stringTokenizer = new StringTokenizer((String) message.getMessage(), Protocol.DELIMITERINFORMATIONSHOP);
 			SkinHandler.getInstance().loadSkins(stringTokenizer.nextToken());
 			SkinHandler.getInstance().loadOwned(stringTokenizer.nextToken());
 			LineupHandler.getInstance().loadLineups(stringTokenizer.nextToken());
 			LineupHandler.getInstance().loadOwned(stringTokenizer.nextToken());
-			inventoryController.init();
+		
 
 		}else if(message.getProtocol().equals(Protocol.SKININUSE)) {
 			
 			InventoryController inventoryController = (InventoryController) SceneHandler.getInstance().getLoader("InventoryPage").getController() ;
 						
-			String colorSkinInUse = message.getMessage() ;
+			String colorSkinInUse = (String) message.getMessage() ;
 			SkinHandler.getInstance().setUsing(SkinHandler.getInstance().getSkinFromColor(colorSkinInUse).getName());
 			
-			inventoryController.init();
+			
 			
 		}else if(message.getProtocol().equals(Protocol.LINEUPINUSE)) {
 			
-			InventoryController inventaryController = (InventoryController) SceneHandler.getInstance().getLoader("InventoryPage").getController() ;
+			InventoryController inventoryController = (InventoryController) SceneHandler.getInstance().getLoader("InventoryPage").getController() ;
 						
-			int lineupInUse = Integer.parseInt(message.getMessage());
+			int lineupInUse = Integer.parseInt((String) message.getMessage());
 			LineupHandler.getInstance().setUsing(lineupInUse);
 			
-			inventaryController.init();
-			inventaryController.setReady(true);
+			
 		}else if(message.getProtocol().equals(Protocol.ELEMENTSHOPBOUGHT) || message.getProtocol().equals(Protocol.ELEMENTSHOPNOTBOUGHT)) {
 		
 			ShopController shopController = SceneHandler.getInstance().getLoader("ShopPage").getController() ;
@@ -229,7 +263,7 @@ public class ClientSucceedController implements EventHandler<WorkerStateEvent>{
 		}else if(message.getProtocol().equals(Protocol.INFORMATIONHISTORY)) {
 			
 			HistoryController historyController =  SceneHandler.getInstance().getLoader("HistoryPage").getController() ;
-			historyController.init(DataMatch.getMatches(message.getMessage()));
+			historyController.init(DataMatch.getMatches((String) message.getMessage()));
 			historyController.setReady(true);
 		}else if(message.getProtocol().equals(Protocol.PASSWORDCHANGEDACCOUNTSTATE) || message.getProtocol().equals(Protocol.OLDPASSOWORDNOTCORRECT)) {
 			
@@ -250,7 +284,7 @@ public class ClientSucceedController implements EventHandler<WorkerStateEvent>{
 			Client.getInstance().setCurrentState(Client.STEP2PSW);
 			SceneHandler.getInstance().loadScene("Step2PSW", false, true);
 			Step2PSW step2psw = SceneHandler.getInstance().getLoader("Step2PSW").getController() ;
-			step2psw.setText_area_step2psw(message.getMessage());
+			step2psw.setText_area_step2psw((String) message.getMessage());
 			step2psw.setReady(true);
 		}else if(message.getProtocol().equals(Protocol.CODENOTVALID)) {
 			

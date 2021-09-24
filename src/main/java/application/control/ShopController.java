@@ -15,8 +15,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -82,8 +82,7 @@ public class ShopController {
     	showText(ShopTitle, 40, Dialog.INFORMATION_WINDOW, 20);
     	
     	Client.getInstance().sendMessage(Protocol.INFORMATIONSHOP);
-
-
+    	Client.getInstance().sendMessage(Protocol.IMAGESLINEUP);
     }
     
     public void setCoins(String coins) {
@@ -112,7 +111,8 @@ public class ShopController {
 			lineupController.setName(lineup.getName());
 			lineupController.setOwn(lineup.isOwned());
 			lineupController.setPrice(lineup.getPrice());
-			lineupController.setModulo(lineup.getModulo());
+			lineupController.setImage(Utilities.getImageFromByteArray(lineup.getImage(), 143, 84));
+			
 			box_lineups.getChildren().add(pair.getKey());
 		}
 	}

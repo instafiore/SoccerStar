@@ -4,6 +4,7 @@ import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.security.MessageDigestSpi;
@@ -40,8 +41,8 @@ public class MatchServer implements Runnable {
 	private ClientHandler player2 ;
 	private BufferedReader in1 ;
 	private BufferedReader in2 ;
-	private PrintWriter out1 ;
-	private PrintWriter out2 ;
+	private ObjectOutputStream out1 ;
+	private ObjectOutputStream out2 ;
 	private MatchHandler matchHandler;
 	private Field field ;
 	private boolean gotInformationMessage = false ;
@@ -579,7 +580,8 @@ public class MatchServer implements Runnable {
 					System.out.println("[MATCHSERVER] "+Protocol.CONNECTION_LOST+" with player1");
 				in1 = null ;
 				out1 = null ;
-				out2.println(Protocol.LEFTGAME);
+				out2.writeObject(Protocol.LEFTGAME);
+				out2.flush();
 				return null;
 			}else
 			{
@@ -609,8 +611,8 @@ public class MatchServer implements Runnable {
 					System.out.println("[MATCHSERVER] "+Protocol.CONNECTION_LOST+" with player2");
 				in2 = null ;
 				out2 = null ;
-				out1.println(Protocol.LEFTGAME);
-				
+				out1.writeObject(Protocol.LEFTGAME);
+				out1.flush();
 				return null;
 			}else
 			{
@@ -677,7 +679,14 @@ public class MatchServer implements Runnable {
 			}else
 				gotInformationMessage = true ;
 			
-			out2.println(message);
+			try {
+				out2.writeObject(message);
+				out2.flush();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
 		}
 		else if(sender == PLAYER2 && out1 != null && !disconnected.equals(DISCONNECTEDPLAYER1))
 		{
@@ -685,7 +694,15 @@ public class MatchServer implements Runnable {
 				System.out.println("[MATCHSERVER] Message from :"+username2+" to : "+username1+" , Message: "+message);
 			else
 				System.out.println("[MATCHSERVER] Message from : player2 to : player1 , Message: "+message);
-			out1.println(message);
+			
+			try {
+				out1.writeObject(message);
+				out1.flush();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
 		}
 
 	}
@@ -715,10 +732,27 @@ public class MatchServer implements Runnable {
 		}
 	
 		if(out1 != null && !disconnected.equals(DISCONNECTEDPLAYER1))
-			out1.println(message);
+		{
+			try {
+				out1.writeObject(message);
+				out1.flush();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+					}
 		
 		if(out2 != null && !disconnected.equals(DISCONNECTEDPLAYER2))
-			out2.println(message);
+		{
+			try {
+				out2.writeObject(message);
+				out2.flush();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
 
 			
 	}

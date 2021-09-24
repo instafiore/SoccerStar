@@ -1,10 +1,14 @@
 package application.model.game.handler;
 
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
+import javax.imageio.ImageIO;
+
 import application.model.game.entity.Lineup;
 import application.net.common.Protocol;
+import javafx.scene.image.Image;
 import javafx.util.Pair;
 
 public class FriendsHandler {
@@ -18,6 +22,8 @@ public class FriendsHandler {
 	public static FriendsHandler getInstance() {
 		if(instance == null)
 			instance = new FriendsHandler();
+//		Image img = new Image(new ByteArrayInputStream(buffer));
+
 		return instance;
 	}
 	

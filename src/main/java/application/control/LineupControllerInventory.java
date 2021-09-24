@@ -30,7 +30,7 @@ public class LineupControllerInventory {
     private Button use_button;
 
     @FXML
-    private Label modulo;
+    private ImageView image;
 
     
     private boolean using = false ;
@@ -60,9 +60,9 @@ public class LineupControllerInventory {
 		this.name.setText(name);
 	}
     
-    public void setModulo(String modulo) {
- 	   this.modulo.setText(modulo);
-    }
+   public void setImage(Image image) {
+	this.image.setImage(image);
+   }
      
     @FXML
     void onClickUse_button(ActionEvent event) {
@@ -89,14 +89,14 @@ public class LineupControllerInventory {
 
     @FXML
     void onMouseEnteredImage(MouseEvent event) {
-    	modulo.setScaleX(1.2);
-    	modulo.setScaleY(1.2);
+    	image.setScaleX(1.2);
+    	image.setScaleY(1.2);
     }
 
     @FXML
     void onMouseExitedImage(MouseEvent event) {
-    	modulo.setScaleX(1);
-    	modulo.setScaleY(1);
+    	image.setScaleX(1);
+    	image.setScaleY(1);
     }
 
 }

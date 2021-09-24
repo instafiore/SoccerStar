@@ -3,7 +3,7 @@ package application.model.game.entity;
 public class Message {
 
 	private String protocol = null ;
-	private String message = null ;
+	private Object message = null ;
 	
 	public Message() {
 		// TODO Auto-generated constructor stub
@@ -16,7 +16,12 @@ public class Message {
 		this.protocol = protocol;
 		this.message = message;
 	}
-
+	
+	public Message(String protocol, Object message) {
+		super();
+		this.protocol = protocol;
+		this.message = message;
+	}
 	
 	public Message(String protocol) {
 		this.protocol = protocol ;
@@ -28,10 +33,10 @@ public class Message {
 	public void setProtocol(String protocol) {
 		this.protocol = protocol;
 	}
-	public String getMessage() {
+	public Object getMessage() {
 		return message;
 	}
-	public void setMessage(String message) {
+	public void setMessage(Object message) {
 		this.message = message;
 	}
 	

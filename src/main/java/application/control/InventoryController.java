@@ -71,6 +71,7 @@ public class InventoryController {
     	Client.getInstance().sendMessage(Protocol.INFORMATIONINVENTARY);
     	Client.getInstance().sendMessage(Protocol.SKININUSE);
     	Client.getInstance().sendMessage(Protocol.LINEUPINUSE);
+    	Client.getInstance().sendMessage(Protocol.IMAGESLINEUP);
     }
     
     public void init() {
@@ -93,8 +94,7 @@ public class InventoryController {
 			LineupControllerInventory lineupController = (LineupControllerInventory) pair.getValue() ;
 			lineupController.setName(lineup.getName());
 			lineupController.setUsing(lineup.isUsing());
-			lineupController.setModulo(lineup.getModulo());
-			
+			lineupController.setImage(Utilities.getImageFromByteArray(lineup.getImage(), 143, 84));
 			box_lineups.getChildren().add(pair.getKey());
 		}
 	}

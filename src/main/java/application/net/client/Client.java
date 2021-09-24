@@ -1,9 +1,11 @@
 package application.net.client;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -21,7 +23,7 @@ import javafx.concurrent.Task;
 
 public class Client extends Service<Message>{
 
-	private BufferedReader in = null;
+	private ObjectInputStream in = null;
 	private PrintWriter out = null;
 	private Socket socket = null;
 	
@@ -53,6 +55,16 @@ public class Client extends Service<Message>{
 		
 	private Client() {}
 	
+	public void connectToServer() throws UnknownHostException, IOException {
+		
+		
+		socket = new Socket(Settings.ADDRESS_SERVER,Settings.PORT);
+		out = new PrintWriter(new BufferedOutputStream(socket.getOutputStream()),true);
+		in = new ObjectInputStream(new BufferedInputStream(socket.getInputStream()));
+		
+		this.start();
+	}
+	
 	public void setCurrentState(int currentState) {
 		this.currentState = currentState;
 		System.out.println("[CLIENT] Change state in -> "+this.currentState);
@@ -73,7 +85,7 @@ public class Client extends Service<Message>{
 		return currentField;
 	}
 	
-	public BufferedReader getIn() {
+	public ObjectInputStream getIn() {
 		return in;
 	}
 	
@@ -127,9 +139,14 @@ public class Client extends Service<Message>{
 		if(in == null)
 			return new Message(Protocol.CONNECTION_LOST);
 		
-		String message = in.readLine();
-		
-		
+		String message;
+		try {
+			message = (String) in.readObject();
+		} catch (ClassNotFoundException | IOException e1) {
+			printConnectionLost();
+			return new Message(Protocol.CONNECTION_LOST);
+		}
+				
 		if(message == null )
 		{
 			printConnectionLost();
@@ -151,7 +168,15 @@ public class Client extends Service<Message>{
 				|| message.equals(Protocol.FRIENDLYREQUESTFIELD3) || message.equals(Protocol.PREPARINGFRIENDLYMATCH)) {
 			Message messageObject = null ;
 			String protocol = message ;
-			message = in.readLine();
+			
+			try {
+				message = (String) in.readObject();
+			} catch (ClassNotFoundException | IOException e) {
+				closeStreams();
+				messageObject = new Message(Protocol.GENERALERROR);
+				return messageObject ;
+			}
+			
 			if(message == null || currentState == STEP_REGISTRATION || currentState == STEP_LOGIN || currentState == IN_GAME)
 			{
 				closeStreams();
@@ -183,7 +208,7 @@ public class Client extends Service<Message>{
 		case SHOP:
 			return readShop(message);
 		case INVENTARY:
-			return readInventary(message);
+			return readInventory(message);
 		case FRIENDS:
 			return readFriends(message);
 		default:
@@ -207,7 +232,14 @@ public class Client extends Service<Message>{
 		if(protocol.equals(Protocol.REGISTRATIONCOMPLETED))
 		{
 			setCurrentState(MAINPAGE);
-			username = in.readLine();
+			
+			try {
+				username = (String) in.readObject();
+			} catch (ClassNotFoundException | IOException e) {
+				closeStreams();
+				message = new Message(Protocol.GENERALERROR);
+				return message ;
+			}
 			if(username == null)
 			{
 				closeStreams();
@@ -233,7 +265,14 @@ public class Client extends Service<Message>{
 		
 		if(protocol.equals(Protocol.LOGINCOMPLETED)) {
 			
-			username = in.readLine();
+			try {
+				username = (String) in.readObject();
+			} catch (ClassNotFoundException | IOException e) {
+
+				closeStreams();
+				message = new Message(Protocol.GENERALERROR);
+				return message ;
+			}
 			if(username == null)
 			{
 				closeStreams();
@@ -259,7 +298,13 @@ public class Client extends Service<Message>{
 		Message message = null ;
 		String mess = null ;
 		if(protocol.equals(Protocol.INITIALINFORMATION)) {
-			mess = in.readLine();
+			try {
+				mess = (String) in.readObject();
+			} catch (ClassNotFoundException | IOException e) {
+				closeStreams();
+				message = new Message(Protocol.GENERALERROR);
+				return message ;
+			}
 			if(mess == null )
 			{
 				closeStreams();
@@ -280,7 +325,13 @@ public class Client extends Service<Message>{
 		String mess = null ;
 		
 		if(protocol.equals(Protocol.INFORMATIONACCOUNT)) {
-			mess = in.readLine();
+			try {
+				mess = (String) in.readObject();
+			} catch (ClassNotFoundException | IOException e) {
+				closeStreams();
+				message = new Message(Protocol.GENERALERROR);
+				return message ;
+			}
 			if(mess == null )
 			{
 				closeStreams();
@@ -302,11 +353,19 @@ public class Client extends Service<Message>{
 	
 	public Message readHistory(String protocol) throws IOException {
 		Message message = null ;
-		String mess = null ;
+		
 		
 		if(protocol.equals(Protocol.INFORMATIONHISTORY)) {
 			
-			mess = in.readLine();
+			String mess = null ;
+			try {
+				mess = (String) in.readObject();
+			} catch (ClassNotFoundException | IOException e) {
+				closeStreams();
+				message = new Message(Protocol.GENERALERROR);
+				return message ;
+			}
+			
 			if(mess == null )
 			{
 				closeStreams();
@@ -325,11 +384,17 @@ public class Client extends Service<Message>{
 	public Message readShop(String protocol) throws IOException {
 		
 		Message message = null ;
-		String mess = null ;
+		
 		
 		if(protocol.equals(Protocol.INFORMATIONSHOP)) {
-			
-			mess = in.readLine();
+			String mess = null ;
+			try {
+				mess = (String) in.readObject();
+			} catch (ClassNotFoundException | IOException e) {
+				closeStreams();
+				message = new Message(Protocol.GENERALERROR);
+				return message ;
+			}
 			if(mess == null )
 			{
 				closeStreams();
@@ -337,6 +402,19 @@ public class Client extends Service<Message>{
 				return message ;
 			}
 			message = new Message(protocol,mess);
+			
+		}else if(protocol.equals(Protocol.IMAGESLINEUP)){
+			
+			try {
+				
+				Object mess = in.readObject() ;
+				message = new Message(protocol, mess);
+			
+			} catch (ClassNotFoundException | IOException e) {
+				closeStreams();
+				message = new Message(Protocol.GENERALERROR);
+				return message ;
+			}
 			
 		}else if(protocol.equals(Protocol.ELEMENTSHOPBOUGHT) || protocol.equals(Protocol.ELEMENTSHOPNOTBOUGHT) ) {
 			
@@ -357,7 +435,13 @@ public class Client extends Service<Message>{
 		
 		if(protocol.equals(Protocol.INFORMATIONFRIENDS) || protocol.equals(Protocol.ISNOTINAGAME) ){
 			
-			mess = in.readLine();
+			try {
+				mess = (String) in.readObject();
+			} catch (ClassNotFoundException | IOException e) {
+				closeStreams();
+				message = new Message(Protocol.GENERALERROR);
+				return message ;
+			}
 			if(mess == null )
 			{
 				closeStreams();
@@ -380,14 +464,20 @@ public class Client extends Service<Message>{
 	}
 	
 
-	public Message readInventary(String protocol) throws IOException {
+	public Message readInventory(String protocol) throws IOException {
 		
 		Message message = null ;
-		String mess = null ;
 		
 		if(protocol.equals(Protocol.INFORMATIONINVENTARY) || protocol.equals(Protocol.SKININUSE) || protocol.equals(Protocol.LINEUPINUSE)) {
+			String mess = null ;
 			
-			mess = in.readLine();
+			try {
+				mess = (String) in.readObject();
+			} catch (ClassNotFoundException | IOException e) {
+				closeStreams();
+				message = new Message(Protocol.GENERALERROR);
+				return message ;
+			}
 			if(mess == null )
 			{
 				closeStreams();
@@ -395,6 +485,19 @@ public class Client extends Service<Message>{
 				return message ;
 			}
 			message = new Message(protocol,mess);
+			
+		}else if(protocol.equals(Protocol.IMAGESLINEUP)){
+			
+			try {
+				
+				Object mess = in.readObject() ;
+				message = new Message(protocol, mess);
+			
+			} catch (ClassNotFoundException | IOException e) {
+				closeStreams();
+				message = new Message(Protocol.GENERALERROR);
+				return message ;
+			}
 			
 		}else {
 			message = new Message();
@@ -413,7 +516,13 @@ public class Client extends Service<Message>{
 			
 		}else if (protocol.equals(Protocol.EMAILSENT) ){
 			
-			mess = in.readLine();
+			try {
+				mess = (String) in.readObject();
+			} catch (ClassNotFoundException | IOException e) {
+				closeStreams();
+				message = new Message(Protocol.GENERALERROR);
+				return message ;
+			}
 			if(mess == null )
 			{
 				closeStreams();
@@ -440,7 +549,13 @@ public class Client extends Service<Message>{
 			
 		}else if (protocol.equals(Protocol.EMAILSENT) ){
 			
-			mess = in.readLine();
+			try {
+				mess = (String) in.readObject();
+			} catch (ClassNotFoundException | IOException e) {
+				closeStreams();
+				message = new Message(Protocol.GENERALERROR);
+				return message ;
+			}
 			if(mess == null )
 			{
 				closeStreams();
@@ -463,21 +578,7 @@ public class Client extends Service<Message>{
 		currentState =  STEP_LOGIN ;
 	}
 	
-	public void connectToServer() {
-		
-		try {
-			socket = new Socket(Settings.ADDRESS_SERVER,Settings.PORT);
-			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-			out = new PrintWriter(new BufferedOutputStream(socket.getOutputStream()),true);
-		} catch (UnknownHostException e) {
-
-			e.printStackTrace();
-		} catch (IOException e) {
-
-			e.printStackTrace();
-		}
-		this.start();
-	}
+	
 	
 	public void cancelRequest() {
 		setCurrentState(MAINPAGE);

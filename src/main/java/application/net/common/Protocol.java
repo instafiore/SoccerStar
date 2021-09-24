@@ -73,7 +73,7 @@ public class Protocol {
 	public static final String ELEMENTSHOPBOUGHT = "Element bought" ;
 	public static final String ELEMENTSHOPNOTBOUGHT = "You don't have enough coins" ;
 	public static final String ALREADYOWNED = "You already own this element" ;
-
+	public static final String IMAGESLINEUP = "Images lineup" ;
 	
 	// Inventory
 	public static final String INFORMATIONINVENTARY = "Information inventary request";

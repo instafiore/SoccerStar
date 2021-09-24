@@ -47,7 +47,7 @@ public class Database {
 	private static final String UPDATE_CURRENT_LINEUP = "update Account set current_lineup = ? where username = ? ;" ;
 	private static final String SEARCH_FRIENDS_USER = "select friend from Friends where account  = ? ;";
 	private static final String INSERTFRIEND = "insert into Friends(account,friend) values(?,?); ";
-	
+	private static final String INSERTIMAGELINEUP = "update Lineup set image = ? where id = ? ;" ;
 	
 	
 	
@@ -73,7 +73,7 @@ public class Database {
 	private PreparedStatement update_current_lineup_query ;
 	private PreparedStatement search_friend_user_query  ;
 	private PreparedStatement insert_friend_query  ;
-
+	private PreparedStatement insert_image_lineup_query ;
 	
 	
 	private Database() {
@@ -95,7 +95,26 @@ public class Database {
 			System.out.println("[SERVER] Database connected!");
 		
 		initializeQuery();
+
+//		insertImageLineup(3,Utilities.getByteArrayFromFile(new File(getClass().getResource("/application/view/lineup_3.png").getPath())));
+		
+	}
 	
+	
+private synchronized void insertImageLineup(int id , byte[] image) {
+		
+		
+		try {
+			insert_image_lineup_query.setBytes(1, image);
+			insert_image_lineup_query.setInt(2, id);
+			
+			insert_image_lineup_query.executeUpdate();
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 	
 	
@@ -121,7 +140,7 @@ public class Database {
 		update_current_lineup_query = connection.prepareStatement(UPDATE_CURRENT_LINEUP);
 		search_friend_user_query = connection.prepareStatement(SEARCH_FRIENDS_USER);
 		insert_friend_query = connection.prepareStatement(INSERTFRIEND);
-
+		insert_image_lineup_query = connection.prepareStatement(INSERTIMAGELINEUP);
 
 	}
 	
@@ -273,8 +292,7 @@ public class Database {
 		lineup.setId(result.getInt("id"));
 		lineup.setName(result.getString("name"));
 		lineup.setPrice(result.getString("price"));
-		lineup.setModulo(result.getString("modulo"));
-
+		lineup.setImage(result.getBytes("image"));
 
 		return lineup ;
 	}
@@ -298,6 +316,7 @@ public class Database {
 		}
 
 	}
+	
 	
 	public synchronized void insertFriendToUsername(String username,String friend) {
 		
@@ -578,7 +597,7 @@ public class Database {
 			lineup.setId(result.getInt("id"));
 			lineup.setName(result.getString("name"));
 			lineup.setPrice(result.getString("price"));
-			lineup.setModulo(result.getString("modulo"));
+			lineup.setImage(result.getBytes("image"));
 			lineups.add(lineup);
 		}
 	

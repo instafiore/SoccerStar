@@ -21,14 +21,14 @@ public class LineupControllerShop {
 
 	public static final String OWNED = "OWNED" ;
 	
-    @FXML
+   @FXML
     private Label name;
 
     @FXML
     private Button buy_button;
 
     @FXML
-    private Label modulo;
+    private ImageView image;
 
     
     private boolean owned = false;
@@ -66,8 +66,8 @@ public class LineupControllerShop {
 		}
     }
     
-   public void setModulo(String modulo) {
-	   this.modulo.setText(modulo);
+   public void setImage(Image image) {
+	   this.image.setImage(image);
    }
     
     @FXML
@@ -84,7 +84,7 @@ public class LineupControllerShop {
     	if(!shopController.isReady())
     		return ;
     	Lineup lineup = LineupHandler.getInstance().getLineup(name.getText());
-    	String text = lineup.getId() + Protocol.DELIMITERINFORMATIONELEMENTSHOP + lineup.getName() + Protocol.DELIMITERINFORMATIONELEMENTSHOP + lineup.getPrice() + Protocol.DELIMITERINFORMATIONELEMENTSHOP + lineup.getModulo() ;
+    	String text = lineup.getId() + Protocol.DELIMITERINFORMATIONELEMENTSHOP + lineup.getName() + Protocol.DELIMITERINFORMATIONELEMENTSHOP + lineup.getPrice() ;
     	Client.getInstance().sendMessage(Protocol.BUYLINEUP);
     	Client.getInstance().sendMessage(text);
     	
@@ -92,14 +92,14 @@ public class LineupControllerShop {
 
     @FXML
     void onMouseEnteredImage(MouseEvent event) {
-    	modulo.setScaleX(1.2);
-    	modulo.setScaleY(1.2);
+    	image.setScaleX(1.2);
+    	image.setScaleY(1.2);
     }
    
     @FXML
     void onMouseExitedImage(MouseEvent event) {
-    	modulo.setScaleX(1);
-    	modulo.setScaleY(1);
+    	image.setScaleX(1);
+    	image.setScaleY(1);
     }
 
 }

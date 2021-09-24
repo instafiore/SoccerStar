@@ -1,6 +1,8 @@
 package application;
 
 import java.io.File;
+import java.io.IOException;
+
 import application.control.ClientSucceedController;
 import application.control.MatchController;
 import application.control.WindowController;
@@ -19,11 +21,20 @@ import javafx.stage.WindowEvent;
 public class MainApplication extends Application{
 
 	@Override
-	public void start(Stage primaryStage) throws Exception {
+	public void start(Stage primaryStage) {
 		
+		try {
+			Client.getInstance().connectToServer();
+		} catch (IOException e) {
+			System.out.println("[CLIENT] Server disconnected");
+			return ;
+		}
 		
-		BorderPane mainMatchView = new BorderPane();
+		SceneHandler.getInstance().initStage(primaryStage);
 		
+		SoundHandler.getInstance().startBackground();
+
+		BorderPane mainMatchView = new BorderPane();		
 		mainMatchView.setPrefWidth(Settings.MATCHWIDTHFRAME);
 		mainMatchView.setPrefHeight(Settings.MATCHHEIGHTFRAME);
 		
@@ -35,25 +46,18 @@ public class MainApplication extends Application{
 		
 		mainMatchView.setTop(menuMatchPane);
 		mainMatchView.setCenter(matchView);
-		primaryStage.addEventHandler(WindowEvent.WINDOW_CLOSE_REQUEST, new WindowController());
 		
-		SceneHandler.getInstance().initStage(primaryStage);
-		SceneHandler.getInstance().addPane("MatchView", mainMatchView);
-		SceneHandler.getInstance().loadScene("LoginPage", false , true);
-
 		
 		MatchController.getInstance().addMatchView(matchView);		
 		matchView.addController(MatchController.getInstance());
-
-				
-		Updater.getInstance().addMatchController(MatchController.getInstance());
 		
-		Client.getInstance().connectToServer();
-		Client.getInstance().setCurrentState(Client.STEP_LOGIN);
 		Client.getInstance().setOnSucceeded(new ClientSucceedController());
 		
-		SoundHandler.getInstance().startBackground();
+		Updater.getInstance().addMatchController(MatchController.getInstance());
+		primaryStage.addEventHandler(WindowEvent.WINDOW_CLOSE_REQUEST, new WindowController());
 		
+		SceneHandler.getInstance().addPane("MatchView", mainMatchView);
+		SceneHandler.getInstance().loadScene("LoginPage", false , true);
 	}
 
 	public static void main(String[] args) {

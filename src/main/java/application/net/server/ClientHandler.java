@@ -37,7 +37,7 @@ public class ClientHandler implements Runnable {
 	
 	private Socket client = null;
 	private BufferedReader in = null;
-	private PrintWriter out = null;
+	private ObjectOutputStream out = null;
 	private String username = null;
 	private boolean throwMessagesMatch = false;
 	private Server server;
@@ -51,7 +51,7 @@ public class ClientHandler implements Runnable {
 	public void setCurrentField(String currentField) {
 		this.currentField = currentField;
 	}
-	
+	 
 	public String getCurrentField() {
 		return currentField;
 	}
@@ -61,18 +61,62 @@ public class ClientHandler implements Runnable {
 		this.client = client;
 		this.server = server;
 		try {
+			out = new ObjectOutputStream(new BufferedOutputStream(client.getOutputStream()));
+			out.flush();
 			in = new BufferedReader(new InputStreamReader(client.getInputStream()));
-			out = new PrintWriter(new BufferedOutputStream(client.getOutputStream()), true);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
 	}
 
+	public void sendMessage(String message) {
+
+		if (out == null || message == null)
+			return;
+
+		System.out.print("[CLIENTHANDLER] SENT : " + message);
+
+		if (username != null)
+			System.out.println(" to: " + username);
+		else
+			System.out.println(" to unknown receiver");
+
+		try {
+			out.writeObject(message);
+			out.flush();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void sendObject(Object object) {
+
+		if (out == null || object == null)
+			return;
+
+		System.out.print("[CLIENTHANDLER] SENT : " + object.toString());
+
+		if (username != null)
+			System.out.println(" to: " + username);
+		else
+			System.out.println(" to unknown receiver");
+
+		try {
+			out.writeObject(object);
+			out.flush();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	public BufferedReader getIn() {
 		return in;
 	}
 
-	public PrintWriter getOut() {
+	public ObjectOutputStream getOut() {
 		return out;
 	}
 
@@ -81,7 +125,7 @@ public class ClientHandler implements Runnable {
 	}
 
 	public void run() {
-
+		
 		String message = null;
 
 		System.out.println(INITIALWAITING);
@@ -591,7 +635,7 @@ public class ClientHandler implements Runnable {
 				
 				try {
 					for(Lineup lineup : Database.getInstance().getLineups()) {
-						lineups += lineup.getId() + Protocol.DELIMITERINFORMATIONELEMENTSHOP + lineup.getName() + Protocol.DELIMITERINFORMATIONELEMENTSHOP + lineup.getPrice() + Protocol.DELIMITERINFORMATIONELEMENTSHOP + lineup.getModulo() ;
+						lineups += lineup.getId() + Protocol.DELIMITERINFORMATIONELEMENTSHOP + lineup.getName() + Protocol.DELIMITERINFORMATIONELEMENTSHOP + lineup.getPrice()  ;
 						lineups += Protocol.DELIMITERELEMENTSHOP ;
 					}
 				} catch (SQLException e) {
@@ -620,6 +664,21 @@ public class ClientHandler implements Runnable {
 				sendMessage(message);
 				sendMessage(text);
 				
+			}else  if(message.equals(Protocol.IMAGESLINEUP)) {
+				
+				ArrayList<byte[]> images = new ArrayList<byte[]>();
+				try {
+					for(Lineup lineup : Database.getInstance().getLineups())
+						images.add(lineup.getImage());
+					
+				} catch (SQLException e) {
+					sendMessage(Protocol.GENERALERROR);
+					printConnectionLost();
+					return;
+				}
+				
+				sendMessage(Protocol.IMAGESLINEUP);
+				sendObject(images);
 			}else  if(message.equals(Protocol.SKININUSE)) {
 				
 				String colorSkin  = "" ;
@@ -732,20 +791,7 @@ public class ClientHandler implements Runnable {
 		t.start();
 	}
 	
-	public void sendMessage(String message) {
 
-		if (out == null || message == null)
-			return;
-
-		System.out.print("[CLIENTHANDLER] SENT : " + message);
-
-		if (username != null)
-			System.out.println(" to: " + username);
-		else
-			System.out.println(" to unknown receiver");
-
-		out.println(message);
-	}
 
 	private void printConnectionLost() {
 		if (username != null) {
@@ -804,7 +850,7 @@ public class ClientHandler implements Runnable {
 			if (in != null)
 				in.close();
 			in = null;
-			if (out != null)
+			if (out != null )
 				out.close();
 			out = null;
 			if (client != null && !client.isClosed())

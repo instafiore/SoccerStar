@@ -4,6 +4,7 @@ import java.awt.PageAttributes.PrintQualityType;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
@@ -29,7 +30,7 @@ public class MatchClient extends Task<String>{
 
 	
 	private Client client = null ;
-	private BufferedReader in = null ;
+	private ObjectInputStream in = null ;
 	private int lineup = GeneratorLineup.LINEUP2;
 	private String usernameGuest = null ;
 	private boolean match_activated = false ;
@@ -247,7 +248,12 @@ public class MatchClient extends Task<String>{
 				return null ;
 			}
 			
-			message = in.readLine();
+			try {
+				message = (String) in.readObject();
+			} catch (ClassNotFoundException e) {
+				printConnectionLost();
+				return null ;
+			}
 			
 			if(message == null)
 			{
@@ -276,75 +282,74 @@ public class MatchClient extends Task<String>{
 			return Protocol.ERRORMATCH;
 		}
 		
-		if(in.ready()) {
+		message = read() ;
+		if(message == null)
+		{
+			setMatch_activated(false);
+			return Protocol.ERRORMATCH;
+			
+		}else if(message.equals(Protocol.INFORMATIONMATCHMESSAGE)) {
+			SoundHandler.getInstance().startHit();
+	    	
 			message = read() ;
-			if(message == null)
-			{
-				setMatch_activated(false);
-				return Protocol.ERRORMATCH;
-				
-			}else if(message.equals(Protocol.INFORMATIONMATCHMESSAGE)) {
-				SoundHandler.getInstance().startHit();
-		    	
-				message = read() ;
-				parseMatchInformation.addNewInformation(message);
-				
-			}else if(message.equals(Protocol.HOVERBALL)) {
-				
-				message = read() ;
-				
-				double x = Double.parseDouble(message.split(Protocol.BALLDELIMITER)[0]);
-				double y = Double.parseDouble(message.split(Protocol.BALLDELIMITER)[1]);
-				
-				parseMatchInformation.setHover(new VectorFioreNoSync(x, y));
-				
-			}else if(message.equals(Protocol.HOVERNOBALL)) {
-				
-				parseMatchInformation.setHoverFalseAll();
-				
-			}else if(message.equals(Protocol.YOUWON)){
-				//TODO
-				try {
-					Thread.sleep(2000);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				setMatch_activated(false);
-				return Protocol.YOUWON;
-			}else if(message.equals(Protocol.YOULOST)){
-				//TODO
-				try {
-					Thread.sleep(2000);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				setMatch_activated(false);
-				return Protocol.YOULOST;
-			}else if(message.equals(Protocol.LEFTGAME) || message.equals(Protocol.CONNECTION_LOST)){
-				MatchController.getInstance().setTextToShow(message, 13 , Dialog.ERROR_WINDOW, 4);
-				setMatch_activated(false);
-				return Protocol.NOERRORBUTLEFTMATCH;
+			parseMatchInformation.addNewInformation(message);
+			
+		}else if(message.equals(Protocol.HOVERBALL)) {
+			
+			message = read() ;
+			
+			double x = Double.parseDouble(message.split(Protocol.BALLDELIMITER)[0]);
+			double y = Double.parseDouble(message.split(Protocol.BALLDELIMITER)[1]);
+			
+			parseMatchInformation.setHover(new VectorFioreNoSync(x, y));
+			
+		}else if(message.equals(Protocol.HOVERNOBALL)) {
+			
+			parseMatchInformation.setHoverFalseAll();
+			
+		}else if(message.equals(Protocol.YOUWON)){
+			//TODO
+			try {
+				Thread.sleep(2000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-			else if(message.equals(Protocol.YOUSCORED)){
-				SoundHandler.getInstance().startGoalHome();
-				MatchController.getInstance().setTextToShow(message, 13 , Dialog.INFORMATION_WINDOW, 7);
-				parseMatchInformation.setHomeScored(true);
-				
-			}else if(message.equals(Protocol.OPPONENTSCORED)){
-				SoundHandler.getInstance().startGolGuest();
-				MatchController.getInstance().setTextToShow(message, 13 , Dialog.ATTENTION_WINDOW, 7);
-				parseMatchInformation.setGuestScored(true);
-				
-			}else if(message.equals(Protocol.NOATKICKOFF)){
-				MatchController.getInstance().setTextToShow(message, 10 , Dialog.ATTENTION_WINDOW, 7);
-				
-			}else if(message.equals(Protocol.GENERALERROR)){
-				setMatch_activated(false);
-				return Protocol.ERRORMATCH;
+			setMatch_activated(false);
+			return Protocol.YOUWON;
+		}else if(message.equals(Protocol.YOULOST)){
+			//TODO
+			try {
+				Thread.sleep(2000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
+			setMatch_activated(false);
+			return Protocol.YOULOST;
+		}else if(message.equals(Protocol.LEFTGAME) || message.equals(Protocol.CONNECTION_LOST)){
+			MatchController.getInstance().setTextToShow(message, 13 , Dialog.ERROR_WINDOW, 4);
+			setMatch_activated(false);
+			return Protocol.NOERRORBUTLEFTMATCH;
 		}
+		else if(message.equals(Protocol.YOUSCORED)){
+			SoundHandler.getInstance().startGoalHome();
+			MatchController.getInstance().setTextToShow(message, 13 , Dialog.INFORMATION_WINDOW, 7);
+			parseMatchInformation.setHomeScored(true);
+			
+		}else if(message.equals(Protocol.OPPONENTSCORED)){
+			SoundHandler.getInstance().startGolGuest();
+			MatchController.getInstance().setTextToShow(message, 13 , Dialog.ATTENTION_WINDOW, 7);
+			parseMatchInformation.setGuestScored(true);
+			
+		}else if(message.equals(Protocol.NOATKICKOFF)){
+			MatchController.getInstance().setTextToShow(message, 10 , Dialog.ATTENTION_WINDOW, 7);
+			
+		}else if(message.equals(Protocol.GENERALERROR)){
+			setMatch_activated(false);
+			return Protocol.ERRORMATCH;
+		}
+	
 		return Protocol.NOERRORMATCH ;
 		
 	}

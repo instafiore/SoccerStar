@@ -13,17 +13,34 @@ public class Lineup {
 	private int id  ;
 	private String name = "" ;
 	private String price = "" ;
-	private String modulo = "";
-	private boolean owned = false ;
+
+	private byte[] image = null ;
+ 	private boolean owned = false ;
 	private boolean using = false ;
 	
 	public Lineup() {}
 
 	
-	public Lineup(String name, String price) {
+	public Lineup(int id, String name, String price, String modulo, byte[] image, boolean owned, boolean using) {
 		super();
+		this.id = id;
 		this.name = name;
 		this.price = price;
+		this.image = image;
+		this.owned = owned;
+		this.using = using;
+	}
+
+
+
+
+	public void setImage(byte[] image) {
+		this.image = image;
+	}
+	
+	
+	public byte[] getImage() {
+		return image;
 	}
 	
 	public void setUsing(boolean using) {
@@ -49,14 +66,6 @@ public class Lineup {
 	public boolean isOwned() {
 		return owned;
 	}
-
-	public void setModulo(String modulo) {
-		this.modulo = modulo;
-	}
-	
-	public String getModulo() {
-		return modulo;
-	}
 	
 	public String getName() {
 		return name;
@@ -77,7 +86,7 @@ public class Lineup {
 		setId(Integer.parseInt(stringTokenizer.nextToken()));
 		setName(stringTokenizer.nextToken());
 		setPrice(stringTokenizer.nextToken());
-		setModulo(stringTokenizer.nextToken());
+		
 	}
 
 	
