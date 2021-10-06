@@ -187,7 +187,7 @@ public class ClientSucceedController implements EventHandler<WorkerStateEvent>{
 			
 			
 			
-		}else if(message.getProtocol().equals(Protocol.IMAGESLINEUP)) {
+		}else if(message.getProtocol().equals(Protocol.IMAGESLINEUPSHOP)) {
 			
 			FXMLLoader loadShop = SceneHandler.getInstance().getLoader("ShopPage") ;
 			
@@ -204,11 +204,12 @@ public class ClientSucceedController implements EventHandler<WorkerStateEvent>{
 				shopController.setReady(true);
 			}
 			
+		}else if(message.getProtocol().equals(Protocol.IMAGESLINEUPINVENTORY)) {
+				
+			FXMLLoader loadInventory = SceneHandler.getInstance().getLoader("InventoryPage") ;
 			
-			FXMLLoader loadInvetory = SceneHandler.getInstance().getLoader("InventoryPage") ;
-			
-			if(loadInvetory != null) {
-				InventoryController inventoryController = loadInvetory.getController() ;
+			if(loadInventory != null) {
+				InventoryController inventoryController = loadInventory.getController() ;
 				
 				ArrayList<byte[]> imagesLineups = (ArrayList<byte[]>) message.getMessage() ;
 				
@@ -220,7 +221,7 @@ public class ClientSucceedController implements EventHandler<WorkerStateEvent>{
 				inventoryController.setReady(true);
 			}
 			
-		}else if(message.getProtocol().equals(Protocol.INFORMATIONINVENTARY)) {
+		}else if(message.getProtocol().equals(Protocol.INFORMATIONINVENTORY)) {
 			
 			InventoryController inventoryController = (InventoryController) SceneHandler.getInstance().getLoader("InventoryPage").getController() ;
 			

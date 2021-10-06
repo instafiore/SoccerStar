@@ -321,6 +321,7 @@ public class MatchServer implements Runnable {
 				{
 					System.out.println("[MATCHSERVER] Player 1 -> "+ Protocol.LEFTGAME);
 					sendMessage(Protocol.LEFTGAME, i);
+					sendMessage(Protocol.YOULEFTGAME, PLAYER2);
 					notifyClients(NOONEISDISCONNETED);
 					if(!isFriendlyBattle())
 						Database.getInstance().insertCoins(username2, Utilities.getRewardField(player2.getCurrentField()));
@@ -331,6 +332,7 @@ public class MatchServer implements Runnable {
 				{
 					System.out.println("[MATCHSERVER] Player 2 -> "+ Protocol.LEFTGAME);
 					sendMessage(Protocol.LEFTGAME, i);
+					sendMessage(Protocol.YOULEFTGAME, PLAYER1);
 					notifyClients(NOONEISDISCONNETED);
 					if(!isFriendlyBattle())
 						Database.getInstance().insertCoins(username1, Utilities.getRewardField(player1.getCurrentField()));

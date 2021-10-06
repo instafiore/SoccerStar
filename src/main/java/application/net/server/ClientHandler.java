@@ -606,7 +606,7 @@ public class ClientHandler implements Runnable {
 				sendMessage(Protocol.INITIALINFORMATION);
 				sendMessage(text);
 				
-			}else if(message.equals(Protocol.INFORMATIONSHOP) || message.equals(Protocol.INFORMATIONINVENTARY)) {
+			}else if(message.equals(Protocol.INFORMATIONSHOP) || message.equals(Protocol.INFORMATIONINVENTORY)) {
 				
 				String text = "" ;
 				
@@ -664,7 +664,7 @@ public class ClientHandler implements Runnable {
 				sendMessage(message);
 				sendMessage(text);
 				
-			}else  if(message.equals(Protocol.IMAGESLINEUP)) {
+			}else  if(message.equals(Protocol.IMAGESLINEUPSHOP) || message.equals(Protocol.IMAGESLINEUPINVENTORY)) {
 				
 				ArrayList<byte[]> images = new ArrayList<byte[]>();
 				try {
@@ -677,7 +677,7 @@ public class ClientHandler implements Runnable {
 					return;
 				}
 				
-				sendMessage(Protocol.IMAGESLINEUP);
+				sendMessage(message);
 				sendObject(images);
 			}else  if(message.equals(Protocol.SKININUSE)) {
 				
@@ -805,10 +805,14 @@ public class ClientHandler implements Runnable {
 	public String read() {
 
  		String message = null;
+ 		
+ 		boolean secondParOfMessage = false ;
 		try {
 
 			do {
 
+				secondParOfMessage = false ; 
+				
 				if (in == null || out == null || client.isClosed()) {
 					printConnectionLost();
 					return null;
@@ -827,8 +831,14 @@ public class ClientHandler implements Runnable {
 					printConnectionLost();
 					return null;
 				}
+				
+				if(message.equals(Protocol.HOVERBALL))
+				{
+					message = in.readLine();
+					secondParOfMessage = true ;
+				}
 
-			} while (Protocol.protocolMatch().contains(message) && throwMessagesMatch);
+			} while (( Protocol.protocolMatch().contains(message) || secondParOfMessage )  && throwMessagesMatch);
 
 			throwMessagesMatch = false;
 

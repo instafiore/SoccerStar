@@ -2,7 +2,6 @@ package application;
 
 import java.io.IOException;
 
-import application.net.server.Mail;
 import application.net.server.Server;
 
 public class MainServer {

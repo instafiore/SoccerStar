@@ -1,5 +1,7 @@
 package application.control;
 
+import java.util.ArrayList;
+
 import application.SceneHandler;
 import application.Utilities;
 import application.model.game.entity.Lineup;
@@ -14,8 +16,11 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressIndicator;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
@@ -25,10 +30,19 @@ public class InventoryController {
 
 
     @FXML
+    private VBox vbox;
+
+    @FXML
+    private BorderPane balls_sector;
+
+    @FXML
     private FlowPane box_skins;
 
     @FXML
     private Label label_balls;
+
+    @FXML
+    private BorderPane lineups_sector;
 
     @FXML
     private FlowPane box_lineups;
@@ -42,7 +56,10 @@ public class InventoryController {
     @FXML
     private Label information_label;
     
+    private ProgressIndicator progressindicator ;
+    
     private boolean ready = false ;
+    private boolean firstTime = true ;
     
     public void setReady(boolean ready) {
 		this.ready = ready;
@@ -52,11 +69,17 @@ public class InventoryController {
 		return ready;
     }
     
-  private static final String InventaryTitle = "Inventary";
+  private static final String InventaryTitle = "Inventory";
+  
+  
     
     @FXML
     public void initialize() {
-    	Client.getInstance().setCurrentState(Client.INVENTARY);
+    	Client.getInstance().setCurrentState(Client.INVENTORY);
+    	
+    	progressindicator = new ProgressIndicator() ;
+    	
+    	progressindicator.setMinSize(400, 200);
     	
     	back_button_inventary_page.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 20));
     	label_balls.setFont(Font.loadFont(getClass().getResourceAsStream(Utilities.getInstance().getPathFont()), 23));
@@ -67,19 +90,29 @@ public class InventoryController {
     	back_button_inventary_page.setOnMouseExited(new HoverButton());
     	
     	showText(InventaryTitle, 40, Dialog.INFORMATION_WINDOW, 20);
+    
+    	vbox.getChildren().remove(balls_sector);
+    	vbox.getChildren().remove(lineups_sector);
+    	vbox.getChildren().add(progressindicator);
     	
-    	Client.getInstance().sendMessage(Protocol.INFORMATIONINVENTARY);
+    	Client.getInstance().sendMessage(Protocol.INFORMATIONINVENTORY);
     	Client.getInstance().sendMessage(Protocol.SKININUSE);
     	Client.getInstance().sendMessage(Protocol.LINEUPINUSE);
-    	Client.getInstance().sendMessage(Protocol.IMAGESLINEUP);
+    	Client.getInstance().sendMessage(Protocol.IMAGESLINEUPINVENTORY);
     }
     
     public void init() {
     	
+    	
+    	
     	box_lineups.getChildren().clear();
     	box_skins.getChildren().clear();
     	
-		for(Skin skin : SkinHandler.getInstance().getSkinsOwned()) {
+    	
+    	double i = 0 ; 
+    	double perc ;
+    	ArrayList<Skin> skinsOwned = SkinHandler.getInstance().getSkinsOwned() ; 
+		for(Skin skin : skinsOwned) {
 			Pair<Pane, Object> pair = SceneHandler.getInstance().loadPane("InformationSkinInventoryPane");
 			SkinControllerInventory skinController = (SkinControllerInventory) pair.getValue() ;
 			
@@ -87,16 +120,30 @@ public class InventoryController {
 			skinController.setUsing(skin.isUsing());
 			skinController.setColor(skin.getColor());
 			box_skins.getChildren().add(pair.getKey());
+			perc = i++ / skinsOwned.size() / 2 ;
+			progressindicator.setProgress(perc);
 		}
 		
-		for(Lineup lineup : LineupHandler.getInstance().getLineupsOwned()) {
+		ArrayList<Lineup> lineupOwned = LineupHandler.getInstance().getLineupsOwned() ;
+		perc = 0 ;
+		for(Lineup lineup : lineupOwned ) {
 			Pair<Pane, Object> pair = SceneHandler.getInstance().loadPane("InformationLineupInventoryPane");
 			LineupControllerInventory lineupController = (LineupControllerInventory) pair.getValue() ;
 			lineupController.setName(lineup.getName());
 			lineupController.setUsing(lineup.isUsing());
 			lineupController.setImage(Utilities.getImageFromByteArray(lineup.getImage(), 143, 84));
 			box_lineups.getChildren().add(pair.getKey());
+			perc = i++ / lineupOwned.size() / 2 + 0.5;
+			progressindicator.setProgress(perc);
 		}
+		
+		if(firstTime) {
+			vbox.getChildren().remove(progressindicator);
+			vbox.getChildren().add(balls_sector);
+	    	vbox.getChildren().add(lineups_sector);
+	    	firstTime = false; 
+		}
+		
 	}
     
     public void showText(String text,int fontSize,String type,double duration) {

@@ -19,9 +19,9 @@
             <Insets left="50.0" right="50.0" />
          </BorderPane.margin>
          <content>
-            <VBox styleClass="pane">
+            <VBox fx:id="vbox" alignment="CENTER" styleClass="pane">
                <children>
-                  <BorderPane styleClass="pane">
+                  <BorderPane fx:id="balls_sector" styleClass="pane">
                      <center>
                         <FlowPane fx:id="box_skins" prefHeight="231.0" prefWidth="633.0" styleClass="pane" />
                      </center>
@@ -29,7 +29,7 @@
                         <Label fx:id="label_balls" alignment="CENTER" prefHeight="54.0" prefWidth="662.0" text="BALLS" textAlignment="CENTER" textFill="#f8f5f5" wrapText="true" BorderPane.alignment="CENTER" />
                      </top>
                   </BorderPane>
-                  <BorderPane styleClass="pane">
+                  <BorderPane fx:id="lineups_sector" styleClass="pane">
                      <center>
                         <FlowPane fx:id="box_lineups" prefHeight="265.0" prefWidth="647.0" styleClass="pane" />
                      </center>

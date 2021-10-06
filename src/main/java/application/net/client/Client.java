@@ -39,7 +39,7 @@ public class Client extends Service<Message>{
 	public static final int STEP2PSW = 6 ;
 	public static final int HISTORY = 7 ;
 	public static final int SHOP = 8;
-	public static final int INVENTARY = 9;
+	public static final int INVENTORY = 9;
 	public static final int FRIENDS = 10;
 
 	
@@ -207,7 +207,7 @@ public class Client extends Service<Message>{
 			return readHistory(message);
 		case SHOP:
 			return readShop(message);
-		case INVENTARY:
+		case INVENTORY:
 			return readInventory(message);
 		case FRIENDS:
 			return readFriends(message);
@@ -403,7 +403,7 @@ public class Client extends Service<Message>{
 			}
 			message = new Message(protocol,mess);
 			
-		}else if(protocol.equals(Protocol.IMAGESLINEUP)){
+		}else if(protocol.equals(Protocol.IMAGESLINEUPSHOP)){
 			
 			try {
 				
@@ -468,7 +468,7 @@ public class Client extends Service<Message>{
 		
 		Message message = null ;
 		
-		if(protocol.equals(Protocol.INFORMATIONINVENTARY) || protocol.equals(Protocol.SKININUSE) || protocol.equals(Protocol.LINEUPINUSE)) {
+		if(protocol.equals(Protocol.INFORMATIONINVENTORY) || protocol.equals(Protocol.SKININUSE) || protocol.equals(Protocol.LINEUPINUSE)) {
 			String mess = null ;
 			
 			try {
@@ -486,7 +486,7 @@ public class Client extends Service<Message>{
 			}
 			message = new Message(protocol,mess);
 			
-		}else if(protocol.equals(Protocol.IMAGESLINEUP)){
+		}else if(protocol.equals(Protocol.IMAGESLINEUPINVENTORY)){
 			
 			try {
 				

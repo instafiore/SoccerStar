@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.text.Font?>
+
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" styleClass="pane" stylesheets="@css/stylesheet1.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.control.LoadingController">
+   <center>
+      <ProgressIndicator fx:id="loading_bar" minHeight="200.0" minWidth="400.0" prefHeight="200.0" prefWidth="400.0" progress="0.0" stylesheets="@css/stylesheet1.css" BorderPane.alignment="CENTER" />
+   </center>
+   <top>
+      <Label fx:id="soccer_start_label" alignment="CENTER" prefHeight="116.0" prefWidth="471.0" text="SOCCER STAR" textFill="#eeecec" BorderPane.alignment="CENTER">
+         <font>
+            <Font size="50.0" />
+         </font>
+      </Label>
+   </top>
+</BorderPane>

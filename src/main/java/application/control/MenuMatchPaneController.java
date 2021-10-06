@@ -102,9 +102,8 @@ public class MenuMatchPaneController {
     		return ;
     	
     	Client.getInstance().sendMessage(Protocol.LEFTGAME);
-    	Client.getInstance().getCurrentMatch().setMatch_activated(false);
     	Client.getInstance().setCurrentMatch(null);
-    	
+
     }
     
     public void setUsernameHome(String username , String color ) {

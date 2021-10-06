@@ -331,8 +331,11 @@ public class MatchClient extends Task<String>{
 			MatchController.getInstance().setTextToShow(message, 13 , Dialog.ERROR_WINDOW, 4);
 			setMatch_activated(false);
 			return Protocol.NOERRORBUTLEFTMATCH;
-		}
-		else if(message.equals(Protocol.YOUSCORED)){
+		}else if(message.equals(Protocol.YOULEFTGAME)) {
+			MatchController.getInstance().setTextToShow(message, 13 , Dialog.ERROR_WINDOW, 4);
+			setMatch_activated(false);
+			return Protocol.NOERRORMATCH ;
+		}else if(message.equals(Protocol.YOUSCORED)){
 			SoundHandler.getInstance().startGoalHome();
 			MatchController.getInstance().setTextToShow(message, 13 , Dialog.INFORMATION_WINDOW, 7);
 			parseMatchInformation.setHomeScored(true);

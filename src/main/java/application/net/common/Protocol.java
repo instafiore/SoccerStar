@@ -73,15 +73,16 @@ public class Protocol {
 	public static final String ELEMENTSHOPBOUGHT = "Element bought" ;
 	public static final String ELEMENTSHOPNOTBOUGHT = "You don't have enough coins" ;
 	public static final String ALREADYOWNED = "You already own this element" ;
-	public static final String IMAGESLINEUP = "Images lineup" ;
+	public static final String IMAGESLINEUPSHOP = "Images lineup shop" ;
 	
 	// Inventory
-	public static final String INFORMATIONINVENTARY = "Information inventary request";
+	public static final String INFORMATIONINVENTORY = "Information inventary request";
 	public static final String ALREADYUSING = "You are already using this element";
 	public static final String SKININUSE = "Skin in use";
 	public static final String LINEUPINUSE = "Lineup in use";
 	public static final String USETHISSKIN = "I want to use this skin";
 	public static final String USETHISLINEUP = "I want to use this lineup";
+	public static final String IMAGESLINEUPINVENTORY = "Images lineup inventory" ;
 	
 	// History
 	public static final String INFORMATIONHISTORY = "Information history" ;
@@ -135,6 +136,7 @@ public class Protocol {
 	public static final String MOVEBALL = "The player moved the ball" ; 
 	public static final String SCORED = "The player scored" ;
 	public static final String LEFTGAME = "The player left the game" ;
+	public static final String YOULEFTGAME = "You left the game" ;
 	public static final String GAMEOVER = "The game is over" ;
 	public static final String MATCHSTARTED = "The match has started" ;
 	public static final String FRIENDLYMATCHSTARTED = "The friendly match has started" ;
