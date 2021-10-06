@@ -257,6 +257,7 @@ public class ClientSucceedController implements EventHandler<WorkerStateEvent>{
 			{
 				shopController.showText(message.getProtocol(), 30, Dialog.INFORMATION_WINDOW, 6);
 				Client.getInstance().sendMessage(Protocol.INFORMATIONSHOP);
+				Client.getInstance().sendMessage(Protocol.IMAGESLINEUPSHOP);
 			}
 			else
 				shopController.showText(message.getProtocol(), 21, Dialog.ERROR_WINDOW, 6);
